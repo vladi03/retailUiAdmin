@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useIsMobile} from "../../utility/useIsMobile";
 import { SideStrip } from "fancy-menu"
 import {makeStyles} from "@material-ui/core/styles";
@@ -7,7 +7,7 @@ import {Input
 import accountModel from "../../models/accounts/accountModel";
 import {connectArray} from "../../utility/helpers";
 import {getMenus} from "../../models/home/menuStore";
-
+import {getStore, setUserData} from "../../models/accounts/userAuthStore";
 import { useAuth0 } from '@auth0/auth0-react';
 
 const mainLinksAll = getMenus();
@@ -34,10 +34,17 @@ export const FullMenuNavComponent = ({ children, firstName, lastName,
         (link) => link.featureId === undefined ||
             userFeatures.indexOf(link.featureId) > -1);
 
+    const userInfo = getStore();
     console.log(user);
 
+    if(user) {
+        setUserData(user);
+        userInfo.picUrl = user.picture;
+        userInfo.name = user.name;
+    }
+
     return (
-        isAuthenticated &&
+        userInfo.name &&
         <div>
             <SideStrip mainLinks={mainLinks}
                        bottomLinks={bottomLinks}
@@ -45,8 +52,8 @@ export const FullMenuNavComponent = ({ children, firstName, lastName,
                           // setOpenMenu(false);
                        }}
                        expandMenu={false}
-                       userLabel={user.name}
-                       imageUrl={decodeURIComponent(user.picture)}
+                       userLabel={userInfo.name}
+                       imageUrl={decodeURIComponent(userInfo.picUrl)}
             />
             <div className={classes.mainContainer}>
                 {children}

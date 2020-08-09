@@ -7,8 +7,10 @@
     "lib"
   ],
   "scripts": {
-    "build:local": "nwb build-react-app --copy-files --config ./nwb.prod.config.js",
+    "build:local": "nwb build-react-app --copy-files --config ./nwb.dev.config.js",
+    "build": "nwb build-react-app --copy-files --config ./nwb.prod.config.js",
     "test": "mocha --require @babel/register --recursive ./test",
+    "deploy:docs": "gh-pages -d dist",
     "start": "nwb serve-react-app --copy-files NODE_ENV=development --config ./nwb.dev.config.js"
   },
   "repository": {

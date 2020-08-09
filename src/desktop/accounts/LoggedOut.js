@@ -17,6 +17,7 @@ export const LoggedOutComponent = ({onNotifyMainNavOfLogOff, userLoggedIn}) => {
         isAuthenticated,
         isLoading
     } = useAuth0();
+
     useEffect(() => {
         clearToken();
         if(isAuthenticated)

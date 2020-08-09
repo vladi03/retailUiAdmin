@@ -1,15 +1,12 @@
 
 const userAuthData = {
     token: localStorage.getItem('token'),
-    firstName: localStorage.getItem('firstName') || "",
-    lastName: localStorage.getItem('lastName') || "",
+    name: localStorage.getItem('name') || "",
     picUrl: localStorage.getItem('picUrl') || "",
-    signatureUrl: localStorage.getItem('signatureUrl') || "",
-    featurePermissions: [],
-    userId: localStorage.getItem('userId'),
-    expiresOn: parseInt(localStorage.getItem('expiresOn')) || 0,
-    logOutTimer: -1
+    email: localStorage.getItem('email') || "",
+    featurePermissions: []
 };
+
 try {
     const stringFeatures = localStorage.getItem('featurePermissions');
     userAuthData.featurePermissions = stringFeatures ? JSON.parse(stringFeatures) : [];
@@ -17,8 +14,15 @@ try {
     userAuthData.featurePermissions = [];
 }
 
+export const setTokenValue = (token) => {
+    localStorage.setItem('token', token);
+    userAuthData.token = token;
+    const tokenData = readToken(token);
+    setLogOutTimer(tokenData.exp);
+};
+
 export const initAuthStore = ()=> {
-    setLogOutTimer(userAuthData.expiresOn);
+    //setLogOutTimer(userAuthData.expiresOn);
 };
 
 const setLogOutTimer = (expiresOn) => {
@@ -47,8 +51,9 @@ const clearLogOutTimer = () => {
 export const isLoggedIn = () => userAuthData.token && userAuthData.token !== null;
 
 export const getStore = () => userAuthData;
+
 export const getFullName = () =>
-    `${userAuthData.firstName} ${userAuthData.lastName}`;
+    userAuthData.name;
 
 export const hasFeature = (featureId) => {
     return userAuthData.featurePermissions.indexOf(featureId) > -1;
@@ -58,49 +63,32 @@ export const getAuthHeaderValue = () => {
     return userAuthData.token !== null ? `bearer ${userAuthData.token}` : "";
 };
 
-export const setToken = ({token, firstName, lastName, picUrl, signatureUrl, userName}) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('firstName', firstName);
-    localStorage.setItem('lastName', lastName);
-    localStorage.setItem('picUrl', picUrl);
-    localStorage.setItem('signatureUrl', signatureUrl);
-    localStorage.setItem('userName', userName);
+export const setUserData = ({name, picture, email}) => {
+    userAuthData.featurePermissions = [1];
+    //localStorage.setItem('token', token);
 
-    userAuthData.token = token;
-    userAuthData.firstName = firstName;
-    userAuthData.lastName = lastName;
-    userAuthData.picUrl = picUrl;
-    userAuthData.signatureUrl = signatureUrl;
+    localStorage.setItem('name', name);
+    localStorage.setItem('email', email);
+    localStorage.setItem('picUrl', picture);
+    localStorage.setItem('featurePermissions',
+        JSON.stringify(userAuthData.featurePermissions));
 
-    //const tokenData = readToken(token);
-    const tokenData = {
-        id: `${firstName.substring(0,1)}${lastName}`,
-        features: "[1,2,3,4,5,6]",
-        exp: (new Date().getTime()/1000|0) + 86400 //one day is 86400 seconds
-    };
-    console.log(tokenData);
-    localStorage.setItem('userId', tokenData.id);
-    localStorage.setItem('featurePermissions', JSON.stringify(tokenData.features));
-    localStorage.setItem('expiresOn', tokenData.exp);
-    userAuthData.featurePermissions = tokenData.features;
-    userAuthData.userId = tokenData.id;
-    userAuthData.expiresOn = tokenData.exp;
-
-    console.log(userAuthData);
-    setLogOutTimer(tokenData.exp);
-    return tokenData;
+    userAuthData.name = name;
+    userAuthData.email = email;
+    userAuthData.picUrl = picture;
+    userAuthData.featurePermissions = [1];
+    return userAuthData;
 };
 
 export const clearToken = () => {
-    userAuthData.token = null;
-    userAuthData.userId = null;
+    //userAuthData.name = null;
+    //userAuthData.email = null;
+    //userAuthData.picUrl = null;
     userAuthData.featurePermissions = [];
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
+    //localStorage.removeItem('name');
+    //localStorage.removeItem('email');
     localStorage.removeItem('featurePermissions');
-    localStorage.removeItem('expiresOn');
-    localStorage.removeItem('firstName');
-    localStorage.removeItem('lastName');
+    //localStorage.removeItem('picUrl');
 };
 
 // noinspection JSUnusedGlobalSymbols

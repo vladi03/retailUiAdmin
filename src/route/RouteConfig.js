@@ -8,6 +8,7 @@ import {initAuthStore} from "../models/accounts/userAuthStore";
 import {HomeMain} from "../desktop/home/HomeMain";
 import {PrivateRoute} from "./PrivateRoute";
 import { withAuth0 } from "@auth0/auth0-react";
+import {setTokenValue} from "../models/accounts/userAuthStore";
 
 export class RouteComponent extends React.Component {
 
@@ -28,7 +29,7 @@ export class RouteComponent extends React.Component {
             try {
                 const accessToken = await getAccessTokenSilently();
                 console.log(accessToken);
-
+                setTokenValue(accessToken);
             } catch (ex) {
                 console.log("---------------");
                 console.log(ex.message || ex);
