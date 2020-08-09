@@ -17,7 +17,6 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
-      - run: npm test
       - run: npm install -g nwb
       - uses: bluwy/substitute-string-action@v1
         id: sub
