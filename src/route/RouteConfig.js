@@ -56,7 +56,7 @@ export class RouteComponent extends React.Component {
                                    component={LoggedOut} />
 
 
-                            <Route permission={1}
+                            <PrivateRoute permission={1}
                                           exact path="/"
                                           component={isMobile ? HomeMain : HomeMain} />
 
