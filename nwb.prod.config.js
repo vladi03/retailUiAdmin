@@ -6,11 +6,6 @@ module.exports = {
         copy: [
             // Copy directory contents to output
             {from: './src/retail-shop-flat-icon_small.jpg'}
-        ],
-        define: {
-            'process.env.AUTH_DOMAIN': JSON.stringify('${{ secrets.AUTH_DOMAIN }}'),
-            'process.env.AUTH_CLIENT_ID': JSON.stringify('authClientId'),
-            'process.env.AUTH_AUDIENCE': JSON.stringify('authAudience')
-        }
+        ]
     }
 };
