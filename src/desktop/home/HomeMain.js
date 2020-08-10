@@ -7,11 +7,12 @@ export const HomeMain = ({history}) => {
     return (
         <div>
             Hi test
+            <p>{process.env.AUTH_DOMAIN}</p>
             {isAuthenticated &&
             <div>
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
-                <p>{user.user_metadata && user.user_metadata.retailDomain}</p>
+                <p>{process.env.AUTH_DOMAIN}</p>
             </div>
             }
         </div>
