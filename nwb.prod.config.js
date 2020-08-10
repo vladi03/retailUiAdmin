@@ -9,8 +9,8 @@ module.exports = {
         ],
         define: {
             'process.env.AUTH_DOMAIN': JSON.stringify(process.env.AUTH_DOMAIN),
-            'process.env.AUTH_CLIENT_ID': JSON.stringify('Aa7xpZd1nciCoIStp8BYJZO2Oix8WH2R'),
-            'process.env.AUTH_AUDIENCE': JSON.stringify('https://eventnod.netware.io')
+            'process.env.AUTH_CLIENT_ID': JSON.stringify(process.env.AUTH_CLIENT_ID),
+            'process.env.AUTH_AUDIENCE': JSON.stringify(process.env.AUTH_AUDIENCE)
         }
     }
 };
