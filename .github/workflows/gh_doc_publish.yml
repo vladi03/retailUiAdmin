@@ -33,3 +33,4 @@ jobs:
           EMAIL: vladi03@hotmail.com
           GH_TOKEN: ${{ secrets.USER_TOKEN }}
           BUILD_DIR: dist
+          CNAME: retail.netware.us
