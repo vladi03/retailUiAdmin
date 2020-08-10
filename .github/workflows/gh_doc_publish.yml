@@ -23,7 +23,7 @@ jobs:
         with:
           _input-file: './nwb.prod.config.js'
           _format-key: '%%key%%'
-          authDomain: ${{ secrets.AUTH_DOMAIN }}
+          authdomain: ${{ secrets.AUTH_DOMAIN }}
           authClientId: ${{ secrets.AUTH_CLIENT_ID }}
           authAudience: ${{ secrets.AUTH_AUDIENCE }}
       - run: npm run build
