@@ -21,9 +21,9 @@ jobs:
       - uses: bluwy/substitute-string-action@v1
         id: sub
         with:
-          _input-file: './nwb.prod.config.js'
+          _input-file: './nwb.prod123.config.js'
           _format-key: '%%key%%'
-          authdomain: ${{ secrets.AUTH_DOMAIN }}
+          authDomain: ${{ secrets.AUTH_DOMAIN }}
           authClientId: ${{ secrets.AUTH_CLIENT_ID }}
           authAudience: ${{ secrets.AUTH_AUDIENCE }}
       - run: npm run build
