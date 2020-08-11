@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => {
             color: "black",
             fontSize: "14px",
             marginBottom: 10,
+            marginLeft: -20,
             boxShadow: "0 0",
         },
         rootMobile: {
@@ -23,8 +24,8 @@ const useStyles = makeStyles((theme) => {
             color: "black",
             fontSize: "14px",
             marginBottom: 10,
-            marginTop: -7,
-            marginLeft: 0,
+            marginTop: 0,
+            marginLeft: 20,
             boxShadow: "0 0",
             width: "unset"
         },
@@ -97,7 +98,7 @@ export const AppBarTitleAddSearchComponent =
                     >
                         <LeftIcon />
                     </IconButton>*/}
-                    <Typography variant="h6" color="inherit" style={{marginTop: 9,marginLeft: 15}}>
+                    <Typography variant="h6" color="inherit" >
                         {title}
                     </Typography>
 

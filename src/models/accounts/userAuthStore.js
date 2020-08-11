@@ -4,7 +4,8 @@ const userAuthData = {
     name: localStorage.getItem('name') || "",
     picUrl: localStorage.getItem('picUrl') || "",
     email: localStorage.getItem('email') || "",
-    featurePermissions: []
+    featurePermissions: [],
+    userDomain: localStorage.getItem('userDomain') || ""
 };
 
 try {
@@ -63,20 +64,23 @@ export const getAuthHeaderValue = () => {
     return userAuthData.token !== null ? `bearer ${userAuthData.token}` : "";
 };
 
-export const setUserData = ({name, picture, email}) => {
+export const setUserData = async ({name, picture, email, userId}) => {
     userAuthData.featurePermissions = [1];
     //localStorage.setItem('token', token);
-
+    const domain = await getUserDomain(userId);
     localStorage.setItem('name', name);
     localStorage.setItem('email', email);
     localStorage.setItem('picUrl', picture);
+    localStorage.setItem('userDomain', domain);
     localStorage.setItem('featurePermissions',
         JSON.stringify(userAuthData.featurePermissions));
 
     userAuthData.name = name;
     userAuthData.email = email;
     userAuthData.picUrl = picture;
+    userAuthData.userDomain = domain;
     userAuthData.featurePermissions = [1];
+
     return userAuthData;
 };
 
@@ -101,4 +105,9 @@ export const readToken = (token) => {
     }
     else
         return {};
+};
+
+export const getUserDomain = async (userId) => {
+
+    return "darbyfurnitureoutlet.com";
 };
