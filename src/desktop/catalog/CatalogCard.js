@@ -33,7 +33,8 @@ export const CatalogCard = ({catalog}) => {
 const useStyle = makeStyles({
     card: {
         width: props => props.widthCalc,
-        marginBottom: 20
+        marginBottom: 20,
+        backgroundColor: "#d0c6c626"
     },
     image: {
         width: "100%"
