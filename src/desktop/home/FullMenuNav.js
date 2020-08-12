@@ -66,6 +66,9 @@ export const FullMenuNavComponent = ({ children, firstName, lastName,
 export const FullMenuNav = connectArray(FullMenuNavComponent,[accountModel]);
 
 const useStyles = (isMobile) => makeStyles({
-    mainContainer:{marginLeft: isMobile ? 0 : 70},
+    mainContainer:{
+        marginLeft: isMobile ? 7 : 70,
+        marginRight: 7
+    },
 })();
 
