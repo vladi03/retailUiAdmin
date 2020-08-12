@@ -5,7 +5,8 @@ const userAuthData = {
     picUrl: localStorage.getItem('picUrl') || "",
     email: localStorage.getItem('email') || "",
     featurePermissions: [],
-    userDomain: localStorage.getItem('userDomain') || ""
+    userDomain: localStorage.getItem('userDomain') || "",
+    catalogApi: process.env.CATALOG_API
 };
 
 try {

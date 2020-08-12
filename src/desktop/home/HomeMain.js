@@ -1,9 +1,11 @@
-import React, {useEffect, Fragment} from "react";
+import React, {Fragment} from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import {AppBarTitleAddSearch} from "../../utility/components/AppBarTitle";
 import {OpenWith} from "@material-ui/icons";
-export const HomeMain = ({history}) => {
-    const { user, isAuthenticated } = useAuth0();
+import {CatalogTable} from "../catalog/CatalogTable";
+
+export const HomeMain = ({}) => {
+    //const { user, isAuthenticated } = useAuth0();
 
     return (
         <Fragment>
@@ -13,6 +15,7 @@ export const HomeMain = ({history}) => {
                 onSearchChange={(value) => {}}
                 onAdd={()=> {} }
             />
+            <CatalogTable/>
         </Fragment>
     );
 };
