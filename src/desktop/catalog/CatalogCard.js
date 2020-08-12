@@ -16,15 +16,16 @@ export const CatalogCard = ({catalog}) => {
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
-        <CardHeader
-            title={catalog.shortDesc}
-        />
+
         <CardMedia
             component="img"
             alt="Contemplative Reptile"
             className={classes.image}
             image="https://www.darbyfurnitureoutlet.com/df21/content/images/LR00051S.jpg"
             title="Contemplative Reptile"
+        />
+        <CardHeader
+            title={catalog.shortDesc}
         />
     </Card>
     )
