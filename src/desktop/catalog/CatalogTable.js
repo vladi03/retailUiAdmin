@@ -1,24 +1,26 @@
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
 import {CatalogCard} from "./CatalogCard";
 import {makeStyles} from "@material-ui/core/styles";
 
-export const CatalogTableComponent = ({catalogList, catalogListInit,
-                                          onCatalogListInit}) => {
+export const CatalogTableComponent = ({catalogList,catalogListFiltered,
+                              catalogListInit, onCatalogListInit}) => {
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
     });
-    const classes = useStyle();
+    const [inEdit, setInEdit] = useState(false);
+    const classes = useStyle({inEdit});
     return (
         <Fragment>
             Test One, {catalogList.length}
             <div className={classes.container}>
-                {catalogList.map((catalog, index)=>(
+                {catalogListFiltered.map((catalog, index)=>(
                     <CatalogCard
                         key={index}
                         catalog={catalog}
+                        onClick={()=> setInEdit(true)}
                     />
                 ))}
             </div>
@@ -33,6 +35,6 @@ const useStyle = makeStyles({
        display:"flex",
        flexWrap:"wrap",
        justifyContent: "space-between",
-       width: "100%"
+       width: props => props.inEdit ? "50%" : "100%"
    }
 });

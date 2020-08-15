@@ -24,8 +24,7 @@ export function useCardSize() {
         else if(contWidth < 700) widthCalc= "calc(48vw - 5px)";
         else if(contWidth < 1200) widthCalc= "calc(32vw - 20px)";
         else widthCalc= "calc(24vw - 10px)";
-        console.log(contWidth);
-        console.log(widthCalc);
+
         return widthCalc;
     };
     const [cardWidth, setCardWidth] = useState(calcCardSize(window.innerWidth));

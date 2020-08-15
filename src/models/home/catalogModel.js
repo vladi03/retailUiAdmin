@@ -5,6 +5,7 @@ let provider = null;
 
 export const createModel = () => ({
     catalogList: [],
+    catalogListFiltered: [],
     catalogListLoading: false,
     catalogListInit: false,
     onCatalogListInit
@@ -12,7 +13,11 @@ export const createModel = () => ({
 
 const onCatalogListInit = () => {
     provider.setState({catalogListInit: true});
-    getCatalogList().then((newStat) => provider.setState(newStat));
+    getCatalogList().then((newState) => {
+            newState.catalogListFiltered = newState.catalogList;
+            provider.setState(newState);
+        }
+    );
 };
 
 export const  getInitialState = (classInstance) => {
