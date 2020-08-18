@@ -4,12 +4,18 @@ import {getCatalogList} from "./catalogMessage";
 let provider = null;
 
 export const createModel = () => ({
+    activeCatalogItem: null,
     catalogList: [],
     catalogListFiltered: [],
     catalogListLoading: false,
     catalogListInit: false,
-    onCatalogListInit
+    onCatalogListInit,
+    onSetActiveCatalogItem
 });
+
+const onSetActiveCatalogItem = (activeCatalogItem) => {
+    provider.setState({activeCatalogItem});
+};
 
 const onCatalogListInit = () => {
     provider.setState({catalogListInit: true});

@@ -5,9 +5,11 @@ import {CatalogCard} from "./CatalogCard";
 import {makeStyles} from "@material-ui/core/styles";
 import {IconButton} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
+import {CatalogItemEdit} from "./CatalogItemEdit";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
-                              catalogListInit, onCatalogListInit}) => {
+                              catalogListInit, onCatalogListInit,
+                              onSetActiveCatalogItem}) => {
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
@@ -25,18 +27,28 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                             key={index}
                             inEdit={inEdit}
                             catalog={catalog}
-                            onClick={()=> setInEdit(true)}
+                            onClick={()=> {
+                                onSetActiveCatalogItem(catalog);
+                                setInEdit(true);
+                            }}
                         />
                     ))}
                 </div>
             </div>
             {inEdit &&
             <div className={classes.containerEdit}>
+                <div style={{width: "100%"}}>
                 <IconButton
-                    onClick={()=> setInEdit(false)}
+                    className={classes.editControl}
+                    onClick={()=> {
+                        onSetActiveCatalogItem(null);
+                        setInEdit(false);
+                    }}
                 >
                     <Close/>
                 </IconButton>
+                </div>
+                <CatalogItemEdit />
             </div>
             }
 
@@ -62,9 +74,13 @@ const useStyle = makeStyles({
     containerEdit: {
         display:"flex",
         flexWrap:"wrap",
-        justifyContent: "flex-end",
+        justifyContent: "flex-start",
         height: 80,
-        width: "calc( 75vw - 77px)"
+        width: "calc( 75vw - 87px)"
+    },
+    editControl: {
+        position: "absolute",
+        right: 10
     },
     mainContainer: {
         display:"flex",
