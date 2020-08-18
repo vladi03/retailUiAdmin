@@ -1,5 +1,6 @@
 import {createContext} from "../../utility/modelContext";
 import {getCatalogList} from "./catalogMessage";
+import {saveCatalog} from "./catalogMessage";
 
 let provider = null;
 
@@ -10,8 +11,22 @@ export const createModel = () => ({
     catalogListLoading: false,
     catalogListInit: false,
     onCatalogListInit,
-    onSetActiveCatalogItem
+    onSetActiveCatalogItem,
+    onSaveCatalogItem
 });
+
+const onSaveCatalogItem = async (activeCatalogItem) => {
+    provider.setState({});
+    const result = await saveCatalog(activeCatalogItem);
+
+    if(result.saveCatalogResult && result.saveCatalogResult.modifiedCount > 0) {
+        result.catalogList = provider.state.catalogList.map((ct) => {
+            return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
+        });
+        result.catalogListFiltered = result.catalogList;
+    }
+    provider.setState(result);
+};
 
 const onSetActiveCatalogItem = (activeCatalogItem) => {
     provider.setState({activeCatalogItem});

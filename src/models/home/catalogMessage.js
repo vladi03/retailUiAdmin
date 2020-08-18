@@ -1,6 +1,34 @@
 import {getStore} from "../accounts/userAuthStore";
 import {handleResponse} from "../../utility/helpers";
 
+export const saveCatalog = async (itemToSave)=>{
+    const {catalogApi , token} = getStore();
+    const url = `${catalogApi}/catalogApi/api/v1/catalog`;
+    const payloadGeneric = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(itemToSave)
+    };
+
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return {
+                saveCatalogResult: result,
+                activeCatalogItem: itemToSave,
+                catalogListLoading: false
+            }
+        }).catch((error) => {
+            return {
+                success: false,
+                catalogListLoading: false,
+                catalogListLoadError: error.message || error
+            };
+        });
+};
+
 export const getCatalogList = async () => {
     const {catalogApi , token, userDomain} = getStore();
     const url = `${catalogApi}/catalogApi/api/v1/catalog/${userDomain}`;

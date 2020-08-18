@@ -118,3 +118,7 @@ export const  b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 
     return new Blob(byteArrays, { type: contentType })
 };
+
+export const toCurrency = (theNumber) => {
+    return parseFloat(theNumber).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+};
