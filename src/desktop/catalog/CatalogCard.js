@@ -3,11 +3,13 @@ import {Card, CardMedia, CardHeader, CardActionArea} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 
-export const CatalogCard = ({catalog, onClick}) => {
+export const CatalogCard = ({catalog, onClick, inEdit}) => {
 
     const widthCalc = useCardSize();
+    const widthValue= inEdit ? "100%" : widthCalc;
+
     const classes = useStyle({
-        widthCalc
+        widthValue
     });
     // noinspection JSUnresolvedVariable
     return (
@@ -32,7 +34,7 @@ export const CatalogCard = ({catalog, onClick}) => {
 //props => props.widthCalc
 const useStyle = makeStyles({
     card: {
-        width: props => props.widthCalc,
+        width: props => props.widthValue,
         marginBottom: 20,
         backgroundColor: "#d0c6c626"
     },

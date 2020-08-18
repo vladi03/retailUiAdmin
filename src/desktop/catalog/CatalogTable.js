@@ -18,15 +18,17 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
         <Fragment>
             Test One, {catalogList.length}
         <div className={classes.mainContainer}>
-
-            <div className={classes.container}>
-                {catalogListFiltered.map((catalog, index)=>(
-                    <CatalogCard
-                        key={index}
-                        catalog={catalog}
-                        onClick={()=> setInEdit(true)}
-                    />
-                ))}
+            <div className={classes.scrollContainer}>
+                <div className={classes.container}>
+                    {catalogListFiltered.map((catalog, index)=>(
+                        <CatalogCard
+                            key={index}
+                            inEdit={inEdit}
+                            catalog={catalog}
+                            onClick={()=> setInEdit(true)}
+                        />
+                    ))}
+                </div>
             </div>
             {inEdit &&
             <div className={classes.containerEdit}>
@@ -46,18 +48,23 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
 export const CatalogTable = connectArray(CatalogTableComponent,[catalogModel]);
 
 const useStyle = makeStyles({
+    scrollContainer: {
+        height: "calc( 100vh - 80px)",
+        width: props => props.inEdit ? "24vw" : "100%",
+        overflow: "auto"
+    },
    container: {
        display:"flex",
        flexWrap:"wrap",
        justifyContent: "space-between",
-       width: props => props.inEdit ? "45%" : "100%"
+       width:  "100%"
    },
     containerEdit: {
         display:"flex",
         flexWrap:"wrap",
         justifyContent: "flex-end",
         height: 80,
-        width: "45%"
+        width: "calc( 75vw - 77px)"
     },
     mainContainer: {
         display:"flex",
