@@ -6,7 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {toCurrency} from "../../utility/helpers";
 
 const CatalogItemEditComponent = ({
-     activeCatalogItem, onSaveCatalogItem
+     activeCatalogItem, onSaveCatalogItem, catalogListLoading
 }) => {
     const [itemEdit, setItemEdit] = useState({...activeCatalogItem});
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
@@ -47,9 +47,12 @@ const CatalogItemEditComponent = ({
                 value={itemEdit.description}
                 onChange={(event) => onValueChange("description", event.target.value)}
             />
-            <Button
+            {!catalogListLoading &&
+            < Button
                 onClick={() => onSaveCatalogItem(itemEdit)}
-            >Save</Button>
+                >Save</Button>
+            }
+            {catalogListLoading && <span>Saving...</span>}
 
         </div>
     )

@@ -16,7 +16,7 @@ export const createModel = () => ({
 });
 
 const onSaveCatalogItem = async (activeCatalogItem) => {
-    provider.setState({});
+    provider.setState({catalogListLoading: true});
     const result = await saveCatalog(activeCatalogItem);
 
     if(result.saveCatalogResult && result.saveCatalogResult.modifiedCount > 0) {
