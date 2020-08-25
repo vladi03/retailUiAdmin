@@ -2,7 +2,9 @@ import React from "react";
 import {Card, CardMedia, CardHeader, CardActionArea} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
+import {getStore} from "../../models/accounts/userAuthStore";
 
+const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit}) => {
 
     const widthCalc = useCardSize();
@@ -21,7 +23,7 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
             component="img"
             alt="Contemplative Reptile"
             className={classes.image}
-            image="https://www.darbyfurnitureoutlet.com/df21/content/images/LR00051S.jpg"
+            image={`${catalogApi}/catalogApi/api/v1/catalog/file/5f41d4dac6f0db5918e4cb20`}
             title="Contemplative Reptile"
         />
         <CardHeader

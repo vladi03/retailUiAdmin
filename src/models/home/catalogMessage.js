@@ -31,7 +31,7 @@ export const saveCatalog = async (itemToSave)=>{
 
 export const getCatalogList = async () => {
     const {catalogApi , token, userDomain} = getStore();
-    const url = `${catalogApi}/catalogApi/api/v1/catalog/${userDomain}`;
+    const url = `${catalogApi}/catalogApi/api/v1/catalog/domain/${userDomain}`;
     const payloadGeneric = {
         method: "GET",
         headers: {
