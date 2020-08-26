@@ -14,6 +14,7 @@ const CatalogItemEditComponent = ({
     const [itemEdit, setItemEdit] = useState({...activeCatalogItem});
     const [uploadImage, setUpLoadImage] = useState("#");
     const [willFitWidth, setWillFitWidth] = useState(true);
+    const [colorRgb, setColorRgb] = useState([0,0,0]);
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
     const classes = useStyle();
     useEffect(()=>{
@@ -70,13 +71,16 @@ const CatalogItemEditComponent = ({
                        reader.readAsDataURL(event.target.files[0]);
                    }}
             />
-            <div className={classes.imageBox} >
+            <div className={classes.imageBox}
+                 style={{backgroundColor: `rgb(${colorRgb[0]},${colorRgb[1]}, ${colorRgb[2]})`}}
+            >
             <img id="blah"
                  src={uploadImage}
                  alt="your image"
                  className={willFitWidth ? classes.fixWidth : classes.fixHeight}
                  onLoad={(event)=> {
                      console.log(event.target);
+                     const colorCalc = getColor(event.target);
                      console.log(event.target.naturalWidth);
                      const resultWillFixWidth =
                          calcWillFitWidth(
@@ -86,6 +90,7 @@ const CatalogItemEditComponent = ({
                              event.target.naturalHeight);
 
                      setWillFitWidth(resultWillFixWidth);
+                     setColorRgb(colorCalc);
                  }}
             />
             </div>
@@ -126,3 +131,15 @@ const useStyle = makeStyles({
         top: "12.5%",
     }
 });
+
+const getColor = (imageTarget) => {
+    const img = imageTarget;
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+//event.offsetX, event.offsetY
+    const pixelData = canvas.getContext('2d').getImageData(1,1, 1, 1).data;
+
+    return [pixelData[0], pixelData[1], pixelData[2]];
+};
