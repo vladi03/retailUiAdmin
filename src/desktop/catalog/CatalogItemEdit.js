@@ -9,10 +9,14 @@ const containerWidth = 533;
 const containerHeight = 300;
 
 const CatalogItemEditComponent = ({
-     activeCatalogItem, onSaveCatalogItem, catalogListLoading
+     activeCatalogItem, onSaveCatalogItem, catalogListLoading,
+     onUploadImage
 }) => {
     const [itemEdit, setItemEdit] = useState({...activeCatalogItem});
     const [uploadImage, setUpLoadImage] = useState("#");
+
+    const [uploadImageMetadata, setUpLoadImageMetadata] = useState(null);
+
     const [willFitWidth, setWillFitWidth] = useState(true);
     const [colorRgb, setColorRgb] = useState([0,0,0]);
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
@@ -55,13 +59,13 @@ const CatalogItemEditComponent = ({
             />
             {!catalogListLoading &&
             < Button
-                onClick={() => onSaveCatalogItem(itemEdit)}
+                onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb)}
                 >Save</Button>
             }
             {catalogListLoading && <span>Saving...</span>}
 
             <input type="file" name="myFile" id="myFile"
-                   onChange={(event) => {
+                   onChange={async (event) => {
                        console.log(event.target.files);
                        const reader = new FileReader();
                        reader.onload = function(e) {
@@ -69,6 +73,11 @@ const CatalogItemEditComponent = ({
                            setUpLoadImage(e.target.result);
                        };
                        reader.readAsDataURL(event.target.files[0]);
+                       const uploadResult = await onUploadImage(event.target.files[0]);
+
+                       if(uploadResult.uploadImageResult) {
+                           setUpLoadImageMetadata(uploadResult.uploadImageResult);
+                       }
                    }}
             />
             <div className={classes.imageBox}
@@ -138,8 +147,8 @@ const getColor = (imageTarget) => {
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-//event.offsetX, event.offsetY
-    const pixelData = canvas.getContext('2d').getImageData(1,1, 1, 1).data;
-
+    //this gets the upper left hand corner pixel
+    const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
+    //RGB Color in an array [R, G, B]
     return [pixelData[0], pixelData[1], pixelData[2]];
 };

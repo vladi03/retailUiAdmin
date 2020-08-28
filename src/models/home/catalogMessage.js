@@ -1,6 +1,37 @@
 import {getStore} from "../accounts/userAuthStore";
 import {handleResponse} from "../../utility/helpers";
 
+export const uploadImage = async (fileToUpload) => {
+
+    const formData = new FormData();
+    formData.append("myFile", fileToUpload);
+
+    const {catalogApi , token} = getStore();
+    const url = `${catalogApi}/catalogApi/api/v1/catalog/file`;
+    const payloadGeneric = {
+        method: "POST",
+        headers: {
+            //"Content-Type": "multipart/form-data;",
+            "Authorization": `Bearer ${token}`
+        },
+        body: formData
+    };
+debugger;
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return {
+                uploadImageResult: result,
+                imageLoading: false
+            }
+        }).catch((error) => {
+            return {
+                uploadImageResult: false,
+                imageLoading: false,
+                uploadImageResultError: error.message || error
+            };
+        });
+};
+
 export const saveCatalog = async (itemToSave)=>{
     const {catalogApi , token} = getStore();
     const url = `${catalogApi}/catalogApi/api/v1/catalog`;

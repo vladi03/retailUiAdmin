@@ -10,6 +10,9 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
     const widthCalc = useCardSize();
     const widthValue= inEdit ? "100%" : widthCalc;
 
+    const imageId = catalog.images && catalog.images.length > 0 ?
+        catalog.images[0].id : "5f41d4dac6f0db5918e4cb20";
+
     const classes = useStyle({
         widthValue
     });
@@ -23,7 +26,7 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
             component="img"
             alt="Contemplative Reptile"
             className={classes.image}
-            image={`${catalogApi}/catalogApi/api/v1/catalog/file/5f41d4dac6f0db5918e4cb20`}
+            image={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
             title="Contemplative Reptile"
         />
         <CardHeader
@@ -41,7 +44,8 @@ const useStyle = makeStyles({
         backgroundColor: "#d0c6c626"
     },
     image: {
-        width: "100%"
+        width: "100%",
+        height: "78%"
     }
 });
 
