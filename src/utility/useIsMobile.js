@@ -20,12 +20,25 @@ export function useCardSize() {
     const calcCardSize = (contWidth) => {
 
         let widthCalc = "";
-        if(contWidth < 550) widthCalc= "calc(100vw - 5px)";
-        else if(contWidth < 700) widthCalc= "calc(48vw - 5px)";
-        else if(contWidth < 1200) widthCalc= "calc(32vw - 20px)";
-        else widthCalc= "calc(24vw - 10px)";
+        let heightPicCalc = "";
+        if(contWidth < 550) {
+            widthCalc= "calc(100vw - 5px)";
+            heightPicCalc = "calc(78vw - 4px)";
+        }
+        else if(contWidth < 700) {
+            widthCalc= "calc(48vw - 5px)";
+            heightPicCalc = "calc(37vw - 4px)";
+        }
+        else if(contWidth < 1200) {
+            widthCalc= "calc(32vw - 20px)";
+            heightPicCalc = "calc(25vw - 4px)";
+        }
+        else {
+            widthCalc= "calc(24vw - 10px)";
+            heightPicCalc = "calc(19vw - 8px)";
+        }
 
-        return widthCalc;
+        return {widthCalc, heightPicCalc};
     };
     const [cardWidth, setCardWidth] = useState(calcCardSize(window.innerWidth));
 

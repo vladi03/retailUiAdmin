@@ -6,7 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {toCurrency} from "../../utility/helpers";
 
 const containerWidth = 533;
-const containerHeight = 300;
+const containerHeight = 416;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
