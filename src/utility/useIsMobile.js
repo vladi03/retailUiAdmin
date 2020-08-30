@@ -22,20 +22,20 @@ export function useCardSize() {
         let widthCalc = "";
         let heightPicCalc = "";
         if(contWidth < 550) {
-            widthCalc= "calc(100vw - 5px)";
-            heightPicCalc = "calc(78vw - 4px)";
+            widthCalc= "calc(93vw)";
+            heightPicCalc = "calc(72.54vw)";
         }
         else if(contWidth < 700) {
-            widthCalc= "calc(48vw - 5px)";
-            heightPicCalc = "calc(37vw - 4px)";
+            widthCalc= "calc(46vw)";
+            heightPicCalc = "calc(35.88)";
         }
         else if(contWidth < 1200) {
-            widthCalc= "calc(32vw - 20px)";
-            heightPicCalc = "calc(25vw - 4px)";
+            widthCalc= "calc(30vw)";
+            heightPicCalc = "calc(24.3vw)";
         }
         else {
-            widthCalc= "calc(24vw - 10px)";
-            heightPicCalc = "calc(19vw - 8px)";
+            widthCalc= "calc(23vw)";
+            heightPicCalc = "calc(17.94vw)";
         }
 
         return {widthCalc, heightPicCalc};

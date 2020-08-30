@@ -7,7 +7,7 @@ import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 const {catalogApi} = getStore();
 const containerWidth = 533;
-const containerHeight = 400;
+const containerHeight = 415.74;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,

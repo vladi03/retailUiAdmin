@@ -5,7 +5,7 @@ import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
 
 const containerWidth = 533;
-const containerHeight = 300;
+const containerHeight = 416;
 
 const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit}) => {
