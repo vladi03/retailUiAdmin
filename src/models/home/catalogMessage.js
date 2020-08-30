@@ -16,7 +16,7 @@ export const uploadImage = async (fileToUpload) => {
         },
         body: formData
     };
-debugger;
+
     return fetch(url, payloadGeneric)
         .then(handleResponse()).then((result) => {
             return {

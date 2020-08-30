@@ -6,8 +6,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 const {catalogApi} = getStore();
-const containerWidth = 533;
-const containerHeight = 415.74;
+const containerWidth = 532;
+const containerHeight = 415;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
@@ -107,9 +107,8 @@ const CatalogItemEditComponent = ({
                  alt="your image"
                  className={willFitWidth ? classes.fixWidth : classes.fixHeight}
                  onLoad={(event)=> {
-                     console.log(event.target);
+
                      const colorCalc = getColor(event.target);
-                     console.log(event.target.naturalWidth);
                      const resultWillFixWidth =
                          calcWillFitWidth(
                              containerWidth,
@@ -127,7 +126,7 @@ const CatalogItemEditComponent = ({
 };
 
 const calcWillFitWidth = (containerWidth, containerHeight, imageWidth, imageHeight) => {
-    return (containerWidth / imageWidth) <= (containerHeight / imageHeight);
+    return ((1.28 * containerHeight) / imageWidth) <= (containerHeight / imageHeight);
 };
 
 export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
@@ -143,7 +142,7 @@ const useStyle = makeStyles({
         width: containerWidth,
         height: containerHeight,
         overflow: "hidden",
-        border: "black solid 5px",
+        //border: "black solid 5px",
         backgroundColor: "#afcdee"
     },
     fixHeight: {
@@ -156,7 +155,7 @@ const useStyle = makeStyles({
     fixWidth: {
         width: "100%",
         position: "sticky",
-        top: "12.5%",
+        top: "25%",
     }
 });
 

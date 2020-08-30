@@ -66,7 +66,8 @@ const useStyle = makeStyles({
         height: props => props.heightValue,
         overflow: "hidden",
         paddingLeft: 0,
-        paddingTop: 0
+        paddingTop: 0,
+        paddingBottom: 0
     },
     image: {
         display: "block",
@@ -84,8 +85,8 @@ const useStyle = makeStyles({
     fixWidth: {
         width: "100%",
         position: "sticky",
-        top: "12.5%",
-        marginTop:10
+        top: "25%",
+        //marginTop:10
     }
 });
 
