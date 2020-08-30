@@ -4,26 +4,45 @@ import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {toCurrency} from "../../utility/helpers";
-
+import {getStore} from "../../models/accounts/userAuthStore";
+const {catalogApi} = getStore();
 const containerWidth = 533;
-const containerHeight = 416;
+const containerHeight = 400;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
      onUploadImage
 }) => {
-    const [itemEdit, setItemEdit] = useState({...activeCatalogItem});
-    const [uploadImage, setUpLoadImage] = useState("#");
+    const imageIsConfig = activeCatalogItem.images
+        && activeCatalogItem.images.length > 0;
 
-    const [uploadImageMetadata, setUpLoadImageMetadata] = useState(null);
+    const imageId = imageIsConfig ?
+        activeCatalogItem.images[0].id : "5f41d4dac6f0db5918e4cb20";
+
+    const rgbData = imageIsConfig ?
+        activeCatalogItem.images[0].colorRgb : [0,0,0];
+    const metaUpload = imageIsConfig ?
+        {
+            "id": activeCatalogItem.images[0].id,
+            "fileName": activeCatalogItem.images[0].fileName
+        } : null;
+
+    const imageUrl = `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`;
+    const [itemEdit, setItemEdit] = useState({...activeCatalogItem});
+    const [uploadImage, setUpLoadImage] = useState(imageUrl);
+
+    const [uploadImageMetadata, setUpLoadImageMetadata] = useState(metaUpload);
 
     const [willFitWidth, setWillFitWidth] = useState(true);
-    const [colorRgb, setColorRgb] = useState([0,0,0]);
+    const [colorRgb, setColorRgb] = useState(rgbData);
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
     const classes = useStyle();
     useEffect(()=>{
-        if(activeCatalogItem._id !== itemEdit._id)
+        if(activeCatalogItem._id !== itemEdit._id) {
             setItemEdit({...activeCatalogItem});
+            setUpLoadImage(imageUrl);
+            setColorRgb(rgbData);
+        }
     });
     return(
         <div className={classes.textBox}>
@@ -143,6 +162,7 @@ const useStyle = makeStyles({
 
 const getColor = (imageTarget) => {
     const img = imageTarget;
+    img.crossOrigin = "Anonymous";
     const canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
