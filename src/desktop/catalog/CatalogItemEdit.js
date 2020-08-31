@@ -44,6 +44,12 @@ const CatalogItemEditComponent = ({
             setColorRgb(rgbData);
         }
     });
+    let colorGrad = willFitWidth ? ["to right"] : [];
+    for (let i = 0; i < colorRgb.length ; i = i + 3) {
+        const grad = `rgb(${colorRgb[i]},${colorRgb[i+1]}, ${colorRgb[i+2]})`;
+        colorGrad.push(grad);
+    }
+
     return(
         <div className={classes.textBox}>
             <TextField
@@ -100,7 +106,7 @@ const CatalogItemEditComponent = ({
                    }}
             />
             <div className={classes.imageBox}
-                 style={{backgroundColor: `rgb(${colorRgb[0]},${colorRgb[1]}, ${colorRgb[2]})`}}
+                 style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
             >
             <img id="blah"
                  src={uploadImage}
@@ -108,7 +114,7 @@ const CatalogItemEditComponent = ({
                  className={willFitWidth ? classes.fixWidth : classes.fixHeight}
                  onLoad={(event)=> {
 
-                     const colorCalc = getColor(event.target);
+                     const colorCalc = getColor(event.target, willFitWidth);
                      const resultWillFixWidth =
                          calcWillFitWidth(
                              containerWidth,
@@ -159,7 +165,7 @@ const useStyle = makeStyles({
     }
 });
 
-const getColor = (imageTarget) => {
+const getColor = (imageTarget, willFitWidth) => {
     const img = imageTarget;
     img.crossOrigin = "Anonymous";
     const canvas = document.createElement('canvas');
@@ -168,6 +174,22 @@ const getColor = (imageTarget) => {
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
     //this gets the upper left hand corner pixel
     const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
+    const resultArray = [pixelData[0], pixelData[1], pixelData[2]];
+    const incrementPixTall = (img.height-1)/4;
+    const incrementPixWidth = (img.width-1)/4;
+    for (let i = 1; i < 5; i++) {
+        const yValue = (incrementPixTall * i);
+        const xValue = (incrementPixWidth * i);
+
+        const pixelDataLower = willFitWidth ?
+            canvas.getContext('2d').getImageData(1, yValue, 1, 1).data :
+            canvas.getContext('2d').getImageData(xValue, 1, 1, 1).data;
+
+        resultArray.push(pixelDataLower[0]);
+        resultArray.push(pixelDataLower[1]);
+        resultArray.push(pixelDataLower[2]);
+    }
+
     //RGB Color in an array [R, G, B]
-    return [pixelData[0], pixelData[1], pixelData[2]];
+    return resultArray;
 };

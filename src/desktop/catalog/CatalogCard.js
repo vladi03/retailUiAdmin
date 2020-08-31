@@ -17,8 +17,6 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
     const imageId = imageIsConfig ?
         catalog.images[0].id : "5f41d4dac6f0db5918e4cb20";
 
-
-
     const classes = useStyle({
         widthValue,
         heightValue: heightPicCalc
