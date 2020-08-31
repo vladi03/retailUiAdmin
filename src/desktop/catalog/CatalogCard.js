@@ -1,11 +1,8 @@
 import React from "react";
-import {Card, CardMedia, CardHeader, CardActionArea, CardContent} from "@material-ui/core";
+import {Card, CardHeader, CardActionArea, CardContent} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
-
-const containerWidth = 533;
-const containerHeight = 416;
 
 const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit}) => {
@@ -21,13 +18,17 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
         widthValue,
         heightValue: heightPicCalc
     });
-
-    const imageScale = imageIsConfig && catalog.images[0].willFitWidth ?
+    const willFitWidth = imageIsConfig && catalog.images[0].willFitWidth;
+    const imageScale = willFitWidth ?
         classes.fixWidth : classes.fixHeight;
 
-    const imageBack = imageIsConfig &&
-        `rgb(${catalog.images[0].colorRgb[0]}, ${catalog.images[0].colorRgb[1]}, ${catalog.images[0].colorRgb[2]})`
-        || "white";
+    const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
+
+    let colorGrad = willFitWidth ? ["to right"] : [];
+    for (let i = 0; i < colorRgb.length ; i = i + 3) {
+        const grad = `rgb(${colorRgb[i]},${colorRgb[i+1]}, ${colorRgb[i+2]})`;
+        colorGrad.push(grad);
+    }
 
     // noinspection JSUnresolvedVariable
     return (
@@ -37,7 +38,7 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
         >
             <CardContent
                 className={classes.imageContainer}
-                style={{backgroundColor:imageBack}}
+                style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
             >
                 <img
                     src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}

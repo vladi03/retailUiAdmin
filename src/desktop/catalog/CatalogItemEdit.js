@@ -39,9 +39,15 @@ const CatalogItemEditComponent = ({
     const classes = useStyle();
     useEffect(()=>{
         if(activeCatalogItem._id !== itemEdit._id) {
+            const imageIsConfig = activeCatalogItem.images
+                && activeCatalogItem.images.length > 0;
+
             setItemEdit({...activeCatalogItem});
             setUpLoadImage(imageUrl);
             setColorRgb(rgbData);
+            setUpLoadImageMetadata(metaUpload);
+            setWillFitWidth(imageIsConfig &&
+                activeCatalogItem.images[0].willFitWidth);
         }
     });
     let colorGrad = willFitWidth ? ["to right"] : [];
@@ -115,6 +121,7 @@ const CatalogItemEditComponent = ({
                  onLoad={(event)=> {
 
                      const colorCalc = getColor(event.target, willFitWidth);
+                     console.log(willFitWidth);
                      const resultWillFixWidth =
                          calcWillFitWidth(
                              containerWidth,
@@ -175,15 +182,15 @@ const getColor = (imageTarget, willFitWidth) => {
     //this gets the upper left hand corner pixel
     const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
     const resultArray = [pixelData[0], pixelData[1], pixelData[2]];
-    const incrementPixTall = (img.height-1)/4;
-    const incrementPixWidth = (img.width-1)/4;
-    for (let i = 1; i < 5; i++) {
+    const incrementPixTall = (img.height-1)/10;
+    const incrementPixWidth = (img.width-1)/10;
+    for (let i = 1; i < 11; i++) {
         const yValue = (incrementPixTall * i);
         const xValue = (incrementPixWidth * i);
 
         const pixelDataLower = willFitWidth ?
-            canvas.getContext('2d').getImageData(1, yValue, 1, 1).data :
-            canvas.getContext('2d').getImageData(xValue, 1, 1, 1).data;
+            canvas.getContext('2d').getImageData(xValue, 1, 1, 1).data :
+            canvas.getContext('2d').getImageData(1, yValue, 1, 1).data;
 
         resultArray.push(pixelDataLower[0]);
         resultArray.push(pixelDataLower[1]);
