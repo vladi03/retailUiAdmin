@@ -33,7 +33,9 @@ const CatalogItemEditComponent = ({
 
     const [uploadImageMetadata, setUpLoadImageMetadata] = useState(metaUpload);
 
-    const [willFitWidth, setWillFitWidth] = useState(true);
+    const [willFitWidth, setWillFitWidth] = useState(
+        imageIsConfig ? activeCatalogItem.images[0].willFitWidth : true);
+
     const [colorRgb, setColorRgb] = useState(rgbData);
     const [colorRgbOther,setColorRgbOther] = useState(rgbData);
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});

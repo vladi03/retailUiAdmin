@@ -6,6 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {IconButton} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
+import {useIsMobile} from "../../utility/useIsMobile";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                               catalogListInit, onCatalogListInit,
@@ -14,6 +15,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
         if(!catalogListInit)
             onCatalogListInit();
     });
+    const isMobile = useIsMobile();
     const [inEdit, setInEdit] = useState(false);
     const classes = useStyle({inEdit});
     return (
@@ -28,8 +30,10 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                             inEdit={inEdit}
                             catalog={catalog}
                             onClick={()=> {
-                                onSetActiveCatalogItem(catalog);
-                                setInEdit(true);
+                                if(!isMobile) {
+                                    onSetActiveCatalogItem(catalog);
+                                    setInEdit(true);
+                                }
                             }}
                         />
                     ))}
