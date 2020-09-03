@@ -18,18 +18,22 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
         widthValue,
         heightValue: heightPicCalc
     });
+
     const willFitWidth = imageIsConfig && catalog.images[0].willFitWidth;
-    const imageScale = willFitWidth ?
-        classes.fixWidth : classes.fixHeight;
-
     const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
+    const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
 
-    let colorGrad = willFitWidth ? ["to right"] : [];
+    const colorGrad = willFitWidth ? ["to right"] : [];
     for (let i = 0; i < colorRgb.length ; i = i + 3) {
         const grad = `rgb(${colorRgb[i]},${colorRgb[i+1]}, ${colorRgb[i+2]})`;
         colorGrad.push(grad);
     }
 
+    const colorGradOther = willFitWidth ? ["to right"] : [];
+    for (let i = 0; i < colorRgbOther.length ; i = i + 3) {
+        const grad = `rgb(${colorRgbOther[i]},${colorRgbOther[i+1]}, ${colorRgbOther[i+2]})`;
+        colorGradOther.push(grad);
+    }
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
@@ -37,12 +41,20 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
             onClick={() => {if(onClick) onClick();}}
         >
             <CardContent
-                className={classes.imageContainer}
-                style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
+                className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
-                <img
-                    src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
-                    className={imageScale}
+                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
+                     style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
+                />
+                <div className={willFitWidth ? classes.fixWidth : classes.fixHeight}>
+                    <img
+                        src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
+                        className={willFitWidth ? classes.fixWidth : classes.fixHeight}
+                    />
+                </div>
+
+                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
+                     style={{backgroundImage: `linear-gradient(${colorGradOther.join()})`}}
                 />
             </CardContent>
 
@@ -60,32 +72,43 @@ const useStyle = makeStyles({
         marginBottom: 20,
         backgroundColor: "#d0c6c626"
     },
-    imageContainer: {
+    picBorderHeight: {
+        width: "50%",
+        height: props => props.heightValue,
+        zIndex: 1,
+    },
+    picBorderWidth: {
         width: "100%",
+        height: "50%",
+        zIndex: 1,
+    },
+    imageBoxHeight: {
+        width: props => props.widthValue,
         height: props => props.heightValue,
         overflow: "hidden",
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0
+        backgroundColor: "#afcdee",
+        display:"flex",
+        padding:0
     },
-    image: {
-        display: "block",
-        marginTop:-20,
-        marginLeft: -20
+    imageBoxWidth: {
+        width: props => props.widthValue,
+        height: props => props.heightValue,
+        overflow: "hidden",
+        backgroundColor: "#afcdee",
+        padding:0
     },
     fixHeight: {
-        height: "calc( 100% + 20px)",
-        //marginLeft: "auto",
+        height: "100%",
+        marginLeft: "auto",
         marginRight: "auto",
-        display: "block",
-        //marginTop:10,
-        marginLeft: "auto"
+        position: "relative",
+        zIndex: 2
     },
     fixWidth: {
-        width: "100%",
-        position: "sticky",
-        top: "25%",
-        //marginTop:10
+        width: "inherit",
+        position: "absolute",
+        transform: "translateY(-50%)",
+        zIndex: 2
     }
 });
 
