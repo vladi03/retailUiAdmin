@@ -35,6 +35,7 @@ const CatalogItemEditComponent = ({
 
     const [willFitWidth, setWillFitWidth] = useState(true);
     const [colorRgb, setColorRgb] = useState(rgbData);
+    const [colorRgbOther,setColorRgbOther] = useState(rgbData);
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
     const classes = useStyle();
     useEffect(()=>{
@@ -50,10 +51,16 @@ const CatalogItemEditComponent = ({
                 activeCatalogItem.images[0].willFitWidth);
         }
     });
-    let colorGrad = willFitWidth ? ["to right"] : [];
+    const colorGrad = willFitWidth ? ["to right"] : [];
     for (let i = 0; i < colorRgb.length ; i = i + 3) {
         const grad = `rgb(${colorRgb[i]},${colorRgb[i+1]}, ${colorRgb[i+2]})`;
         colorGrad.push(grad);
+    }
+
+    const colorGradOther = willFitWidth ? ["to right"] : [];
+    for (let i = 0; i < colorRgbOther.length ; i = i + 3) {
+        const grad = `rgb(${colorRgbOther[i]},${colorRgbOther[i+1]}, ${colorRgbOther[i+2]})`;
+        colorGradOther.push(grad);
     }
 
     return(
@@ -90,7 +97,7 @@ const CatalogItemEditComponent = ({
             />
             {!catalogListLoading &&
             < Button
-                onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb)}
+                onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
                 >Save</Button>
             }
             {catalogListLoading && <span>Saving...</span>}
@@ -111,28 +118,37 @@ const CatalogItemEditComponent = ({
                        }
                    }}
             />
-            <div className={classes.imageBox}
-                 style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
-            >
-            <img id="blah"
-                 src={uploadImage}
-                 alt="your image"
-                 className={willFitWidth ? classes.fixWidth : classes.fixHeight}
-                 onLoad={(event)=> {
+            <div className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}>
+                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
+                     style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
+                />
+                <div className={willFitWidth ? classes.fixWidth : classes.fixHeight}>
+                    <img id="blah"
+                         src={uploadImage}
+                         alt="your image"
+                         className={willFitWidth ? classes.fixWidth : classes.fixHeight}
 
-                     const colorCalc = getColor(event.target, willFitWidth);
-                     console.log(willFitWidth);
-                     const resultWillFixWidth =
-                         calcWillFitWidth(
-                             containerWidth,
-                             containerHeight,
-                             event.target.naturalWidth,
-                             event.target.naturalHeight);
+                         onLoad={(event)=> {
 
-                     setWillFitWidth(resultWillFixWidth);
-                     setColorRgb(colorCalc);
-                 }}
-            />
+                             const colorCalc = getColor(event.target, willFitWidth);
+                             const colorCalcOther = getColorOther(event.target, willFitWidth);
+                             console.log(willFitWidth);
+                             const resultWillFixWidth =
+                                 calcWillFitWidth(
+                                     containerWidth,
+                                     containerHeight,
+                                     event.target.naturalWidth,
+                                     event.target.naturalHeight);
+
+                             setWillFitWidth(resultWillFixWidth);
+                             setColorRgb(colorCalc);
+                             setColorRgbOther(colorCalcOther);
+                         }}
+                    />
+                </div>
+                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
+                     style={{backgroundImage: `linear-gradient(${colorGradOther.join()})`}}
+                />
             </div>
         </div>
     )
@@ -151,24 +167,41 @@ const useStyle = makeStyles({
             margin: 7,
         },
     },
-    imageBox: {
+    picBorderHeight: {
+        width: "50%",
+        height: containerHeight,
+        zIndex: 1,
+    },
+    picBorderWidth: {
+        width: "100%",
+        height: "50%",
+        zIndex: 1,
+    },
+    imageBoxHeight: {
         width: containerWidth,
         height: containerHeight,
         overflow: "hidden",
-        //border: "black solid 5px",
+        backgroundColor: "#afcdee",
+        display:"flex"
+    },
+    imageBoxWidth: {
+        width: containerWidth,
+        height: containerHeight,
+        overflow: "hidden",
         backgroundColor: "#afcdee"
     },
     fixHeight: {
         height: "100%",
         marginLeft: "auto",
         marginRight: "auto",
-        display: "block",
-
+        position: "relative",
+        zIndex: 2
     },
     fixWidth: {
-        width: "100%",
-        position: "sticky",
-        top: "25%",
+        width: "inherit",
+        position: "absolute",
+        transform: "translateY(-50%)",
+        zIndex: 2
     }
 });
 
@@ -182,15 +215,44 @@ const getColor = (imageTarget, willFitWidth) => {
     //this gets the upper left hand corner pixel
     const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
     const resultArray = [pixelData[0], pixelData[1], pixelData[2]];
-    const incrementPixTall = (img.height-1)/10;
-    const incrementPixWidth = (img.width-1)/10;
-    for (let i = 1; i < 11; i++) {
+    const incrementPixTall = (img.height-1)/20;
+    const incrementPixWidth = (img.width-1)/20;
+    for (let i = 1; i < 21; i++) {
         const yValue = (incrementPixTall * i);
         const xValue = (incrementPixWidth * i);
 
         const pixelDataLower = willFitWidth ?
             canvas.getContext('2d').getImageData(xValue, 1, 1, 1).data :
             canvas.getContext('2d').getImageData(1, yValue, 1, 1).data;
+
+        resultArray.push(pixelDataLower[0]);
+        resultArray.push(pixelDataLower[1]);
+        resultArray.push(pixelDataLower[2]);
+    }
+
+    //RGB Color in an array [R, G, B]
+    return resultArray;
+};
+
+const getColorOther = (imageTarget, willFitWidth) => {
+    const img = imageTarget;
+    img.crossOrigin = "Anonymous";
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+    //this gets the upper left hand corner pixel
+    const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
+    const resultArray = [pixelData[0], pixelData[1], pixelData[2]];
+    const incrementPixTall = (img.height-1)/20;
+    const incrementPixWidth = (img.width-1)/20;
+    for (let i = 1; i < 21; i++) {
+        const yValue = (incrementPixTall * i);
+        const xValue = (incrementPixWidth * i);
+
+        const pixelDataLower = willFitWidth ?
+            canvas.getContext('2d').getImageData(xValue, (img.height-1), 1, 1).data :
+            canvas.getContext('2d').getImageData((img.width-1), yValue, 1, 1).data;
 
         resultArray.push(pixelDataLower[0]);
         resultArray.push(pixelDataLower[1]);

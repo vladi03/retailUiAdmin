@@ -20,10 +20,10 @@ const onUploadImage = async (imageToSave) => {
     return await uploadImage(imageToSave);
 };
 
-const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, colorRgb) => {
+const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther) => {
 
     provider.setState({catalogListLoading: true});
-    const fileShowing = {...uploadImageMetadata, willFitWidth, colorRgb};
+    const fileShowing = {...uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther};
     const search = itemEdit.images.find((im)=> im.id === fileShowing.id);
     const images = itemEdit.images && itemEdit.images.length > 1 && search ?
         itemEdit.images.map((im) => {
