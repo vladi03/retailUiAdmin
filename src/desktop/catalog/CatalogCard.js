@@ -3,6 +3,7 @@ import {Card, CardHeader, CardActionArea, CardContent} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
+import {toCurrency} from "../../utility/helpers";
 
 const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit}) => {
@@ -37,9 +38,11 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
+
         <CardActionArea
             onClick={() => {if(onClick) onClick();}}
         >
+            <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
             <CardContent
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
@@ -67,6 +70,16 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
 };
 //props => props.widthCalc
 const useStyle = makeStyles({
+    catPrice: {
+        position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        backgroundColor: "#000000ba",
+        font: "800 16px Arial",
+        "border-bottom-right-radius": 10,
+        color: "white"
+    },
     card: {
         width: props => props.widthValue,
         marginBottom: 20,
