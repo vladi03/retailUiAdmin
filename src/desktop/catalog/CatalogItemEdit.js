@@ -8,6 +8,7 @@ import {getStore} from "../../models/accounts/userAuthStore";
 const {catalogApi} = getStore();
 const containerWidth = 532;
 const containerHeight = 415;
+import FastAverageColor from 'fast-average-color';
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
@@ -53,17 +54,8 @@ const CatalogItemEditComponent = ({
                 activeCatalogItem.images[0].willFitWidth);
         }
     });
-    const colorGrad = willFitWidth ? ["to right"] : [];
-    for (let i = 0; i < colorRgb.length ; i = i + 3) {
-        const grad = `rgb(${colorRgb[i]},${colorRgb[i+1]}, ${colorRgb[i+2]})`;
-        colorGrad.push(grad);
-    }
-
-    const colorGradOther = willFitWidth ? ["to right"] : [];
-    for (let i = 0; i < colorRgbOther.length ; i = i + 3) {
-        const grad = `rgb(${colorRgbOther[i]},${colorRgbOther[i+1]}, ${colorRgbOther[i+2]})`;
-        colorGradOther.push(grad);
-    }
+    const colorGrad = `rgb(${colorRgb[0]},${colorRgb[1]}, ${colorRgb[2]})`;
+    const colorGradOther = `rgb(${colorRgbOther[0]},${colorRgbOther[1]}, ${colorRgbOther[2]})`;
 
     return(
         <div className={classes.textBox}>
@@ -122,7 +114,7 @@ const CatalogItemEditComponent = ({
             />
             <div className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}>
                 <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
+                     style={{backgroundColor: colorGrad}}
                 />
                 <div className={willFitWidth ? classes.fixWidth : classes.fixHeight}>
                     <img id="blah"
@@ -131,25 +123,31 @@ const CatalogItemEditComponent = ({
                          className={willFitWidth ? classes.fixWidth : classes.fixHeight}
 
                          onLoad={(event)=> {
-
-                             const colorCalc = getColor(event.target, willFitWidth);
-                             const colorCalcOther = getColorOther(event.target, willFitWidth);
-                             console.log(willFitWidth);
-                             const resultWillFixWidth =
+                             const fitWidth =
                                  calcWillFitWidth(
                                      containerWidth,
                                      containerHeight,
                                      event.target.naturalWidth,
                                      event.target.naturalHeight);
 
-                             setWillFitWidth(resultWillFixWidth);
-                             setColorRgb(colorCalc);
-                             setColorRgbOther(colorCalcOther);
+                             getAvgColor(event.target, fitWidth)
+                                 .then(function(calcResult){
+
+                                     setColorRgb(calcResult);
+                                 });
+
+                             getAvgColor(event.target, fitWidth, true)
+                                 .then(function(calcResult){
+
+                                     setColorRgbOther(calcResult);
+                                 });
+
+                             setWillFitWidth(fitWidth);
                          }}
                     />
                 </div>
                 <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundImage: `linear-gradient(${colorGradOther.join()})`}}
+                     style={{backgroundColor: colorGradOther}}
                 />
             </div>
         </div>
@@ -207,10 +205,70 @@ const useStyle = makeStyles({
     }
 });
 
+const calcImageGradient = (colorRgList, willFitWidth)=> {
+    const colorGrad = willFitWidth ? ["to right"] : [];
+    for (let i = 0; i < colorRgList.length ; i = i + 3) {
+        const grad = `rgb(${colorRgList[i]},${colorRgList[i+1]}, ${colorRgList[i+2]})`;
+        colorGrad.push(grad);
+    }
+    return colorGrad;
+};
+
+const getAvgColor = (imageTarget, willFitWidth, doOpposite = false) => {
+    return new Promise((resolve, reject) => {
+        const sliverSize = 15;
+        const img = imageTarget;
+        img.crossOrigin = "Anonymous";
+        const canvasTwo = document.createElement('canvas');
+        canvasTwo.width = willFitWidth ? img.naturalWidth : sliverSize;
+        canvasTwo.height = willFitWidth ? sliverSize : img.naturalHeight;
+
+        //fitWidth and is Opposite (bottom)
+        let top = img.naturalHeight - sliverSize;
+        let left = 0;
+        //fit Height and is Opposite
+        if(!willFitWidth && doOpposite) {
+            top = 0;
+            left = img.naturalWidth - sliverSize;
+        } //fit width and not opposite
+        else if(!doOpposite) {
+            top = 0;
+            left = 0
+        }
+
+        canvasTwo.getContext('2d').drawImage(
+            img, left, top, canvasTwo.width, canvasTwo.height,
+                 0, 0, canvasTwo.width, canvasTwo.height);
+
+        const newImg = canvasTwo.toDataURL();
+        if(doOpposite) {
+            console.log("img wxh",img.naturalWidth, img.naturalHeight);
+            console.log("img left(X), top(Y) =>",left, top);
+            console.log("cnv wxh", canvasTwo.width, canvasTwo.height);
+            console.log(newImg);
+        }
+
+        const fac = new FastAverageColor();
+        const objImg = document.createElement('img');
+        objImg.src = newImg;
+        if(objImg.complete) {
+            const color = fac.getColor(objImg);
+            resolve([color.value[0], color.value[1], color.value[2]]);
+        } else {
+            objImg.addEventListener("load", ()=> {
+                const color = fac.getColor(objImg);
+                resolve([color.value[0], color.value[1], color.value[2]]);
+            })
+        }
+    });
+};
+
 const getColor = (imageTarget, willFitWidth) => {
     const img = imageTarget;
     img.crossOrigin = "Anonymous";
     const canvas = document.createElement('canvas');
+
+
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);

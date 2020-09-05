@@ -52,7 +52,8 @@
     "table-page-search": "^0.12.3"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^1.0.0"
+    "@auth0/auth0-react": "^1.0.0",
+    "fast-average-color": "^6.0.2"
   },
   "peerDependencies": {}
 }

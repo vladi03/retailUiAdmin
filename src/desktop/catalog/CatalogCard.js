@@ -24,17 +24,9 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
     const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
     const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
 
-    const colorGrad = willFitWidth ? ["to right"] : [];
-    for (let i = 0; i < colorRgb.length ; i = i + 3) {
-        const grad = `rgb(${colorRgb[i]},${colorRgb[i+1]}, ${colorRgb[i+2]})`;
-        colorGrad.push(grad);
-    }
+    const colorGrad = `rgb(${colorRgb[0]},${colorRgb[1]}, ${colorRgb[2]})`;
+    const colorGradOther = `rgb(${colorRgbOther[0]},${colorRgbOther[1]}, ${colorRgbOther[2]})`;
 
-    const colorGradOther = willFitWidth ? ["to right"] : [];
-    for (let i = 0; i < colorRgbOther.length ; i = i + 3) {
-        const grad = `rgb(${colorRgbOther[i]},${colorRgbOther[i+1]}, ${colorRgbOther[i+2]})`;
-        colorGradOther.push(grad);
-    }
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
@@ -47,7 +39,7 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
                 <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundImage: `linear-gradient(${colorGrad.join()})`}}
+                     style={{backgroundColor: colorGrad}}
                 />
                 <div className={willFitWidth ? classes.fixWidth : classes.fixHeight}>
                     <img
@@ -57,7 +49,7 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
                 </div>
 
                 <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundImage: `linear-gradient(${colorGradOther.join()})`}}
+                     style={{backgroundColor: colorGradOther}}
                 />
             </CardContent>
 
