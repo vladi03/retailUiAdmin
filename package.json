@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.0.0",
+    "colorthief": "^2.3.2",
     "fast-average-color": "^6.0.2"
   },
   "peerDependencies": {}

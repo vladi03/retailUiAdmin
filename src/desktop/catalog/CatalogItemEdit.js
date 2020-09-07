@@ -9,6 +9,8 @@ const {catalogApi} = getStore();
 const containerWidth = 532;
 const containerHeight = 415;
 import FastAverageColor from 'fast-average-color';
+import ColorThief from "colorthief";
+//const colorThief = from 'colorTheif';
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
@@ -130,13 +132,13 @@ const CatalogItemEditComponent = ({
                                      event.target.naturalWidth,
                                      event.target.naturalHeight);
 
-                             getAvgColor(event.target, fitWidth)
+                             getMaxColor(event.target, fitWidth)
                                  .then(function(calcResult){
 
                                      setColorRgb(calcResult);
                                  });
 
-                             getAvgColor(event.target, fitWidth, true)
+                             getMaxColor(event.target, fitWidth, true)
                                  .then(function(calcResult){
 
                                      setColorRgbOther(calcResult);
@@ -212,6 +214,58 @@ const calcImageGradient = (colorRgList, willFitWidth)=> {
         colorGrad.push(grad);
     }
     return colorGrad;
+};
+
+const getMaxColor = (imageTarget, willFitWidth, doOpposite = false) => {
+    return new Promise((resolve, reject) => {
+        const sliverSize = 15;
+        const img = imageTarget;
+        img.crossOrigin = "Anonymous";
+        const canvasTwo = document.createElement('canvas');
+        canvasTwo.width = willFitWidth ? img.naturalWidth : sliverSize;
+        canvasTwo.height = willFitWidth ? sliverSize : img.naturalHeight;
+
+        //fitWidth and is Opposite (bottom)
+        let top = img.naturalHeight - sliverSize;
+        let left = 0;
+        //fit Height and is Opposite
+        if(!willFitWidth && doOpposite) {
+            top = 0;
+            left = img.naturalWidth - sliverSize;
+        } //fit width and not opposite
+        else if(!doOpposite) {
+            top = 0;
+            left = 0
+        }
+
+        canvasTwo.getContext('2d').drawImage(
+            img, left, top, canvasTwo.width, canvasTwo.height,
+            0, 0, canvasTwo.width, canvasTwo.height);
+
+        const newImg = canvasTwo.toDataURL();
+        if(doOpposite) {
+            console.log("img wxh",img.naturalWidth, img.naturalHeight);
+            console.log("img left(X), top(Y) =>",left, top);
+            console.log("cnv wxh", canvasTwo.width, canvasTwo.height);
+            console.log(newImg);
+        }
+
+        //const fac = new FastAverageColor();
+        const objImg = document.createElement('img');
+        objImg.src = newImg;
+        const colorThief = new ColorThief();
+        if(objImg.complete) {
+            const color = colorThief.getColor(objImg);
+            console.log(color);
+            resolve(color);
+        } else {
+            objImg.addEventListener("load", ()=> {
+                const color = colorThief.getColor(objImg);
+                console.log(color);
+                resolve(color);
+            })
+        }
+    });
 };
 
 const getAvgColor = (imageTarget, willFitWidth, doOpposite = false) => {
