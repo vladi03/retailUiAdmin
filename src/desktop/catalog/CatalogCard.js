@@ -4,10 +4,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {toCurrency} from "../../utility/helpers";
-
+import {PicRatioView} from "pic-ratio-fill";
 const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit}) => {
-
     const {widthCalc, heightPicCalc} = useCardSize();
     const widthValue= inEdit ? "100%" : widthCalc;
     const imageIsConfig = catalog.images && catalog.images.length > 0;
@@ -24,9 +23,6 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
     const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
     const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
 
-    const colorGrad = `rgb(${colorRgb[0]},${colorRgb[1]}, ${colorRgb[2]})`;
-    const colorGradOther = `rgb(${colorRgbOther[0]},${colorRgbOther[1]}, ${colorRgbOther[2]})`;
-
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
@@ -38,23 +34,19 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
             <CardContent
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
-                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundColor: colorGrad}}
-                />
-                <div className={willFitWidth ? classes.fixWidth : classes.fixHeight}>
-                    <img
-                        src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
-                        className={willFitWidth ? classes.fixWidth : classes.fixHeight}
-                    />
-                </div>
-
-                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundColor: colorGradOther}}
+                <PicRatioView
+                    src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
+                    width={widthValue}
+                    height={heightPicCalc}
+                    colorRgb={colorRgb}
+                    colorRgbOpposite={colorRgbOther}
+                    willFitWidth={willFitWidth}
                 />
             </CardContent>
 
         <CardHeader
             title={catalog.shortDesc}
+            subheader={catalog.extraDesc}
         />
         </CardActionArea>
     </Card>
@@ -77,16 +69,6 @@ const useStyle = makeStyles({
         marginBottom: 20,
         backgroundColor: "#d0c6c626"
     },
-    picBorderHeight: {
-        width: "50%",
-        height: props => props.heightValue,
-        zIndex: 1,
-    },
-    picBorderWidth: {
-        width: "100%",
-        height: "50%",
-        zIndex: 1,
-    },
     imageBoxHeight: {
         width: props => props.widthValue,
         height: props => props.heightValue,
@@ -101,19 +83,6 @@ const useStyle = makeStyles({
         overflow: "hidden",
         backgroundColor: "#afcdee",
         padding:0
-    },
-    fixHeight: {
-        height: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        position: "relative",
-        zIndex: 2
-    },
-    fixWidth: {
-        width: "inherit",
-        position: "absolute",
-        transform: "translateY(-50%)",
-        zIndex: 2
     }
 });
 

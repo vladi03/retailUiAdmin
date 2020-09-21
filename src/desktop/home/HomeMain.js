@@ -3,8 +3,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {AppBarTitleAddSearch} from "../../utility/components/AppBarTitle";
 import {OpenWith} from "@material-ui/icons";
 import {CatalogTable} from "../catalog/CatalogTable";
+import {connectArray} from "../../utility/helpers";
+import {catalogModel} from "../../models/home/catalogModel";
 
-export const HomeMain = ({}) => {
+export const HomeMainComponent = ({onCreateNewCatalog}) => {
     //const { user, isAuthenticated } = useAuth0();
 
     return (
@@ -13,9 +15,13 @@ export const HomeMain = ({}) => {
                 title="Catalogs"
                 LeftIcon={OpenWith}
                 onSearchChange={(value) => {}}
-                onAdd={()=> {} }
+                onAdd={()=> {
+                    onCreateNewCatalog();
+                } }
             />
             <CatalogTable/>
         </Fragment>
     );
 };
+
+export const HomeMain = connectArray(HomeMainComponent,[catalogModel]);

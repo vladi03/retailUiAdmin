@@ -1,6 +1,7 @@
 import {createContext} from "../../utility/modelContext";
 import {getCatalogList} from "./catalogMessage";
-import {saveCatalog, uploadImage} from "./catalogMessage";
+import {saveCatalog, uploadImage, deleteFile,
+    getNewCatalog, deleteCatalog} from "./catalogMessage";
 
 let provider = null;
 
@@ -13,11 +14,31 @@ export const createModel = () => ({
     onCatalogListInit,
     onSetActiveCatalogItem,
     onSaveCatalogItem,
-    onUploadImage
+    onUploadImage,
+    onCreateNewCatalog,
+    onDeleteCatalog
 });
 
-const onUploadImage = async (imageToSave) => {
+const onDeleteCatalog = async (catalog) => {
+    provider.setState({catalogListLoading: true});
+    const result = await deleteCatalog(catalog);
+    result.catalogList = provider.state.catalogList.filter(
+        (cat) => cat.id !== catalog.id
+    );
+    provider.setState(result);
+};
+
+const onUploadImage = async (imageToSave, oldFileId) => {
+    if(oldFileId)
+        await deleteFile(oldFileId);
+
     return await uploadImage(imageToSave);
+};
+
+const onCreateNewCatalog = async ()=> {
+    provider.setState({catalogListInit: true});
+    const result = await getNewCatalog();
+    provider.setState(result);
 };
 
 const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther) => {

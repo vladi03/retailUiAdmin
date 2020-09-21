@@ -10,17 +10,17 @@ import {useIsMobile} from "../../utility/useIsMobile";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                               catalogListInit, onCatalogListInit,
-                              onSetActiveCatalogItem}) => {
+                              onSetActiveCatalogItem, activeCatalogItem}) => {
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
     });
     const isMobile = useIsMobile();
-    const [inEdit, setInEdit] = useState(false);
+    const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
     return (
         <Fragment>
-            Test One, {catalogList.length}
+            Total Items: {catalogList.length}
         <div className={classes.mainContainer}>
             <div className={classes.scrollContainer}>
                 <div className={classes.container}>
@@ -32,7 +32,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                             onClick={()=> {
                                 if(!isMobile) {
                                     onSetActiveCatalogItem(catalog);
-                                    setInEdit(true);
                                 }
                             }}
                         />
@@ -46,7 +45,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                     className={classes.editControl}
                     onClick={()=> {
                         onSetActiveCatalogItem(null);
-                        setInEdit(false);
                     }}
                 >
                     <Close/>
@@ -84,7 +82,9 @@ const useStyle = makeStyles({
     },
     editControl: {
         position: "absolute",
-        right: 10
+        right: 10,
+        top: 90,
+        zIndex: 999
     },
     mainContainer: {
         display:"flex",

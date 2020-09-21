@@ -1,16 +1,16 @@
 import React, {useState, useEffect} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
-import {TextField, InputAdornment, Button} from "@material-ui/core";
+import {TextField, InputAdornment, Button, Paper,
+Checkbox, FormControlLabel} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
+import {PicRatioFill} from "pic-ratio-fill";
+
 const {catalogApi} = getStore();
 const containerWidth = 532;
 const containerHeight = 415;
-import FastAverageColor from 'fast-average-color';
-import ColorThief from "colorthief";
-//const colorThief = from 'colorTheif';
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
@@ -18,9 +18,10 @@ const CatalogItemEditComponent = ({
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
-
     const imageId = imageIsConfig ?
-        activeCatalogItem.images[0].id : "5f41d4dac6f0db5918e4cb20";
+        activeCatalogItem.images[0].id : false;
+
+    const imageUrl = `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`;
 
     const rgbData = imageIsConfig ?
         activeCatalogItem.images[0].colorRgb : [0,0,0];
@@ -30,7 +31,7 @@ const CatalogItemEditComponent = ({
             "fileName": activeCatalogItem.images[0].fileName
         } : null;
 
-    const imageUrl = `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`;
+
     const [itemEdit, setItemEdit] = useState({...activeCatalogItem});
     const [uploadImage, setUpLoadImage] = useState(imageUrl);
 
@@ -41,6 +42,8 @@ const CatalogItemEditComponent = ({
 
     const [colorRgb, setColorRgb] = useState(rgbData);
     const [colorRgbOther,setColorRgbOther] = useState(rgbData);
+    const [unitPrice, setUnitPrice] = useState(itemEdit.unitPrice);
+
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
     const classes = useStyle();
     useEffect(()=>{
@@ -56,11 +59,25 @@ const CatalogItemEditComponent = ({
                 activeCatalogItem.images[0].willFitWidth);
         }
     });
-    const colorGrad = `rgb(${colorRgb[0]},${colorRgb[1]}, ${colorRgb[2]})`;
-    const colorGradOther = `rgb(${colorRgbOther[0]},${colorRgbOther[1]}, ${colorRgbOther[2]})`;
 
     return(
         <div className={classes.textBox}>
+            <Paper className={classes.paperEntryContainer}>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={itemEdit.status === "active"}
+                            onChange={(event)=> {
+                                const newStatus = event.target.checked ?
+                                    "active" : "disabled";
+                                onValueChange("status",newStatus);
+                            }}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
+                    }
+                    label="Active"
+                />
+
             <TextField
                 style={{width:"32%"}}
                 label="Short Desc"
@@ -76,13 +93,23 @@ const CatalogItemEditComponent = ({
             <TextField
                 style={{width:"20%"}}
                 label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
-                value={itemEdit.unitPrice || 0}
+                value={unitPrice || ""}
                 InputProps={{
                     startAdornment:
                         <InputAdornment position="start">$</InputAdornment>
                 }}
-                onChange={(event) => onValueChange("unitPrice", parseFloat(event.target.value))}
+                onChange={(event) => {
+                    setUnitPrice(event.target.value);
+                    onValueChange("unitPrice", parseFloat(event.target.value));
+                }}
             />
+
+                <TextField
+                    style={{width:"32%"}}
+                    label="Model #"
+                    value={itemEdit.modelNumber || ""}
+                    onChange={(event) => onValueChange("modelNumber", event.target.value)}
+                />
             <TextField
                 style={{width:"100%"}}
                 multiline
@@ -92,7 +119,7 @@ const CatalogItemEditComponent = ({
                 onChange={(event) => onValueChange("description", event.target.value)}
             />
             {!catalogListLoading &&
-            < Button
+            <Button
                 onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
                 >Save</Button>
             }
@@ -107,58 +134,33 @@ const CatalogItemEditComponent = ({
                            setUpLoadImage(e.target.result);
                        };
                        reader.readAsDataURL(event.target.files[0]);
-                       const uploadResult = await onUploadImage(event.target.files[0]);
+                       const uploadResult = await onUploadImage(event.target.files[0], imageId);
 
                        if(uploadResult.uploadImageResult) {
                            setUpLoadImageMetadata(uploadResult.uploadImageResult);
                        }
                    }}
             />
-            <div className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}>
-                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundColor: colorGrad}}
-                />
-                <div className={willFitWidth ? classes.fixWidth : classes.fixHeight}>
-                    <img id="blah"
-                         src={uploadImage}
-                         alt="your image"
-                         className={willFitWidth ? classes.fixWidth : classes.fixHeight}
-
-                         onLoad={(event)=> {
-                             const fitWidth =
-                                 calcWillFitWidth(
-                                     containerWidth,
-                                     containerHeight,
-                                     event.target.naturalWidth,
-                                     event.target.naturalHeight);
-
-                             getMaxColor(event.target, fitWidth)
-                                 .then(function(calcResult){
-
-                                     setColorRgb(calcResult);
-                                 });
-
-                             getMaxColor(event.target, fitWidth, true)
-                                 .then(function(calcResult){
-
-                                     setColorRgbOther(calcResult);
-                                 });
-
-                             setWillFitWidth(fitWidth);
-                         }}
-                    />
-                </div>
-                <div className={willFitWidth ? classes.picBorderWidth : classes.picBorderHeight}
-                     style={{backgroundColor: colorGradOther}}
-                />
-            </div>
+            </Paper>
+            {imageIsConfig ?
+            <PicRatioFill
+                width={containerWidth}
+                height={containerHeight}
+                src={uploadImage}
+                onChangeColors={(color)=>{
+                    setColorRgb(color.colorRgb);
+                    setColorRgbOther(color.colorRgbOpposite);
+                    setWillFitWidth(color.willFitWidth);
+                    //debugger;
+                }}
+            />
+            : <img width={containerWidth}
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAOiSURBVHhe7do7SyNRGMbx/RyCYOv24n4GLSxdCxVRFLyiiZdEk3hL1gtYaGnh5QvYxjLp1aS0kU0hbAolsFgI6ruc4ytGk0myojOch+cHh3lnIkzxJ8PMxG9C0BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBuds4NnZWYlGoxVraWnp09fc3JxkMhk9s1ucDLy/vy+3t7e6549QKKSTW5wMfHR0JMU/Rd3zh7k6uMjNwMevgVtaWiSZTEosFrMrEU98ykolU9L6vdWewzCXahc5HzgcDtvtV9je3tZJZHFxUSe3OB94cnLSbr/C+vq6TgzsK6/A9/f3MjQ0ZG+IstmsHv04Bg6IV+CRkRGdREZHR3Wq7vr6WsbGxmR8fFxKpZIefYuBA+IVuHxOJBI6Vcrn8zI1NaV7Ij09PVL4XdC9VwwcEK/AZ2dnMjw8LJFIRPb29vToWxcXFxIKVz7T9vf3V0Rm4IB89CYrn8vbN2Be3kdm4IDUC/z09KTTK3NZNq8cjcfHR7utpq+vTwqF58gMHJD//Qbncrma39z3TOSbmxs+BwelXmBzN21egExPT8vV1ZXMz8/rJ40zd+GDg4O6x8C+qhW4q6tLp2dNTU12W+2yXU/7j3adGNhXXoE7Ozt1esvreD27u7s6MbCvygPPzMzYba2IDw8P0tHRoXveisWipNNp2dnZsc/RbW1t+gkD+6o88MTEhH1R0Yjun906iQ358k8C8XhcFhYW5PDw0D5Lm1eextbWlt0aDOyj8sDNzc12W89p+tReznt7eyWVSsn5+bl+4o2PSQEpD1zrd9qTkxOJRCOysrIil5eXerRxq6urOjGwr8oDm3jmMmsCvF9ra2uyubkpG782ZHl5uerf1Fsv+IO/jw4ODuTu753u+YOBfWR+6x0YGLB3uuZb9vLvOl+1zHnM+VzkZGBqHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYmsg/zgu6X0Ra40gAAAAASUVORK5CYII=" />
+}
         </div>
     )
 };
 
-const calcWillFitWidth = (containerWidth, containerHeight, imageWidth, imageHeight) => {
-    return ((1.28 * containerHeight) / imageWidth) <= (containerHeight / imageHeight);
-};
 
 export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
     [catalogModel]);
@@ -204,175 +206,14 @@ const useStyle = makeStyles({
         position: "absolute",
         transform: "translateY(-50%)",
         zIndex: 2
+    },
+    paperEntryContainer: {
+        '& > *': {
+            margin: 7,
+        },
+        padding: 10,
+        width: "100%",
+        marginBottom: 15,
+        backgroundColor: "#f2f0ea"
     }
 });
-
-const calcImageGradient = (colorRgList, willFitWidth)=> {
-    const colorGrad = willFitWidth ? ["to right"] : [];
-    for (let i = 0; i < colorRgList.length ; i = i + 3) {
-        const grad = `rgb(${colorRgList[i]},${colorRgList[i+1]}, ${colorRgList[i+2]})`;
-        colorGrad.push(grad);
-    }
-    return colorGrad;
-};
-
-const getMaxColor = (imageTarget, willFitWidth, doOpposite = false) => {
-    return new Promise((resolve, reject) => {
-        const sliverSize = 15;
-        const img = imageTarget;
-        img.crossOrigin = "Anonymous";
-        const canvasTwo = document.createElement('canvas');
-        canvasTwo.width = willFitWidth ? img.naturalWidth : sliverSize;
-        canvasTwo.height = willFitWidth ? sliverSize : img.naturalHeight;
-
-        //fitWidth and is Opposite (bottom)
-        let top = img.naturalHeight - sliverSize;
-        let left = 0;
-        //fit Height and is Opposite
-        if(!willFitWidth && doOpposite) {
-            top = 0;
-            left = img.naturalWidth - sliverSize;
-        } //fit width and not opposite
-        else if(!doOpposite) {
-            top = 0;
-            left = 0
-        }
-
-        canvasTwo.getContext('2d').drawImage(
-            img, left, top, canvasTwo.width, canvasTwo.height,
-            0, 0, canvasTwo.width, canvasTwo.height);
-
-        const newImg = canvasTwo.toDataURL();
-        if(doOpposite) {
-            console.log("img wxh",img.naturalWidth, img.naturalHeight);
-            console.log("img left(X), top(Y) =>",left, top);
-            console.log("cnv wxh", canvasTwo.width, canvasTwo.height);
-            console.log(newImg);
-        }
-
-        //const fac = new FastAverageColor();
-        const objImg = document.createElement('img');
-        objImg.src = newImg;
-        const colorThief = new ColorThief();
-        if(objImg.complete) {
-            const color = colorThief.getColor(objImg);
-            console.log(color);
-            resolve(color);
-        } else {
-            objImg.addEventListener("load", ()=> {
-                const color = colorThief.getColor(objImg);
-                console.log(color);
-                resolve(color);
-            })
-        }
-    });
-};
-
-const getAvgColor = (imageTarget, willFitWidth, doOpposite = false) => {
-    return new Promise((resolve, reject) => {
-        const sliverSize = 15;
-        const img = imageTarget;
-        img.crossOrigin = "Anonymous";
-        const canvasTwo = document.createElement('canvas');
-        canvasTwo.width = willFitWidth ? img.naturalWidth : sliverSize;
-        canvasTwo.height = willFitWidth ? sliverSize : img.naturalHeight;
-
-        //fitWidth and is Opposite (bottom)
-        let top = img.naturalHeight - sliverSize;
-        let left = 0;
-        //fit Height and is Opposite
-        if(!willFitWidth && doOpposite) {
-            top = 0;
-            left = img.naturalWidth - sliverSize;
-        } //fit width and not opposite
-        else if(!doOpposite) {
-            top = 0;
-            left = 0
-        }
-
-        canvasTwo.getContext('2d').drawImage(
-            img, left, top, canvasTwo.width, canvasTwo.height,
-                 0, 0, canvasTwo.width, canvasTwo.height);
-
-        const newImg = canvasTwo.toDataURL();
-        if(doOpposite) {
-            console.log("img wxh",img.naturalWidth, img.naturalHeight);
-            console.log("img left(X), top(Y) =>",left, top);
-            console.log("cnv wxh", canvasTwo.width, canvasTwo.height);
-            console.log(newImg);
-        }
-
-        const fac = new FastAverageColor();
-        const objImg = document.createElement('img');
-        objImg.src = newImg;
-        if(objImg.complete) {
-            const color = fac.getColor(objImg);
-            resolve([color.value[0], color.value[1], color.value[2]]);
-        } else {
-            objImg.addEventListener("load", ()=> {
-                const color = fac.getColor(objImg);
-                resolve([color.value[0], color.value[1], color.value[2]]);
-            })
-        }
-    });
-};
-
-const getColor = (imageTarget, willFitWidth) => {
-    const img = imageTarget;
-    img.crossOrigin = "Anonymous";
-    const canvas = document.createElement('canvas');
-
-
-    canvas.width = img.width;
-    canvas.height = img.height;
-    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-    //this gets the upper left hand corner pixel
-    const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
-    const resultArray = [pixelData[0], pixelData[1], pixelData[2]];
-    const incrementPixTall = (img.height-1)/20;
-    const incrementPixWidth = (img.width-1)/20;
-    for (let i = 1; i < 21; i++) {
-        const yValue = (incrementPixTall * i);
-        const xValue = (incrementPixWidth * i);
-
-        const pixelDataLower = willFitWidth ?
-            canvas.getContext('2d').getImageData(xValue, 1, 1, 1).data :
-            canvas.getContext('2d').getImageData(1, yValue, 1, 1).data;
-
-        resultArray.push(pixelDataLower[0]);
-        resultArray.push(pixelDataLower[1]);
-        resultArray.push(pixelDataLower[2]);
-    }
-
-    //RGB Color in an array [R, G, B]
-    return resultArray;
-};
-
-const getColorOther = (imageTarget, willFitWidth) => {
-    const img = imageTarget;
-    img.crossOrigin = "Anonymous";
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-    //this gets the upper left hand corner pixel
-    const pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
-    const resultArray = [pixelData[0], pixelData[1], pixelData[2]];
-    const incrementPixTall = (img.height-1)/20;
-    const incrementPixWidth = (img.width-1)/20;
-    for (let i = 1; i < 21; i++) {
-        const yValue = (incrementPixTall * i);
-        const xValue = (incrementPixWidth * i);
-
-        const pixelDataLower = willFitWidth ?
-            canvas.getContext('2d').getImageData(xValue, (img.height-1), 1, 1).data :
-            canvas.getContext('2d').getImageData((img.width-1), yValue, 1, 1).data;
-
-        resultArray.push(pixelDataLower[0]);
-        resultArray.push(pixelDataLower[1]);
-        resultArray.push(pixelDataLower[2]);
-    }
-
-    //RGB Color in an array [R, G, B]
-    return resultArray;
-};
