@@ -47,6 +47,10 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
         <CardHeader
             title={catalog.shortDesc}
             subheader={catalog.extraDesc}
+            classes={{
+                title:classes.cardTitle,
+                subheader: classes.cardSubheader
+            }}
         />
         </CardActionArea>
     </Card>
@@ -68,6 +72,12 @@ const useStyle = makeStyles({
         width: props => props.widthValue,
         marginBottom: 20,
         backgroundColor: "#d0c6c626"
+    },
+    cardTitle: {
+        fontSize: 16
+    },
+    cardSubheader: {
+        fontSize: 14
     },
     imageBoxHeight: {
         width: props => props.widthValue,

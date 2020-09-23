@@ -2,8 +2,8 @@ import {getStore} from "../accounts/userAuthStore";
 import {handleResponse} from "../../utility/helpers";
 
 export const deleteCatalog = async (catalog) => {
-    const result = await deleteCatalogRecord(catalog.id);
-    catalog.images.foreach((file) => deleteFile(file.id));
+    const result = await deleteCatalogRecord(catalog._id);
+    catalog.images.forEach((file) => deleteFile(file.id));
     return result;
 };
 
@@ -26,11 +26,13 @@ const deleteCatalogRecord = (catalogId) => {
             }
             */
             return {
-                deleteCatalogResult: result
+                deleteCatalogResult: result,
+                catalogListLoading: false
             }
         }).catch((error) => {
             return {
                 deleteCatalogResult: false,
+                catalogListLoading: false,
                 deleteCatalogResultError: error.message || error
             };
         });

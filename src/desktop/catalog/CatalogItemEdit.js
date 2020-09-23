@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, Fragment} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button, Paper,
@@ -14,14 +14,17 @@ const containerHeight = 415;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
-     onUploadImage
+     onUploadImage, onDeleteCatalog
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
     const imageId = imageIsConfig ?
         activeCatalogItem.images[0].id : false;
 
-    const imageUrl = `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`;
+    const imageUrl = imageIsConfig ?
+        `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}` :
+        null
+    ;
 
     const rgbData = imageIsConfig ?
         activeCatalogItem.images[0].colorRgb : [0,0,0];
@@ -119,9 +122,18 @@ const CatalogItemEditComponent = ({
                 onChange={(event) => onValueChange("description", event.target.value)}
             />
             {!catalogListLoading &&
-            <Button
-                onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
-                >Save</Button>
+                <Fragment>
+                    <Button
+                        onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        onClick={() => onDeleteCatalog(itemEdit)}
+                    >
+                        Delete
+                    </Button>
+                </Fragment>
             }
             {catalogListLoading && <span>Saving...</span>}
 
@@ -129,6 +141,9 @@ const CatalogItemEditComponent = ({
                    onChange={async (event) => {
                        console.log(event.target.files);
                        const reader = new FileReader();
+                       /**
+                        * @param {{target:object}} e
+                        */
                        reader.onload = function(e) {
                            console.log("image read locally");
                            setUpLoadImage(e.target.result);
@@ -142,7 +157,7 @@ const CatalogItemEditComponent = ({
                    }}
             />
             </Paper>
-            {imageIsConfig ?
+            {uploadImage !== null ?
             <PicRatioFill
                 width={containerWidth}
                 height={containerHeight}

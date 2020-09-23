@@ -22,9 +22,12 @@ export const createModel = () => ({
 const onDeleteCatalog = async (catalog) => {
     provider.setState({catalogListLoading: true});
     const result = await deleteCatalog(catalog);
+
     result.catalogList = provider.state.catalogList.filter(
-        (cat) => cat.id !== catalog.id
+        (cat) => cat._id !== catalog._id
     );
+    result.catalogListFiltered = result.catalogList;
+    result.activeCatalogItem = null;
     provider.setState(result);
 };
 
@@ -59,6 +62,12 @@ const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, co
         result.catalogList = provider.state.catalogList.map((ct) => {
             return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
         });
+        result.catalogListFiltered = result.catalogList;
+    } else if(result.saveCatalogResult &&
+        result.saveCatalogResult.upsertedCount > 0) {
+        result.catalogList = [
+            ...provider.state.catalogList, activeCatalogItem
+        ];
         result.catalogListFiltered = result.catalogList;
     }
     provider.setState(result);
