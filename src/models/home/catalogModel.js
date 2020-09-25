@@ -48,7 +48,7 @@ const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, co
 
     provider.setState({catalogListLoading: true});
     const fileShowing = {...uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther};
-    const search = itemEdit.images.find((im)=> im.id === fileShowing.id);
+    const search = itemEdit.images && itemEdit.images.find((im)=> im.id === fileShowing.id);
     const images = itemEdit.images && itemEdit.images.length > 1 && search ?
         itemEdit.images.map((im) => {
             return im.id === fileShowing.id ? fileShowing : im;
