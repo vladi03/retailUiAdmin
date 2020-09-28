@@ -6,8 +6,12 @@ import {Paper, ListItemText, ListItem, TextField,
 import {Category, Save} from "@material-ui/icons";
 
 export const CategoryItemEdit = ({category, saveCategory}) => {
+    const [itemChanged, setItemChanged] = useState(false);
     const [itemEdit, setItemEdit] = useState({...category});
-    const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
+    const onValueChange = (fieldName, value) => {
+        setItemEdit({...itemEdit, [fieldName]: value});
+        setItemChanged(true);
+    };
 
     const classes = useStyles();
     return (
@@ -16,7 +20,12 @@ export const CategoryItemEdit = ({category, saveCategory}) => {
                 <ListItemIcon>
                     <Category />
                 </ListItemIcon>
-                <ListItemText primary={itemEdit.category} />
+                <ListItemText
+                    primary={itemEdit.category}
+                    classes={{
+                        primary: itemChanged ? classes.title : undefined
+                    }}
+                />
                 <ListItemIcon>
                     <IconButton
                         edge="end"
@@ -25,7 +34,10 @@ export const CategoryItemEdit = ({category, saveCategory}) => {
                         classes={{
                             edgeEnd:classes.edgeEndChange
                         }}
-                        onClick={()=> saveCategory(itemEdit)}
+                        onClick={()=> {
+                            saveCategory(itemEdit);
+                            setItemChanged(false);
+                        }}
                     >
                         <Save />
                     </IconButton>
@@ -66,5 +78,10 @@ const useStyles = makeStyles(() => ({
     },
     edgeEndChange: {
         marginRight: -20
+    },
+    title: {
+        fontWeight: 900,
+        color: "limegreen",
+        fontSize: "x-large"
     }
 }));
