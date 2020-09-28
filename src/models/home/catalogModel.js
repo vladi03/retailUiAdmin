@@ -1,7 +1,6 @@
 import {createContext} from "../../utility/modelContext";
-import {getCatalogList} from "./catalogMessage";
 import {saveCatalog, uploadImage, deleteFile,
-    getNewCatalog, deleteCatalog} from "./catalogMessage";
+    getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
 
 let provider = null;
 

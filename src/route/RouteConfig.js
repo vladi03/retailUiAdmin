@@ -9,6 +9,7 @@ import {HomeMain} from "../desktop/home/HomeMain";
 import {PrivateRoute} from "./PrivateRoute";
 import { withAuth0 } from "@auth0/auth0-react";
 import {setTokenValue} from "../models/accounts/userAuthStore";
+import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 
 export class RouteComponent extends React.Component {
 
@@ -60,7 +61,10 @@ export class RouteComponent extends React.Component {
                                           exact path="/"
                                           component={isMobile ? HomeMain : HomeMain} />
 
-
+                            <PrivateRoute permission={1}
+                                          exact path="/category"
+                                          component={isMobile ?
+                                              CategoryMaintenance : CategoryMaintenance} />
 
                         </div>
                         </MenuNav>

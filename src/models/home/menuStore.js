@@ -1,10 +1,8 @@
-import {AssignmentInd, Group, Home, MusicNote, VpnKeyRounded,
-    Message as MessageIcon, AttachMoney} from "@material-ui/icons";
-
+import {Home, Category} from "@material-ui/icons";
+//category
 const mainLinksAll = [
     {label : "Home", icon: Home, selected:!(window.location.href.includes('cashMovements') || window.location.href.includes('keyLogs') ), link:"#/", route:"/", isMobile: true },
-    {label : "Cash Move", icon: AttachMoney, selected:window.location.href.includes('cashMovements'),  link:"#/cashMovements", route:"/cashMovements", featureId: 1, isMobile: true },
-    {label : "Key Logs", icon: VpnKeyRounded, selected:window.location.href.includes('keyLogs'), link:"#/keyLogs", route:"/keyLogs", featureId: 1, isMobile: true },
+    {label : "Category", icon: Category, selected:window.location.href.includes('category'),  link:"#/category", route:"/category", featureId: 1, isMobile: true }
 ];
 
 export const getMenus = (mobileOnly)=> {
