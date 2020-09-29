@@ -3,8 +3,10 @@ import {AppBarTitleAddSearch} from "../../utility/components/AppBarTitle";
 import {OpenWith} from "@material-ui/icons";
 import {CategoryTable} from "../catalog/CategoryTable";
 import {makeStyles} from "@material-ui/core/styles";
+import {categoryModel} from "../../models/home/categoryModel";
+import {connectArray} from "../../utility/helpers";
 
-export const CategoryMaintenance = ({}) => {
+export const CategoryMaintenanceComponent = ({onCreateNewCategory}) => {
     const classes = useStyles();
     return (
         <Fragment>
@@ -14,8 +16,8 @@ export const CategoryMaintenance = ({}) => {
                 LeftIcon={OpenWith}
                 onSearchChange={(value) => {}}
                 onAdd={()=> {
-
-                } }
+                    onCreateNewCategory();
+                }}
             />
             <div className={classes.mainContainer}>
                 <CategoryTable/>
@@ -23,6 +25,9 @@ export const CategoryMaintenance = ({}) => {
         </Fragment>
     )
 };
+
+export const CategoryMaintenance = connectArray(
+    CategoryMaintenanceComponent, [categoryModel]);
 
 const useStyles = makeStyles({
     mainContainer: {

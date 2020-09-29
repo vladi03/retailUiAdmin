@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Paper, ListItemText, ListItem, TextField,
     ListItemIcon, FormControlLabel, Checkbox, IconButton,
+    InputLabel, Select, MenuItem, FormControl
 } from "@material-ui/core";
 import {Category, Save} from "@material-ui/icons";
 
@@ -26,6 +27,7 @@ export const CategoryItemEdit = ({category, saveCategory}) => {
                         primary: itemChanged ? classes.title : undefined
                     }}
                 />
+
                 <ListItemIcon>
                     <IconButton
                         edge="end"
@@ -44,20 +46,35 @@ export const CategoryItemEdit = ({category, saveCategory}) => {
                 </ListItemIcon>
             </ListItem>
             <ListItem>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={itemEdit.systemOnly}
-                        onChange={(event)=> {
-                            const newStatus = event.target.checked;
-                            onValueChange("systemOnly",newStatus);
+                <FormControlLabel
+                    style={{width:"50%"}}
+                    control={
+                        <Checkbox
+                            checked={itemEdit.systemOnly}
+                            onChange={(event)=> {
+                                const newStatus = event.target.checked;
+                                onValueChange("systemOnly",newStatus);
+                            }}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
+                    }
+                    label="System"
+                />
+                <FormControl className={classes.formControl}>
+                    <InputLabel>Sort</InputLabel>
+                    <Select
+                        value={itemEdit.sort}
+                        onChange={(event)=>{
+                            onValueChange("sort",event.target.value)
                         }}
-                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                    />
-                }
-                label="System"
-            />
+                    >
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => (
+                            <MenuItem key={value} value={value}>{value}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </ListItem>
+
             <ListItem>
                 <TextField
                     style={{width:"100%"}}

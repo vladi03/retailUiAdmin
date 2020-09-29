@@ -28,9 +28,11 @@ const onSetActiveCategoryItem = (activeCategoryItem) => {
 };
 
 const onSaveCategoryItem = async (itemToSave) => {
+    if(itemToSave.isNew)
+        delete itemToSave.isNew;
     const result = saveCategory(itemToSave);
     result.categoryList = provider.state.categoryList.map((cat) =>
-        cat._id === itemToSave._id ? itemToSave : car);
+        cat._id === itemToSave._id ? itemToSave : cat);
 
     provider.setState(result);
 };
@@ -38,6 +40,9 @@ const onSaveCategoryItem = async (itemToSave) => {
 const onCreateNewCategory = async () => {
     provider.setState({categoryListInit: true});
     const result = await getNewCategory();
+
+    result.categoryList = [...provider.state.categoryList,
+            result.activeCategoryItem];
     provider.setState(result);
 };
 
