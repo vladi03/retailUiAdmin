@@ -4,9 +4,9 @@ import {Paper, ListItemText, ListItem, TextField,
     ListItemIcon, FormControlLabel, Checkbox, IconButton,
     InputLabel, Select, MenuItem, FormControl
 } from "@material-ui/core";
-import {Category, Save} from "@material-ui/icons";
+import {Category, Save, Delete} from "@material-ui/icons";
 
-export const CategoryItemEdit = ({category, saveCategory}) => {
+export const CategoryItemEdit = ({category, saveCategory, deleteCategoey}) => {
     const [itemChanged, setItemChanged] = useState(false);
     const [itemEdit, setItemEdit] = useState({...category});
     const onValueChange = (fieldName, value) => {
@@ -42,6 +42,23 @@ export const CategoryItemEdit = ({category, saveCategory}) => {
                         }}
                     >
                         <Save />
+                    </IconButton>
+                </ListItemIcon>
+
+                <ListItemIcon>
+                    <IconButton
+                        edge="end"
+                        aria-label="Save"
+                        color="primary"
+                        classes={{
+                            edgeEnd:classes.edgeEndChange
+                        }}
+                        onClick={()=> {
+                            deleteCategoey(itemEdit);
+                            setItemChanged(false);
+                        }}
+                    >
+                        <Delete />
                     </IconButton>
                 </ListItemIcon>
             </ListItem>

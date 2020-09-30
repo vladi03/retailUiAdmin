@@ -6,7 +6,8 @@ import {Grid} from "@material-ui/core";
 import {CategoryItemEdit} from "./CategoryItemEdit";
 
 const CategoryTableComponent = ({onCategoryListInit, categoryListInit,
-                                    categoryList, onSaveCategoryItem}) => {
+                                    categoryList, onSaveCategoryItem,
+                                    onDeleteCategory}) => {
     useEffect(()=> {
         if(!categoryListInit)
             onCategoryListInit();
@@ -20,10 +21,11 @@ const CategoryTableComponent = ({onCategoryListInit, categoryListInit,
             {categoryList.map((category, index) => {
 
                 return (
-                    <Grid item xs={12} md={4} key={index}>
+                    <Grid item xs={12} md={4} key={category._id}>
                         <CategoryItemEdit
                             category={category}
                             saveCategory={onSaveCategoryItem}
+                            deleteCategoey={onDeleteCategory}
                         />
                     </Grid>
                 )

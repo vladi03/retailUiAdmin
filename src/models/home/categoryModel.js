@@ -41,14 +41,15 @@ const onCreateNewCategory = async () => {
     provider.setState({categoryListInit: true});
     const result = await getNewCategory();
 
-    result.categoryList = [...provider.state.categoryList,
-            result.activeCategoryItem];
+    result.categoryList = [result.activeCategoryItem, ...provider.state.categoryList,
+        ];
+
     provider.setState(result);
 };
 
 const onDeleteCategory = async (category) => {
     provider.setState({categoryListLoading: true});
-    const result = await deleteCategory(category);
+    const result = await deleteCategory(category._id);
 
     result.categoryList = provider.state.categoryList.filter(
         (cat) => cat._id !== category._id

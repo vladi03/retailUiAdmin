@@ -26,7 +26,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                 <div className={classes.container}>
                     {catalogListFiltered.map((catalog, index)=>(
                         <CatalogCard
-                            key={index}
+                            key={catalog._id}
                             inEdit={inEdit}
                             catalog={catalog}
                             onClick={()=> {
