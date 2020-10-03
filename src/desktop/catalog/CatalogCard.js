@@ -1,12 +1,15 @@
 import React from "react";
-import {Card, CardHeader, CardActionArea, CardContent} from "@material-ui/core";
+import {Card, CardHeader, CardActionArea, CardContent,
+    FormControlLabel, Checkbox} from "@material-ui/core";
+import {ThreeSixty} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {toCurrency} from "../../utility/helpers";
 import {PicRatioView} from "pic-ratio-fill";
 const {catalogApi} = getStore();
-export const CatalogCard = ({catalog, onClick, inEdit}) => {
+export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
+                                isSaving}) => {
     const {widthCalc, heightPicCalc} = useCardSize();
     const widthValue= inEdit ? "100%" : widthCalc;
     const imageIsConfig = catalog.images && catalog.images.length > 0;
@@ -28,10 +31,34 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
     <Card className={classes.card}>
 
         <CardActionArea
-            onClick={() => {if(onClick) onClick();}}
+
         >
+            {isSaving ?
+                <FormControlLabel
+                    control={
+                        <ThreeSixty />
+                      }
+                    label="Saving"
+                    style={{minHeight: 42, marginLeft: 10}}
+                />:
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={catalog.status === "active"}
+                            onChange={(event) => {
+                                const newStatus = event.target.checked ?
+                                    "active" : "disabled";
+                                onSetStatus(newStatus, catalog._id);
+                            }}
+                            inputProps={{'aria-label': 'primary checkbox'}}
+                        />
+                    }
+                    label="Active"
+                />
+            }
             <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
             <CardContent
+                onClick={() => {if(onClick) onClick();}}
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
                 <PicRatioView
@@ -42,6 +69,7 @@ export const CatalogCard = ({catalog, onClick, inEdit}) => {
                     colorRgbOpposite={colorRgbOther}
                     willFitWidth={willFitWidth}
                 />
+
             </CardContent>
 
         <CardHeader

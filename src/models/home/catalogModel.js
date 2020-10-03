@@ -1,5 +1,5 @@
 import {createContext} from "../../utility/modelContext";
-import {saveCatalog, uploadImage, deleteFile,
+import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
 
 let provider = null;
@@ -10,13 +10,36 @@ export const createModel = () => ({
     catalogListFiltered: [],
     catalogListLoading: false,
     catalogListInit: false,
+    catalogStatusLoading:false,
     onCatalogListInit,
     onSetActiveCatalogItem,
     onSaveCatalogItem,
     onUploadImage,
     onCreateNewCatalog,
-    onDeleteCatalog
+    onDeleteCatalog,
+    onSetCatalogStatus
 });
+
+const onSetCatalogStatus = async (status, id) => {
+    provider.setState({"catalogStatusLoading": id});
+    const {saveCatalogStatusResult,
+        success, catalogStatusLoading} = await saveCatalogStatus(status, id);
+    if(success && saveCatalogStatusResult.modifiedCount > 0) {
+        const catalogList = provider.state.catalogList
+            .map((catalog)=> {
+                if(catalog._id === id) {
+                    return {...catalog, status};
+                } else
+                    return catalog;
+            });
+        provider.setState({
+            catalogList,
+            catalogListFiltered: catalogList,
+            catalogStatusLoading: false
+        });
+    } else
+        provider.setState({"catalogStatusLoading": false});
+};
 
 const onDeleteCatalog = async (catalog) => {
     provider.setState({catalogListLoading: true});

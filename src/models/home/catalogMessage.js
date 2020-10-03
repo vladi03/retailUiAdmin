@@ -1,6 +1,33 @@
 import {getStore} from "../accounts/userAuthStore";
 import {handleResponse} from "../../utility/helpers";
 
+export const saveCatalogStatus = async (status, id)=>{
+    const {catalogApi , token} = getStore();
+    const url = `${catalogApi}/catalogApi/api/v1/catalog/${status}/${id}`;
+    const payloadGeneric = {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${token}`
+        }
+    };
+
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return {
+                success: true,
+                saveCatalogStatusResult: result,
+                catalogStatusLoading: false
+            }
+        }).catch((error) => {
+            return {
+                success: false,
+                catalogStatusLoading: false,
+                catalogListLoadError: error.message || error
+            };
+        });
+};
+
 export const deleteCatalog = async (catalog) => {
     const result = await deleteCatalogRecord(catalog._id);
     catalog.images.forEach((file) => deleteFile(file.id));

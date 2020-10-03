@@ -10,7 +10,8 @@ import {useIsMobile} from "../../utility/useIsMobile";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                               catalogListInit, onCatalogListInit,
-                              onSetActiveCatalogItem, activeCatalogItem}) => {
+                              onSetActiveCatalogItem, activeCatalogItem,
+                              onSetCatalogStatus, catalogStatusLoading}) => {
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
@@ -29,6 +30,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                             key={catalog._id}
                             inEdit={inEdit}
                             catalog={catalog}
+                            onSetStatus={onSetCatalogStatus}
+                            isSaving={catalog._id === catalogStatusLoading}
                             onClick={()=> {
                                 if(!isMobile) {
                                     onSetActiveCatalogItem(catalog);
