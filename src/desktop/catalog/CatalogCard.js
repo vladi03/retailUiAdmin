@@ -54,6 +54,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                         />
                     }
                     label="Active"
+                    style={{marginLeft: 3}}
                 />
             }
             <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
