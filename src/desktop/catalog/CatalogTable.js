@@ -7,30 +7,42 @@ import {IconButton} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
+import {CategorySelect} from "./CategorySelect";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
-                              catalogListInit, onCatalogListInit,
-                              onSetActiveCatalogItem, activeCatalogItem,
-                              onSetCatalogStatus, catalogStatusLoading}) => {
+       catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
+       onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
+       onSetCatalogStatus, catalogStatusLoading}) => {
+
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
     });
+
     const isMobile = useIsMobile();
+    const [categorySelected, setCategorySelected ] = useState(null);
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
     return (
         <Fragment>
-            Total Items: {catalogList.length}
+            <div style={{width: 360, marginTop: -10, marginBottom: 10}}>
+                <CategorySelect
+                    onChange={setCategorySelected}
+                />
+            </div>
         <div className={classes.mainContainer}>
             <div className={classes.scrollContainer}>
                 <div className={classes.container}>
-                    {catalogListFiltered.map((catalog, index)=>(
+                    {catalogListFiltered.map((catalog)=>(
                         <CatalogCard
                             key={catalog._id}
                             inEdit={inEdit}
                             catalog={catalog}
+                            category={categorySelected}
+                            disableEdit={activeCatalogItem != null}
                             onSetStatus={onSetCatalogStatus}
+                            onAddCategory={onAddCategoryToCatalog}
+                            onRemoveCategory={onRemoveCategoryFromCatalog}
                             isSaving={catalog._id === catalogStatusLoading}
                             onClick={()=> {
                                 if(!isMobile) {

@@ -9,7 +9,8 @@ import {toCurrency} from "../../utility/helpers";
 import {PicRatioView} from "pic-ratio-fill";
 const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
-                                isSaving}) => {
+                               disableEdit, isSaving, category,
+                            onAddCategory, onRemoveCategory}) => {
     const {widthCalc, heightPicCalc} = useCardSize();
     const widthValue= inEdit ? "100%" : widthCalc;
     const imageIsConfig = catalog.images && catalog.images.length > 0;
@@ -25,7 +26,9 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
     const willFitWidth = imageIsConfig && catalog.images[0].willFitWidth;
     const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
     const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
-
+    const filterCategory = category && catalog.categories.filter(
+        (cat) => cat._id === category._id ) || [];
+    const isInCategory = filterCategory.length > 0;
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
@@ -33,30 +36,71 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
         <CardActionArea
 
         >
-            {isSaving ?
-                <FormControlLabel
-                    control={
-                        <ThreeSixty />
-                      }
-                    label="Saving"
-                    style={{minHeight: 42, marginLeft: 10}}
-                />:
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={catalog.status === "active"}
-                            onChange={(event) => {
-                                const newStatus = event.target.checked ?
-                                    "active" : "disabled";
-                                onSetStatus(newStatus, catalog._id);
-                            }}
-                            inputProps={{'aria-label': 'primary checkbox'}}
-                        />
-                    }
-                    label="Active"
-                    style={{marginLeft: 3}}
-                />
+            {!disableEdit &&
+            (
+                isSaving ?
+                    <FormControlLabel
+                        control={
+                            <ThreeSixty/>
+                        }
+                        label="Saving"
+                        style={{minHeight: 42, marginLeft: 10}}
+                    /> :
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={catalog.status === "active"}
+                                onChange={(event) => {
+                                    const newStatus = event.target.checked ?
+                                        "active" : "disabled";
+                                    onSetStatus(newStatus, catalog._id);
+                                }}
+                                inputProps={{'aria-label': 'primary checkbox'}}
+                            />
+                        }
+                        label="Active"
+                        style={{marginLeft: 3}}
+                    />
+            )
             }
+
+            {!disableEdit &&
+            (
+                isSaving ?
+                    <FormControlLabel
+                        control={
+                            <ThreeSixty/>
+                        }
+                        label="Saving"
+                        style={{minHeight: 42, marginLeft: 10}}
+                    /> :
+                    (category && <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isInCategory}
+                                onChange={(event) => {
+                                    const newStatusChecked = event.target.checked;
+                                    if(newStatusChecked)
+                                        onAddCategory({
+                                            catalog:catalog,
+                                            category
+                                        });
+                                    else
+                                        onRemoveCategory({
+                                            catalog:catalog,
+                                            categoryId:category._id
+                                        });
+                                }}
+                                inputProps={{'aria-label': 'primary checkbox'}}
+                            />
+                        }
+                        label="In Category"
+                        style={{marginLeft: 3}}
+                    />
+                    )
+            )
+            }
+
             <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
             <CardContent
                 onClick={() => {if(onClick) onClick();}}

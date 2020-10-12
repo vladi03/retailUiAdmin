@@ -17,13 +17,34 @@ export const createModel = () => ({
     onUploadImage,
     onCreateNewCatalog,
     onDeleteCatalog,
-    onSetCatalogStatus
+    onSetCatalogStatus,
+    onAddCategoryToCatalog,
+    onRemoveCategoryFromCatalog
 });
 
+const onAddCategoryToCatalog = async ({catalog, category}) => {
+    provider.setState(
+        {"catalogStatusLoading": catalog._id,
+        catalogListLoading: true});
+    const newCatalog = {...catalog,
+        categories : [category, ...catalog.categories]};
+    await commonSaveCatalogItem(newCatalog, false);
+};
+
+const onRemoveCategoryFromCatalog = async ({catalog, categoryId}) => {
+    provider.setState(
+        {"catalogStatusLoading": catalog._id,
+        catalogListLoading: true});
+    const categories = catalog.categories.filter(
+        (cat) => cat._id !== categoryId);
+    const newCatalog = {...catalog, categories};
+    await commonSaveCatalogItem(newCatalog, false);
+};
+
 const onSetCatalogStatus = async (status, id) => {
-    provider.setState({"catalogStatusLoading": id});
+    provider.setState({"catalogStatusLoading": id, activeCatalogItem: null});
     const {saveCatalogStatusResult,
-        success, catalogStatusLoading} = await saveCatalogStatus(status, id);
+        success} = await saveCatalogStatus(status, id);
     if(success && saveCatalogStatusResult.modifiedCount > 0) {
         const catalogList = provider.state.catalogList
             .map((catalog)=> {
@@ -77,7 +98,10 @@ const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, co
         }) : [fileShowing];
 
     const activeCatalogItem = {...itemEdit, images};
+    await commonSaveCatalogItem(activeCatalogItem);
+};
 
+const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) => {
     const result = await saveCatalog(activeCatalogItem);
 
     if(result.saveCatalogResult && result.saveCatalogResult.modifiedCount > 0) {
@@ -92,6 +116,9 @@ const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, co
         ];
         result.catalogListFiltered = result.catalogList;
     }
+    if(!setActiveItem)
+        result.activeCatalogItem = null;
+    result.catalogStatusLoading = false;
     provider.setState(result);
 };
 
