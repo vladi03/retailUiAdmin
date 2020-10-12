@@ -74,7 +74,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                         label="Saving"
                         style={{minHeight: 42, marginLeft: 10}}
                     /> :
-                    (category && <FormControlLabel
+                    (category && category._id && <FormControlLabel
                         control={
                             <Checkbox
                                 checked={isInCategory}
