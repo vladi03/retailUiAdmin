@@ -1,6 +1,7 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
+import {sortCatalog, swapOrder} from "./catalogHelper";
 
 let provider = null;
 
@@ -9,8 +10,10 @@ export const createModel = () => ({
     catalogList: [],
     catalogListFiltered: [],
     catalogListLoading: false,
+    savingCatalogSort: false,
     catalogListInit: false,
     catalogStatusLoading:false,
+    categorySelected: null,
     onCatalogListInit,
     onSetActiveCatalogItem,
     onSaveCatalogItem,
@@ -19,15 +22,53 @@ export const createModel = () => ({
     onDeleteCatalog,
     onSetCatalogStatus,
     onAddCategoryToCatalog,
-    onRemoveCategoryFromCatalog
+    onRemoveCategoryFromCatalog,
+    onCategorySelectChange,
+    onCatalogOrderChange
 });
 
+const onCatalogOrderChange = async (catalog, category, swapCatalog) => {
+    try {
+        provider.setState({savingCatalogSort: true});
+        const {target, swap} = swapOrder(catalog,category, swapCatalog);
+
+        await commonSaveCatalogItem(target, false);
+        await commonSaveCatalogItem(swap, false);
+    } catch (ex) {
+
+    }
+    provider.setState({savingCatalogSort: false});
+};
+
+//category select drop down
+const onCategorySelectChange = (categorySelected) => {
+    const catalogListFiltered = sortCatalog(provider.state.catalogList,
+        categorySelected._id);
+    provider.setState({catalogListFiltered, categorySelected});
+};
+
 const onAddCategoryToCatalog = async ({catalog, category}) => {
-    provider.setState(
-        {"catalogStatusLoading": catalog._id,
-        catalogListLoading: true});
+    let maxSort = 1;
+
+    provider.state.catalogList.forEach((cat) => {
+        const searchCate = cat.categories.filter((cate)=> {
+            return cate._id === category._id;
+        });
+        if(searchCate.length > 0 && searchCate[0].sort > maxSort)
+            maxSort = searchCate[0].sort;
+    });
+
+    provider.setState({
+            "catalogStatusLoading": catalog._id,
+            "catalogListLoading": true
+        });
+
     const newCatalog = {...catalog,
-        categories : [category, ...catalog.categories]};
+        categories : [
+            {...category, sort: (maxSort + 1)},
+            ...catalog.categories]
+    };
+
     await commonSaveCatalogItem(newCatalog, false);
 };
 
@@ -53,9 +94,13 @@ const onSetCatalogStatus = async (status, id) => {
                 } else
                     return catalog;
             });
+        const catalogListFiltered = sortCatalog(catalogList,
+            provider.state.categorySelected &&
+            provider.state.categorySelected._id);
+
         provider.setState({
             catalogList,
-            catalogListFiltered: catalogList,
+            catalogListFiltered,
             catalogStatusLoading: false
         });
     } else
@@ -108,13 +153,19 @@ const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) =>
         result.catalogList = provider.state.catalogList.map((ct) => {
             return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
         });
-        result.catalogListFiltered = result.catalogList;
+
+        result.catalogListFiltered = sortCatalog(result.catalogList,
+            provider.state.categorySelected &&
+            provider.state.categorySelected._id);
     } else if(result.saveCatalogResult &&
         result.saveCatalogResult.upsertedCount > 0) {
         result.catalogList = [
             ...provider.state.catalogList, activeCatalogItem
         ];
-        result.catalogListFiltered = result.catalogList;
+
+        result.catalogListFiltered = sortCatalog(result.catalogList,
+            provider.state.categorySelected &&
+            provider.state.categorySelected._id);
     }
     if(!setActiveItem)
         result.activeCatalogItem = null;

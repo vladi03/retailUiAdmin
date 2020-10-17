@@ -12,7 +12,8 @@ import {CategorySelect} from "./CategorySelect";
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
        catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
        onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
-       onSetCatalogStatus, catalogStatusLoading}) => {
+       onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
+       onCatalogOrderChange, savingCatalogSort}) => {
 
     useEffect(()=> {
         if(!catalogListInit)
@@ -20,37 +21,60 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
     });
 
     const isMobile = useIsMobile();
-    const [categorySelected, setCategorySelected ] = useState(null);
+    const [categorySelected, setCategorySelected] = useState(null);
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
     return (
         <Fragment>
             <div style={{width: 360, marginTop: -10, marginBottom: 10}}>
                 <CategorySelect
-                    onChange={setCategorySelected}
+                    onChange={(category) => {
+                        setCategorySelected(category);
+                        onCategorySelectChange(category);
+                    }}
                 />
             </div>
         <div className={classes.mainContainer}>
             <div className={classes.scrollContainer}>
                 <div className={classes.container}>
-                    {catalogListFiltered.map((catalog)=>(
-                        <CatalogCard
-                            key={catalog._id}
-                            inEdit={inEdit}
-                            catalog={catalog}
-                            category={categorySelected}
-                            disableEdit={activeCatalogItem != null}
-                            onSetStatus={onSetCatalogStatus}
-                            onAddCategory={onAddCategoryToCatalog}
-                            onRemoveCategory={onRemoveCategoryFromCatalog}
-                            isSaving={catalog._id === catalogStatusLoading}
-                            onClick={()=> {
-                                if(!isMobile) {
-                                    onSetActiveCatalogItem(catalog);
-                                }
-                            }}
-                        />
-                    ))}
+                    {catalogListFiltered.map((catalog, index)=> {
+
+                        const prevCatalog = index > 0 ?
+                            catalogListFiltered[index - 1] : null;
+
+                        const nextCatalog =
+                            catalogListFiltered.length > (index - 2) ?
+                                catalogListFiltered[index + 1] : null;
+
+                        const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
+                            (cat) => cat._id === categorySelected._id ) || [];
+
+                        const nextIsInCategory = filterCategory.length > 0;
+
+                        return (
+                            <CatalogCard
+                                key={`${catalog._id}${catalog.sort}`}
+                                prevCatalog={prevCatalog}
+                                nextCatalog={nextIsInCategory ? nextCatalog : null}
+                                inEdit={inEdit}
+                                catalog={catalog}
+                                category={categorySelected}
+                                disableEdit={activeCatalogItem != null}
+                                onSetStatus={onSetCatalogStatus}
+                                onAddCategory={onAddCategoryToCatalog}
+                                onRemoveCategory={onRemoveCategoryFromCatalog}
+                                isSaving={catalog._id === catalogStatusLoading}
+                                onOrderChange={onCatalogOrderChange}
+                                savingCatalogSort={savingCatalogSort}
+                                onClick={() => {
+                                    if (!isMobile) {
+                                        onSetActiveCatalogItem(catalog);
+                                    }
+                                }}
+                            />
+                        );
+                        }
+                    )}
                 </div>
             </div>
             {inEdit &&
@@ -98,7 +122,7 @@ const useStyle = makeStyles({
     editControl: {
         position: "absolute",
         right: 10,
-        top: 90,
+        //top: 90,
         zIndex: 999
     },
     mainContainer: {

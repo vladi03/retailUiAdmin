@@ -1,4 +1,7 @@
 import {withStyles} from "@material-ui/styles";
+let routeComponent = null;
+
+export const setRouteComponent = (compoent) => routeComponent = compoent;
 
 export const connectArray = (component, arrayOfModels, styles = null) => {
     const intermediateComponents = [];
@@ -96,6 +99,9 @@ export const handleResponse = () => {
         if(response.ok) {
             return response.json();
         }
+        if(response.status === 401)
+            routeComponent.setState({errorMessage: "Unauthorized"});
+
         throw new Error(response.status);
     };
 };

@@ -1,16 +1,19 @@
 import React from "react";
-import {Card, CardHeader, CardActionArea, CardContent,
-    FormControlLabel, Checkbox} from "@material-ui/core";
-import {ThreeSixty} from "@material-ui/icons";
+import {Card, CardHeader, CardContent,
+    FormControlLabel, Checkbox, IconButton} from "@material-ui/core";
+import {ThreeSixty, ArrowUpward, ArrowDownward} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {toCurrency} from "../../utility/helpers";
 import {PicRatioView} from "pic-ratio-fill";
 const {catalogApi} = getStore();
+
 export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
-                               disableEdit, isSaving, category,
-                            onAddCategory, onRemoveCategory}) => {
+                            disableEdit, isSaving, category, savingCatalogSort,
+                            onAddCategory, onRemoveCategory,
+                            onOrderChange, prevCatalog, nextCatalog}) => {
+
     const {widthCalc, heightPicCalc} = useCardSize();
     const widthValue= inEdit ? "100%" : widthCalc;
     const imageIsConfig = catalog.images && catalog.images.length > 0;
@@ -26,16 +29,18 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
     const willFitWidth = imageIsConfig && catalog.images[0].willFitWidth;
     const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
     const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
+
     const filterCategory = category && catalog.categories.filter(
         (cat) => cat._id === category._id ) || [];
     const isInCategory = filterCategory.length > 0;
+
+    const inCategoryEdit = category && category._id;
+
     // noinspection JSUnresolvedVariable
     return (
     <Card className={classes.card}>
 
-        <CardActionArea
-
-        >
+        <div className={classes.cardContainer} >
             {!disableEdit &&
             (
                 isSaving ?
@@ -74,7 +79,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                         label="Saving"
                         style={{minHeight: 42, marginLeft: 10}}
                     /> :
-                    (category && category._id && <FormControlLabel
+                    (inCategoryEdit && <FormControlLabel
                         control={
                             <Checkbox
                                 checked={isInCategory}
@@ -102,6 +107,14 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             }
 
             <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
+            {inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
+                <IconButton aria-label="Up"
+                            className={classes.buttonUp}
+                            onClick={()=> onOrderChange(catalog, category, prevCatalog)}
+                >
+                    <ArrowUpward fontSize="large" />
+                </IconButton>
+            }
             <CardContent
                 onClick={() => {if(onClick) onClick();}}
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
@@ -116,7 +129,14 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                 />
 
             </CardContent>
-
+            {inCategoryEdit && !savingCatalogSort && nextCatalog && isInCategory &&
+            <IconButton aria-label="Up"
+                        className={classes.buttonDown}
+                        onClick={()=> onOrderChange(catalog, category, nextCatalog)}
+            >
+                <ArrowDownward fontSize="large"/>
+            </IconButton>
+            }
         <CardHeader
             title={catalog.shortDesc}
             subheader={catalog.extraDesc}
@@ -125,7 +145,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                 subheader: classes.cardSubheader
             }}
         />
-        </CardActionArea>
+        </div>
     </Card>
     )
 };
@@ -145,6 +165,9 @@ const useStyle = makeStyles({
         width: props => props.widthValue,
         marginBottom: 20,
         backgroundColor: "#d0c6c626"
+    },
+    cardContainer: {
+        position: "relative"
     },
     cardTitle: {
         fontSize: 16
@@ -166,6 +189,24 @@ const useStyle = makeStyles({
         overflow: "hidden",
         backgroundColor: "#afcdee",
         padding:0
+    },
+    buttonUp : {
+        position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        backgroundColor: "#1095ec8f",
+        left: "calc(50% - 20px)",
+        top: 40
+    },
+    buttonDown : {
+        position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        backgroundColor: "#1095ec8f",
+        left: "calc(50% - 20px)",
+        bottom: 75
     }
 });
 

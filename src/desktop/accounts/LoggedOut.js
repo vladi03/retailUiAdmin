@@ -6,7 +6,6 @@ import {makeStyles} from "@material-ui/core/styles";
 import { Input as LoginIcon, Info } from '@material-ui/icons';
 import accountModel from "../../models/accounts/accountModel";
 import {connectArray} from "../../utility/helpers";
-import {navigate} from "../../route/history";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export const LoggedOutComponent = ({onNotifyMainNavOfLogOff, userLoggedIn}) => {
@@ -22,6 +21,9 @@ export const LoggedOutComponent = ({onNotifyMainNavOfLogOff, userLoggedIn}) => {
         clearToken();
         if(isAuthenticated)
             logout({returnTo: `${window.location.origin}/#/login`});
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("featurePermissions");
 
         if(userLoggedIn)
             onNotifyMainNavOfLogOff();

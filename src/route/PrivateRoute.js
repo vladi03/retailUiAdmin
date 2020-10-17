@@ -9,7 +9,7 @@ export const PrivateRoute = ({ history, permission, component: Component, ...res
         <Route {...rest} render={(props) => {
             //hasFeature(permission) ||
             return (
-                (isAuthenticated || isLoading) ?
+                ((hasFeature(permission) && isAuthenticated) || isLoading) ?
                     <Component {...props} />
                     :
                     <Redirect push={true} to={{pathname: '/login', state: {from: props.location}}}/>

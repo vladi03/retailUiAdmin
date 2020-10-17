@@ -10,15 +10,17 @@ import {PrivateRoute} from "./PrivateRoute";
 import { withAuth0 } from "@auth0/auth0-react";
 import {setTokenValue} from "../models/accounts/userAuthStore";
 import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
+import {setRouteComponent} from "../utility/helpers";
 
 export class RouteComponent extends React.Component {
 
     constructor() {
         super();
-        this.state = { isMobile: window.innerWidth <= 760 };
+        this.state = { isMobile: window.innerWidth <= 760, errorMessage: "" };
     }
 
     componentDidMount() {
+        setRouteComponent(this);
         initAuthStore();
         const checkSize = ()=> {
             // noinspection JSCheckFunctionSignatures
@@ -28,22 +30,33 @@ export class RouteComponent extends React.Component {
         const { user, getAccessTokenSilently } = this.props.auth0;
         const getToken = async () =>{
             try {
+                console.log("--- user ---");
+                console.log(user);
                 const accessToken = await getAccessTokenSilently();
+                console.log("-------- Token Complete First Try -------");
                 console.log(accessToken);
                 setTokenValue(accessToken);
             } catch (ex) {
-                console.log("---------------");
-                console.log(ex.message || ex);
+                //when login in with google account, you have to try twice to get token.
+                getAccessTokenSilently().then((accessToken)=> {
+                    setTokenValue(accessToken);
+                    console.log("-------- Token Complete second Try-------");
+                }).catch((ex)=> {
+                    console.log("-------- No Token -------");
+                    console.log(ex.message || ex);
+                });
             }
         };
-
         getToken();
     }
 
     render() {
         const LoginRoute = getLoginRoute();
-        const {isMobile} = this.state;
+        const {isMobile, errorMessage} = this.state;
         const MenuNav = FullMenuNav; //isMobile ? MobileNav :
+        //if(errorMessage !== "" ) //show error hear
+        //    const tt = "";
+
         return (
             <GlobalProviders>
                     <HashRouter>
