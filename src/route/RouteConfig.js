@@ -27,11 +27,10 @@ export class RouteComponent extends React.Component {
             this.setState({isMobile: window.innerWidth <= 760});
         };
         window.addEventListener("resize", checkSize);
-        const { user, getAccessTokenSilently } = this.props.auth0;
+        const { getAccessTokenSilently } = this.props.auth0;
+
         const getToken = async () =>{
             try {
-                console.log("--- user ---");
-                console.log(user);
                 const accessToken = await getAccessTokenSilently();
                 console.log("-------- Token Complete First Try -------");
                 console.log(accessToken);
@@ -41,6 +40,8 @@ export class RouteComponent extends React.Component {
                 getAccessTokenSilently().then((accessToken)=> {
                     setTokenValue(accessToken);
                     console.log("-------- Token Complete second Try-------");
+                    console.log(accessToken);
+                    console.log("-");
                 }).catch((ex)=> {
                     console.log("-------- No Token -------");
                     console.log(ex.message || ex);
@@ -51,6 +52,11 @@ export class RouteComponent extends React.Component {
     }
 
     render() {
+        const { user, isLoading } = this.props.auth0;
+        if(!isLoading) {
+            console.log("--- user render ---");
+            console.log(this.props.auth0);
+        }
         const LoginRoute = getLoginRoute();
         const {isMobile, errorMessage} = this.state;
         const MenuNav = FullMenuNav; //isMobile ? MobileNav :

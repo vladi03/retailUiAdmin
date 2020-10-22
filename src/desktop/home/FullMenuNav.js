@@ -35,8 +35,10 @@ export const FullMenuNavComponent = ({ children, firstName, lastName,
             userFeatures.indexOf(link.featureId) > -1);
 
     const userInfo = getStore();
-    console.log(user);
-
+    if(!isLoading) {
+        console.log("---- Full Menu ----");
+        console.log(user);
+    }
     if(user) {
         setUserData(user);
         userInfo.picUrl = user.picture;

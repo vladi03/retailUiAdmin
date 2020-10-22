@@ -5,11 +5,14 @@ import {useAuth0} from "@auth0/auth0-react";
 
 export const PrivateRoute = ({ history, permission, component: Component, ...rest }) => {
     const { user, isLoading, isAuthenticated } = useAuth0();
+
+
+
     return (
         <Route {...rest} render={(props) => {
             //hasFeature(permission) ||
             return (
-                ((hasFeature(permission) && isAuthenticated) || isLoading) ?
+                ((isAuthenticated && hasFeature(permission)) || isLoading) ?
                     <Component {...props} />
                     :
                     <Redirect push={true} to={{pathname: '/login', state: {from: props.location}}}/>

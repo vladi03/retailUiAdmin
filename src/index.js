@@ -27,6 +27,7 @@ render(
         clientId={process.env.AUTH_CLIENT_ID}
         audience={process.env.AUTH_AUDIENCE}
         redirectUri={`${window.location.origin}`}
+        scope="read.events"
     >
         <MuiThemeProvider theme={muiTheme}><RouteConfig /></MuiThemeProvider>
     </Auth0Provider>,
