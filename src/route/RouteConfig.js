@@ -52,13 +52,14 @@ export class RouteComponent extends React.Component {
         this.state = {
             isMobile: window.innerWidth <= 760,
             errorMessage: "",
-            showAlert: false
+            showAlert: false,
+            alertStatus: ""
         };
     }
 
     onCloseAlert() {
         // noinspection JSCheckFunctionSignatures
-        this.setState({errorMessage: ""});
+        this.setState({errorMessage: "", alertStatus: ""});
     }
 
     componentDidMount() {
@@ -83,7 +84,10 @@ export class RouteComponent extends React.Component {
                     setTokenValue(accessToken);
                     console.log("-------- Token Complete second Try-------");
                     console.log(accessToken);
-                    console.log("-");
+                    // noinspection JSCheckFunctionSignatures
+                    this.setState({
+                        errorMessage: "Access Allowed",
+                        alertStatus: "success"});
                 }).catch((ex)=> {
                     console.log("-------- No Token -------");
                     console.log(ex.message || ex);
@@ -104,7 +108,7 @@ export class RouteComponent extends React.Component {
             console.log(this.props.auth0);
         }
         const LoginRoute = getLoginRoute();
-        const {isMobile, errorMessage} = this.state;
+        const {isMobile, errorMessage, alertStatus} = this.state;
         // noinspection JSUnusedLocalSymbols
         const MenuNav = FullMenuNav; //isMobile ? MobileNav :
         //if(errorMessage !== "" ) //show error hear
@@ -115,6 +119,7 @@ export class RouteComponent extends React.Component {
                 <PopupError
                     errorMessage={errorMessage}
                     onClearErrorMessage={() => this.onCloseAlert()}
+                    status={alertStatus}
                 />
                     <HashRouter>
                         <MenuNav>

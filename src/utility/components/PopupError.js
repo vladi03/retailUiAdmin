@@ -1,9 +1,15 @@
 import React from  "react";
 import {Snackbar, Paper, Typography} from "@material-ui/core";
-import {Warning, Close} from "@material-ui/icons";
+import {Warning, Close, PriorityHigh} from "@material-ui/icons";
 import PropTypes from 'prop-types';
 
-export const PopupError = ({errorMessage, onClearErrorMessage}) => {
+export const PopupError = ({errorMessage, onClearErrorMessage, status}) => {
+    let statusColor = "#ff525b";
+    let StatusIcon = Warning;
+    if(status === "success") {
+        statusColor = "#1ead29";
+        StatusIcon = PriorityHigh;
+    }
 
     return (
         <Snackbar
@@ -13,10 +19,10 @@ export const PopupError = ({errorMessage, onClearErrorMessage}) => {
             onClose={onClearErrorMessage}>
             <Paper style={{
                 padding: 10,
-                backgroundColor: "#ff525b",
+                backgroundColor: statusColor,
                 display:"flex"}}
                    elevation={3}>
-                <Warning style={{marginRight: 15, color:"white"}} />
+                <StatusIcon style={{marginRight: 15, color:"white"}} />
                 <Typography style={{color: "white"}}>{errorMessage}</Typography>
                 <Close onClick={onClearErrorMessage}
                        style={{marginLeft: 15, color:"white", cursor: "pointer"}}
