@@ -58,8 +58,8 @@ export const getFullName = () =>
     userAuthData.name;
 
 export const hasFeature = (featureId) => {
-    console.log("---- token hasFeature ----");
-    console.log(userAuthData.token);
+    //console.log("---- token hasFeature ----");
+    //console.log(userAuthData.token);
     return userAuthData.featurePermissions.indexOf(featureId) > -1;
 };
 

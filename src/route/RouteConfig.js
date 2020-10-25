@@ -53,7 +53,9 @@ export class RouteComponent extends React.Component {
             isMobile: window.innerWidth <= 760,
             errorMessage: "",
             showAlert: false,
-            alertStatus: ""
+            alertStatus: "",
+            tokenLoading: false,
+            tokenLoaded: false
         };
     }
 
@@ -80,10 +82,17 @@ export class RouteComponent extends React.Component {
         const getToken = async () =>{
             const { getAccessTokenSilently } = this.props.auth0;
             try {
+                this.setState({tokenLoading: true});
                 const accessToken = await getAccessTokenSilently();
                 console.log("-------- Token Complete First Try -------");
                 console.log(accessToken);
                 setTokenValue(accessToken);
+                this.setState({
+                    errorMessage: "You Have Access",
+                    alertStatus: "success",
+                    //tokenLoading: false,
+                    tokenLoaded: true
+                });
             } catch (ex) {
                 //when login in with google account, you have to try twice to get token.
                 getAccessTokenSilently().then((accessToken)=> {
@@ -93,25 +102,34 @@ export class RouteComponent extends React.Component {
                     // noinspection JSCheckFunctionSignatures
                     this.setState({
                         errorMessage: "Access Allowed",
-                        alertStatus: "success"});
+                        alertStatus: "success",
+                        //tokenLoading: false,
+                        tokenLoaded: true
+                    });
                 }).catch((ex)=> {
                     console.log("-------- No Token -------");
                     console.log(ex.message || ex);
-                    this.setState({errorMessage: ex.message});
+                    this.setState({errorMessage: ex.message,
+                        //tokenLoading: false
+                    });
                 });
             }
         };
 
         // noinspection JSUnusedLocalSymbols
         const { user, isLoading } = this.props.auth0;
-        if(!isLoading) {
+        const {isMobile, errorMessage, alertStatus,
+            tokenLoading, tokenLoaded} = this.state;
+
+        if(!isLoading && !tokenLoading && !tokenLoaded && errorMessage === "") {
             console.log("--- user render ---");
+            console.log({errorMessage, isLoading, tokenLoading, tokenLoaded});
             console.log(this.props.auth0);
             // noinspection JSIgnoredPromiseFromCall
             getToken();
         }
         const LoginRoute = getLoginRoute();
-        const {isMobile, errorMessage, alertStatus} = this.state;
+
         // noinspection JSUnusedLocalSymbols
         const MenuNav = FullMenuNav; //isMobile ? MobileNav :
         //if(errorMessage !== "" ) //show error hear
