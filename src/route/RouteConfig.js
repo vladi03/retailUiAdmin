@@ -70,9 +70,15 @@ export class RouteComponent extends React.Component {
             this.setState({isMobile: window.innerWidth <= 760});
         };
         window.addEventListener("resize", checkSize);
-        const { getAccessTokenSilently } = this.props.auth0;
+
+
+
+    }
+
+    render() {
 
         const getToken = async () =>{
+            const { getAccessTokenSilently } = this.props.auth0;
             try {
                 const accessToken = await getAccessTokenSilently();
                 console.log("-------- Token Complete First Try -------");
@@ -95,17 +101,14 @@ export class RouteComponent extends React.Component {
                 });
             }
         };
-        // noinspection JSIgnoredPromiseFromCall
-        getToken();
-    }
-
-    render() {
 
         // noinspection JSUnusedLocalSymbols
         const { user, isLoading } = this.props.auth0;
         if(!isLoading) {
             console.log("--- user render ---");
             console.log(this.props.auth0);
+            // noinspection JSIgnoredPromiseFromCall
+            getToken();
         }
         const LoginRoute = getLoginRoute();
         const {isMobile, errorMessage, alertStatus} = this.state;

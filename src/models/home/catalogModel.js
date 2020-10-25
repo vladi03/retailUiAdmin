@@ -14,6 +14,7 @@ export const createModel = () => ({
     catalogListInit: false,
     catalogStatusLoading:false,
     categorySelected: null,
+    catalogSearchText: "",
     onCatalogListInit,
     onSetActiveCatalogItem,
     onSaveCatalogItem,
@@ -24,8 +25,18 @@ export const createModel = () => ({
     onAddCategoryToCatalog,
     onRemoveCategoryFromCatalog,
     onCategorySelectChange,
-    onCatalogOrderChange
+    onCatalogOrderChange,
+    onCatalogSearch
 });
+
+const onCatalogSearch = (catalogSearchText)=> {
+    const catalogListFiltered = provider.state
+        .catalogList.filter((cat) =>
+            cat.shortDesc.toLowerCase().indexOf(catalogSearchText) > -1 ||
+            cat.modelNumber.toLowerCase().indexOf(catalogSearchText) > -1
+        );
+    provider.setState({catalogSearchText, catalogListFiltered});
+};
 
 const onCatalogOrderChange = async (catalog, category, swapCatalog) => {
     try {

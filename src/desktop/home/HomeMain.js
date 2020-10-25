@@ -6,7 +6,8 @@ import {CatalogTable} from "../catalog/CatalogTable";
 import {connectArray} from "../../utility/helpers";
 import {catalogModel} from "../../models/home/catalogModel";
 
-export const HomeMainComponent = ({onCreateNewCatalog}) => {
+export const HomeMainComponent = ({onCreateNewCatalog,
+    onCatalogSearch, catalogSearchText }) => {
     //const { user, isAuthenticated } = useAuth0();
 
     return (
@@ -14,7 +15,10 @@ export const HomeMainComponent = ({onCreateNewCatalog}) => {
             <AppBarTitleAddSearch
                 title="Catalogs"
                 LeftIcon={OpenWith}
-                onSearchChange={(value) => {}}
+                onSearchChange={(value) => {
+                    onCatalogSearch(value);
+                }}
+
                 onAdd={()=> {
                     onCreateNewCatalog();
                 } }
