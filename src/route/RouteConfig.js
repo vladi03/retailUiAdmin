@@ -13,6 +13,7 @@ import { withAuth0 } from "@auth0/auth0-react";
 import {setTokenValue} from "../models/accounts/userAuthStore";
 import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 import {setRouteComponent} from "../utility/helpers";
+import {PopupError} from "../utility/components/PopupError";
 
 const useStyle = makeStyles({
     alertLabel: {
@@ -86,6 +87,7 @@ export class RouteComponent extends React.Component {
                 }).catch((ex)=> {
                     console.log("-------- No Token -------");
                     console.log(ex.message || ex);
+                    this.setState({errorMessage: ex.message});
                 });
             }
         };
@@ -110,9 +112,9 @@ export class RouteComponent extends React.Component {
 
         return (
             <GlobalProviders>
-                <Alert
+                <PopupError
                     errorMessage={errorMessage}
-                    onCloseAlert={() => this.onCloseAlert()}
+                    onClearErrorMessage={() => this.onCloseAlert()}
                 />
                     <HashRouter>
                         <MenuNav>
@@ -123,7 +125,6 @@ export class RouteComponent extends React.Component {
 
                             <Route exact path="/logcomplete"
                                    component={LoggedOut} />
-
 
                             <PrivateRoute permission={1}
                                           exact path="/"
