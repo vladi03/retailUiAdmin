@@ -102,7 +102,7 @@ export const CatalogTable = connectArray(CatalogTableComponent,[catalogModel]);
 
 const useStyle = makeStyles({
     scrollContainer: {
-        height: "calc( 100vh - 80px)",
+        height: "calc( 100vh - 120px)",
         width: props => props.inEdit ? "24vw" : "100%",
         overflow: "auto"
     },
