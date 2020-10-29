@@ -30,10 +30,11 @@ export const createModel = () => ({
 });
 
 const onCatalogSearch = (catalogSearchText)=> {
+    const searchText = catalogSearchText.toLocaleString();
     const catalogListFilteredTemp = provider.state
         .catalogList.filter((cat) =>
-            cat.shortDesc.toLowerCase().indexOf(catalogSearchText) > -1 ||
-            cat.modelNumber.toLowerCase().indexOf(catalogSearchText) > -1
+            cat.shortDesc.toLowerCase().indexOf(searchText) > -1 ||
+            cat.modelNumber.toLowerCase().indexOf(searchText) > -1
         );
     const catalogListFiltered = sortCatalog(catalogListFilteredTemp,
         provider.state.categorySelected &&
