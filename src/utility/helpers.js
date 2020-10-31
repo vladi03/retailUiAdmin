@@ -94,6 +94,10 @@ export function shuffleArray(array) {
     return array;
 }
 
+export const showError = (errorMessage) => {
+    routeComponent.setState({errorMessage});
+};
+
 export const handleResponse = () => {
     return function(response) {
         if(response.ok) {

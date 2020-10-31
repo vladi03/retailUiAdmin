@@ -2,6 +2,7 @@ import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
 import {sortCatalog, swapOrder} from "./catalogHelper";
+import {showError} from "../../utility/helpers";
 
 let provider = null;
 
@@ -150,16 +151,21 @@ const onCreateNewCatalog = async ()=> {
 
 const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther) => {
 
-    provider.setState({catalogListLoading: true});
-    const fileShowing = {...uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther};
-    const search = itemEdit.images && itemEdit.images.find((im)=> im.id === fileShowing.id);
-    const images = itemEdit.images && itemEdit.images.length > 1 && search ?
-        itemEdit.images.map((im) => {
-            return im.id === fileShowing.id ? fileShowing : im;
-        }) : [fileShowing];
+    if(uploadImageMetadata && uploadImageMetadata.id &&
+        uploadImageMetadata.id.length > 0 ) {
+        provider.setState({catalogListLoading: true});
+        const fileShowing = {...uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther};
+        const search = itemEdit.images && itemEdit.images.find((im) => im.id === fileShowing.id);
+        const images = itemEdit.images && itemEdit.images.length > 1 && search ?
+            itemEdit.images.map((im) => {
+                return im.id === fileShowing.id ? fileShowing : im;
+            }) : [fileShowing];
 
-    const activeCatalogItem = {...itemEdit, images};
-    await commonSaveCatalogItem(activeCatalogItem);
+        const activeCatalogItem = {...itemEdit, images};
+        await commonSaveCatalogItem(activeCatalogItem);
+    } else {
+        showError("Select a picture before saving");
+    }
 };
 
 const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) => {
