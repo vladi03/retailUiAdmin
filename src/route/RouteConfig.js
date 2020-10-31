@@ -14,6 +14,7 @@ import {setTokenValue} from "../models/accounts/userAuthStore";
 import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
+import {TestPage} from "../desktop/home/TestPage";
 
 const useStyle = makeStyles({
     alertLabel: {
@@ -160,7 +161,9 @@ export class RouteComponent extends React.Component {
                                           exact path="/category"
                                           component={isMobile ?
                                               CategoryMaintenance : CategoryMaintenance} />
-
+                            <Route path={"/testPage"}
+                                   component={TestPage}
+                            />
                         </div>
                         </MenuNav>
                     </HashRouter>

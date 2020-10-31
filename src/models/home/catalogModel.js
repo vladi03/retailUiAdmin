@@ -30,7 +30,7 @@ export const createModel = () => ({
     onCatalogSearch
 });
 
-const onCatalogSearch = (catalogSearchText)=> {
+const onCatalogSearch = (catalogSearchText) => {
     const searchText = catalogSearchText.toLowerCase();
     const catalogListFilteredTemp = provider.state
         .catalogList.filter((cat) =>
