@@ -96,7 +96,7 @@ export const uploadImage = async (fileToUpload) => {
     formData.append("myFile", fileToUpload);
 
     const {catalogApi , token} = getStore();
-    const url = `${catalogApi}/catalogApi/api/v1/catalog/file`;
+    const url = `${catalogApi}/catalogApi/api/v1/catalog/file/800`;
     const payloadGeneric = {
         method: "POST",
         headers: {
