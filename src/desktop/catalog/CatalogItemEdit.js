@@ -14,7 +14,7 @@ const containerHeight = 415;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
-     onUploadImage, onDeleteCatalog
+     onUploadImage, onDeleteCatalog, imageUploading
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -121,7 +121,7 @@ const CatalogItemEditComponent = ({
                 value={itemEdit.description}
                 onChange={(event) => onValueChange("description", event.target.value)}
             />
-            {!catalogListLoading &&
+            {!catalogListLoading && !imageUploading &&
                 <Fragment>
                     <Button
                         onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
@@ -136,6 +136,7 @@ const CatalogItemEditComponent = ({
                 </Fragment>
             }
             {catalogListLoading && <span>Saving...</span>}
+            {imageUploading && <span>Uploading...</span>}
 
             <input type="file" name="myFile" id="myFile"
                    onChange={async (event) => {

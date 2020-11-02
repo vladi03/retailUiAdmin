@@ -16,6 +16,7 @@ export const createModel = () => ({
     catalogStatusLoading:false,
     categorySelected: null,
     catalogSearchText: "",
+    imageUploading: false,
     onCatalogListInit,
     onSetActiveCatalogItem,
     onSaveCatalogItem,
@@ -137,10 +138,12 @@ const onDeleteCatalog = async (catalog) => {
 };
 
 const onUploadImage = async (imageToSave, oldFileId) => {
+    provider.setState({imageUploading: true});
     if(oldFileId)
         await deleteFile(oldFileId);
-
-    return await uploadImage(imageToSave);
+    const result = await uploadImage(imageToSave);
+    provider.setState({imageUploading: false});
+    return result;
 };
 
 const onCreateNewCatalog = async ()=> {

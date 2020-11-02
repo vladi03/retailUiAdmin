@@ -5,7 +5,9 @@ module.exports = {
         publicPath: '',
         copy: [
             // Copy directory contents to output
-            {from: './src/retail-shop-flat-icon_small.jpg'}
+            {from: './src/retail-shop-flat-icon_small.jpg'},
+            {from: './src/manifest.json'},
+            {from: './src/sw.js'}
         ],
         define: {
             'process.env.AUTH_DOMAIN': JSON.stringify(process.env.AUTH_DOMAIN),
