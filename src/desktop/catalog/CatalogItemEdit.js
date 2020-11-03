@@ -55,6 +55,7 @@ const CatalogItemEditComponent = ({
                 && activeCatalogItem.images.length > 0;
 
             setItemEdit({...activeCatalogItem});
+            setUnitPrice("");
             setUpLoadImage(imageUrl);
             setColorRgb(rgbData);
             setUpLoadImageMetadata(metaUpload);
