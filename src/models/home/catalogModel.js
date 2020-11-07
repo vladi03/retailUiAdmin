@@ -141,7 +141,7 @@ const onUploadImage = async (imageToSave, oldFileId) => {
     provider.setState({imageUploading: true});
     if(oldFileId)
         await deleteFile(oldFileId);
-    const result = await uploadImage(imageToSave);
+    const result = await uploadImage(imageToSave, 300); //800
     provider.setState({imageUploading: false});
     return result;
 };

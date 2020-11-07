@@ -90,13 +90,13 @@ export const deleteFile = (fileId)=> {
         });
 };
 
-export const uploadImage = async (fileToUpload) => {
+export const uploadImage = async (fileToUpload, imageWidth) => {
 
     const formData = new FormData();
     formData.append("myFile", fileToUpload);
 
     const {catalogApi , token} = getStore();
-    const url = `${catalogApi}/catalogApi/api/v1/catalog/file/800`;// 800 and 500
+    const url = `${catalogApi}/catalogApi/api/v1/catalog/file/${imageWidth}`;// 800 and 500
     const payloadGeneric = {
         method: "POST",
         headers: {
