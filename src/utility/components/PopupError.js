@@ -4,17 +4,19 @@ import {Warning, Close, PriorityHigh} from "@material-ui/icons";
 import PropTypes from 'prop-types';
 
 export const PopupError = ({errorMessage, onClearErrorMessage, status}) => {
-    let statusColor = "#ff525b";
+    const showPopup = !!(errorMessage && errorMessage.length > 0);
+    let statusColor = "#ffffff";
     let StatusIcon = Warning;
-    if(status === "success") {
+    if(status === "success" && showPopup) {
         statusColor = "#1ead29";
         StatusIcon = PriorityHigh;
-    }
+    } else if(showPopup)
+        statusColor = "#ff525b";
 
     return (
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal : "center" }}
-            open={!!(errorMessage && errorMessage.length > 0)}
+            open={showPopup}
             autoHideDuration={6000}
             onClose={onClearErrorMessage}>
             <Paper style={{

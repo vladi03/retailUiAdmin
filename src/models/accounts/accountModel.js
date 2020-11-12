@@ -4,7 +4,11 @@ let provider = null;
 
 export const createModel = () => {
     const userStore = getStore();
+    console.log("isLoggedIn");
+    console.log(isLoggedIn());
+
     return {
+        loadingAuth: !isLoggedIn(),
         userNotAuthorized: false,
         userLoggedIn: isLoggedIn(),
         name: userStore.name,

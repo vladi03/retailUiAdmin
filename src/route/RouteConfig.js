@@ -10,7 +10,7 @@ import {initAuthStore} from "../models/accounts/userAuthStore";
 import {HomeMain} from "../desktop/home/HomeMain";
 import {PrivateRoute} from "./PrivateRoute";
 import { withAuth0 } from "@auth0/auth0-react";
-import {setTokenValue} from "../models/accounts/userAuthStore";
+import {setTokenValue, hasToken} from "../models/accounts/userAuthStore";
 import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
@@ -73,9 +73,6 @@ export class RouteComponent extends React.Component {
             this.setState({isMobile: window.innerWidth <= 760});
         };
         window.addEventListener("resize", checkSize);
-
-
-
     }
 
     render() {
@@ -126,8 +123,9 @@ export class RouteComponent extends React.Component {
             console.log("--- user render ---");
             console.log({errorMessage, isLoading, tokenLoading, tokenLoaded});
             console.log(this.props.auth0);
-            // noinspection JSIgnoredPromiseFromCall
-            getToken();
+            if(!hasToken())
+                // noinspection JSIgnoredPromiseFromCall
+                getToken();
         }
         const LoginRoute = getLoginRoute();
 

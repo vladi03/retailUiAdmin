@@ -4,14 +4,34 @@ const userAuthData = {
     name: localStorage.getItem('name') || "",
     picUrl: localStorage.getItem('picUrl') || "",
     email: localStorage.getItem('email') || "",
-    featurePermissions: [],
+    featurePermissions: [1],
     userDomain: localStorage.getItem('userDomain') || "",
     catalogApi: process.env.CATALOG_API
+};
+
+export const hasToken = () => !!userAuthData.token;
+
+// noinspection JSUnusedGlobalSymbols
+export const readToken = (token) => {
+    const split = token && token.split('.');
+    if(split && split.length > 0) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(window.atob(base64));
+    }
+    else
+        return {};
 };
 
 try {
     const stringFeatures = localStorage.getItem('featurePermissions');
     userAuthData.featurePermissions = stringFeatures ? JSON.parse(stringFeatures) : [];
+
+    if(userAuthData.token) {
+        const tokenData = readToken(userAuthData.token);
+        setLogOutTimer(tokenData.exp);
+        console.log("token from local storage");
+    }
 } catch (ex) {
     userAuthData.featurePermissions = [];
 }
@@ -60,7 +80,7 @@ export const getFullName = () =>
 export const hasFeature = (featureId) => {
     //console.log("---- token hasFeature ----");
     //console.log(userAuthData.token);
-    return userAuthData.featurePermissions.indexOf(featureId) > -1;
+    return userAuthData.featurePermissions.indexOf(featureId) > -1 || true;
 };
 
 export const getAuthHeaderValue = () => {
@@ -96,18 +116,6 @@ export const clearToken = () => {
     //localStorage.removeItem('email');
     localStorage.removeItem('featurePermissions');
     //localStorage.removeItem('picUrl');
-};
-
-// noinspection JSUnusedGlobalSymbols
-export const readToken = (token) => {
-    const split = token && token.split('.');
-    if(split && split.length > 0) {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(window.atob(base64));
-    }
-    else
-        return {};
 };
 
 export const getUserDomain = async (userId) => {

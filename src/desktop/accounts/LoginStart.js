@@ -6,12 +6,15 @@ import { Input as LoginIcon } from '@material-ui/icons';
 import accountModel from "../../models/accounts/accountModel";
 import {connectArray} from "../../utility/helpers";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Redirect } from 'react-router-dom';
 
 export const LogInComponent = ({}) => {
     const classes = useStyles();
-    const { loginWithRedirect } = useAuth0();
+    const { loginWithRedirect, isAuthenticated } = useAuth0();
     // noinspection HtmlUnknownTarget
     return (
+        isAuthenticated ?
+        <Redirect push={true} to="/" /> :
         <form id="logon-submit"
               action="/login/google/source"
               className={classes.mainContainer}>
