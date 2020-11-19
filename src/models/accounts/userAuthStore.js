@@ -1,3 +1,4 @@
+import {getUserProfile} from "./userMessages";
 
 const userAuthData = {
     token: localStorage.getItem('token'),
@@ -10,6 +11,22 @@ const userAuthData = {
 };
 
 export const hasToken = () => !!userAuthData.token;
+
+const setLogOutTimer = (expiresOn) => {
+    const {navigate} = require("../../route/history");
+    clearLogOutTimer();
+    //time out 60 seconds before token expires
+    const msToTimeOut = (expiresOn * 1000 ) - new Date() - 60000;
+
+    if(msToTimeOut > 30) {
+        userAuthData.logOutTimer = setTimeout(
+            () => navigate("#/logout"),
+            msToTimeOut
+        );
+    } else if (expiresOn > 0) {
+        navigate("#/logout");
+    }
+};
 
 // noinspection JSUnusedGlobalSymbols
 export const readToken = (token) => {
@@ -47,21 +64,7 @@ export const initAuthStore = ()=> {
     //setLogOutTimer(userAuthData.expiresOn);
 };
 
-const setLogOutTimer = (expiresOn) => {
-    const {navigate} = require("../../route/history");
-    clearLogOutTimer();
-    //time out 60 seconds before token expires
-    const msToTimeOut = (expiresOn * 1000 ) - new Date() - 60000;
 
-    if(msToTimeOut > 30) {
-        userAuthData.logOutTimer = setTimeout(
-            () => navigate("#/logout"),
-            msToTimeOut
-        );
-    } else if (expiresOn > 0) {
-        navigate("#/logout");
-    }
-};
 
 const clearLogOutTimer = () => {
     if(userAuthData.logOutTimer > -1) {
@@ -87,10 +90,10 @@ export const getAuthHeaderValue = () => {
     return userAuthData.token !== null ? `bearer ${userAuthData.token}` : "";
 };
 
-export const setUserData = async ({name, picture, email, userId}) => {
+export const setUserData = async ({name, picture, email, sub}) => {
     userAuthData.featurePermissions = [1];
     //localStorage.setItem('token', token);
-    const domain = await getUserDomain(userId);
+    const domain = await getUserDomain(sub);
     localStorage.setItem('name', name);
     localStorage.setItem('email', email);
     localStorage.setItem('picUrl', picture);
@@ -119,6 +122,9 @@ export const clearToken = () => {
 };
 
 export const getUserDomain = async (userId) => {
-
-    return "darbyfurnitureoutlet.com";
+    const {userProfile} = await getUserProfile(userId);
+    console.log("userProfile");
+    console.log(userProfile);
+    return userProfile && userProfile.app_metadata
+        && userProfile.app_metadata.retailDomain;//"darbyfurnitureoutlet.com";
 };

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {useIsMobile} from "../../utility/useIsMobile";
 import { SideStrip } from "fancy-menu"
 import {makeStyles} from "@material-ui/core/styles";
@@ -23,11 +23,11 @@ export const FullMenuNavComponent = ({ children, firstName, lastName,
 
     const {
         isLoading,
-        isAuthenticated,
-        error,
+        //isAuthenticated,
+        //error,
         user,
-        loginWithRedirect,
-        logout,
+        //loginWithRedirect,
+        //logout,
     } = useAuth0();
 
     const mainLinks = mainLinksAll.filter(
@@ -40,7 +40,8 @@ export const FullMenuNavComponent = ({ children, firstName, lastName,
         console.log(user);
     }
     if(user) {
-        setUserData(user);
+        if(userInfo.token && userInfo.userDomain === "")
+           setUserData(user);
         userInfo.picUrl = user.picture;
         userInfo.name = user.name;
     }

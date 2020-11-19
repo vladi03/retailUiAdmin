@@ -132,7 +132,9 @@ const onDeleteCatalog = async (catalog) => {
     result.catalogList = provider.state.catalogList.filter(
         (cat) => cat._id !== catalog._id
     );
-    result.catalogListFiltered = result.catalogList;
+    result.catalogListFiltered = sortCatalog(result.catalogList,
+        provider.state.categorySelected &&
+        provider.state.categorySelected._id);
     result.activeCatalogItem = null;
     provider.setState(result);
 };
