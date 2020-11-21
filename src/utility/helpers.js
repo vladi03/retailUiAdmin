@@ -1,5 +1,12 @@
 import {withStyles} from "@material-ui/styles";
 let routeComponent = null;
+let handleUnauthorized = null;
+
+export const setUnauthorizedHandler = (handler) => {
+    if(typeof(handler) === "function") {
+        handleUnauthorized = handler;
+    }
+};
 
 export const setRouteComponent = (compoent) => routeComponent = compoent;
 
@@ -103,8 +110,11 @@ export const handleResponse = () => {
         if(response.ok) {
             return response.json();
         }
-        if(response.status === 401)
+        if(response.status === 401) {
             routeComponent.setState({errorMessage: "Unauthorized"});
+            if(handleUnauthorized)
+                handleUnauthorized();
+        }
 
         throw new Error(response.status);
     };

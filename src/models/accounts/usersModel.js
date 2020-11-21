@@ -18,6 +18,8 @@ export const createModel = () => ({
     onSelectUser
 });
 
+
+
 export const  getInitialState = (classInstance) => {
     provider = classInstance;
     onLoadUsers();
