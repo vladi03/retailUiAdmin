@@ -63,8 +63,8 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                                 inputProps={{'aria-label': 'primary checkbox'}}
                             />
                         }
-                        label="Active"
-                        style={{marginLeft: 3}}
+                        label="Show"
+                        style={{marginLeft: 3, marginRight: 0}}
                     />
             )
             }
@@ -99,7 +99,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                                 inputProps={{'aria-label': 'primary checkbox'}}
                             />
                         }
-                        label="In Category"
+                        label="Categ..."
                         style={{marginLeft: 3}}
                     />
                     )
@@ -109,6 +109,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
             {inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
                 <IconButton aria-label="Up"
+                            size="medium"
                             className={classes.buttonUp}
                             onClick={()=> onOrderChange(catalog, category, prevCatalog)}
                 >
@@ -139,10 +140,11 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             }
         <CardHeader
             title={catalog.shortDesc}
-            subheader={catalog.extraDesc}
+            subheader={catalog.extraDesc || "_"}
             classes={{
                 title:classes.cardTitle,
-                subheader: classes.cardSubheader
+                subheader: classes.cardSubheader,
+                content : classes.cardRoot
             }}
         />
         </div>
@@ -157,7 +159,7 @@ const useStyle = makeStyles({
         zIndex: 9,
         padding: 15,
         backgroundColor: "#000000ba",
-        font: "800 16px Arial",
+        //font: "800 16px Arial",
         "border-bottom-right-radius": 10,
         color: "white"
     },
@@ -170,10 +172,21 @@ const useStyle = makeStyles({
         position: "relative"
     },
     cardTitle: {
-        fontSize: 16
+        fontSize: 16,
+        width:"100%",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
     },
     cardSubheader: {
-        fontSize: 14
+        fontSize: 14,
+        width:"100%",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
+    },
+    cardRoot: {
+        width: "100%"
     },
     imageBoxHeight: {
         width: props => props.widthValue,
@@ -197,7 +210,9 @@ const useStyle = makeStyles({
         padding: 15,
         backgroundColor: "#1095ec8f",
         left: "calc(50% - 20px)",
-        top: 40
+        top: 40,
+        width: 50,
+        height: 50
     },
     buttonDown : {
         position: "absolute",
@@ -206,7 +221,9 @@ const useStyle = makeStyles({
         padding: 15,
         backgroundColor: "#1095ec8f",
         left: "calc(50% - 20px)",
-        bottom: 75
+        bottom: 75,
+        width: 50,
+        height: 50
     }
 });
 

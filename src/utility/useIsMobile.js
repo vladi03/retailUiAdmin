@@ -34,8 +34,8 @@ export function useCardSize() {
             heightPicCalc = "24.3vw";
         }
         else {
-            widthCalc= "23vw";
-            heightPicCalc = "17.94vw";
+            widthCalc= "15vw";//"14vw";//"16.67vw";//"23vw";
+            heightPicCalc = "11.7vw";//"10.92vw";//"13vw";//"17.94vw";
         }
 
         return {widthCalc, heightPicCalc};
