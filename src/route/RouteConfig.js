@@ -15,6 +15,7 @@ import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
 import {TestPage} from "../desktop/home/TestPage";
+import {LocationMaintenance} from "../desktop/company/LocationMaintenance";
 
 const useStyle = makeStyles({
     alertLabel: {
@@ -22,6 +23,7 @@ const useStyle = makeStyles({
     }
 });
 
+// noinspection JSUnusedLocalSymbols
 const Alert = ({errorMessage, onCloseAlert}) => {
     const classes = useStyle();
 
@@ -154,6 +156,12 @@ export class RouteComponent extends React.Component {
                             <PrivateRoute permission={1}
                                           exact path="/"
                                           component={isMobile ? HomeMain : HomeMain} />
+
+                            <PrivateRoute permission={1}
+                                          exact path="/location"
+                                          component={isMobile ?
+                                              LocationMaintenance : LocationMaintenance} />
+
 
                             <PrivateRoute permission={1}
                                           exact path="/category"
