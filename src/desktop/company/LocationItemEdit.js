@@ -4,14 +4,16 @@ import {Paper, ListItemText, ListItem, TextField,
     ListItemIcon, IconButton
 } from "@material-ui/core";
 import {HomeTwoTone, Save, Delete} from "@material-ui/icons";
+import {LocationHours} from "./LocationHours";
 
 export const LocationItemEdit = ({location, saveLocation,
                                      deleteLocation}) => {
+
     const [itemChanged, setItemChanged] = useState(false);
     const [itemEdit, setItemEdit] = useState({...location});
-    const onValueChange = (fieldName, value) => {
+    const onValueChange = (fieldName, value, setChange = true) => {
         setItemEdit({...itemEdit, [fieldName]: value});
-        setItemChanged(true);
+        setItemChanged(setChange);
     };
 
     const onChangeAddress = (fieldName, value) => {
@@ -133,6 +135,15 @@ export const LocationItemEdit = ({location, saveLocation,
                     value={itemEdit.mapLink}
                     onChange={(event) => onValueChange("mapLink", event.target.value)}
                 />
+            </ListItem>
+            <ListItem>
+                <LocationHours
+                    hoursFull={itemEdit.hours}
+                    save={(hours)=> {
+                        onValueChange("hours",hours, false);
+                        saveLocation({...itemEdit, hours});
+                    }}
+                    />
             </ListItem>
         </Paper>
     );
