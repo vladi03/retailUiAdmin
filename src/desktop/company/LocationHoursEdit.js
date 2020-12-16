@@ -71,5 +71,5 @@ export const LocationHoursEdit = ({hoursFull, save}) => {
                 Save
             </Button>
         </Fragment>
-    )
+    );
 };
