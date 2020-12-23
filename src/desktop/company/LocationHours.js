@@ -2,7 +2,7 @@ import React, {useState} from  "react";
 import {hoursToView} from "../../models/company/locationHoursManager";
 import {Modal,Paper, ListItem, ListItemIcon,
     ListItemText, IconButton} from "@material-ui/core";
-import {AccessTime, Close} from "@material-ui/icons";
+import {AccessTime, Close, Edit, Timelapse} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {LocationHoursEdit} from "./LocationHoursEdit";
 
@@ -13,7 +13,34 @@ export const LocationHours = ({hoursFull, save}) => {
     const classes = useStyle();
     return (
         <div>
-            <div onClick={() => setOpen(true)}>Hours : </div>
+            <ListItem>
+                <ListItemIcon
+                    style={{marginLeft: -25}}
+                >
+                    <IconButton
+                        edge="end"
+                        aria-label="Save"
+                        color="primary"
+                        classes={{
+                            edgeEnd:classes.edgeEndChange
+                        }}
+                        onClick={()=> {
+                            setOpen(true);
+                        }}
+                    >
+                        <Edit />
+                    </IconButton>
+                </ListItemIcon>
+                <ListItemText
+                    primary="Hours"
+                    classes={{
+                        primary: undefined
+                    }}
+                />
+
+
+            </ListItem>
+
             {hours.map((hour) => {
 
                 return (

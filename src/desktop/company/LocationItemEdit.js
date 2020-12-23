@@ -25,7 +25,7 @@ export const LocationItemEdit = ({location, saveLocation,
     const classes = useStyles();
     return (
         <Paper className={classes.paper}>
-            <ListItem style={{display: "flex"}}>
+            <ListItem>
                 <ListItemIcon>
                     <HomeTwoTone />
                 </ListItemIcon>
