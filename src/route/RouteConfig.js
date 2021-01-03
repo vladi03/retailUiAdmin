@@ -16,6 +16,7 @@ import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
 import {TestPage} from "../desktop/home/TestPage";
 import {LocationMaintenance} from "../desktop/company/LocationMaintenance";
+import {Alert} from "../utility/components/Alert";
 
 const useStyle = makeStyles({
     alertLabel: {
@@ -24,29 +25,7 @@ const useStyle = makeStyles({
 });
 
 // noinspection JSUnusedLocalSymbols
-const Alert = ({errorMessage, onCloseAlert}) => {
-    const classes = useStyle();
 
-    return (
-        <Snackbar
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'center' }}
-            open={errorMessage.length > 0}
-            autoHideDuration={6000}
-            onClose={()=> onCloseAlert()}>
-            <Chip color="primary"
-                  classes={{
-                      label: classes.alertLabel
-                  }}
-                  onDelete={()=> onCloseAlert()}
-                  avatar={<Avatar>A</Avatar>}
-                  label={errorMessage}
-                  size="medium"
-            />
-        </Snackbar>
-    );
-};
 
 export class RouteComponent extends React.Component {
 

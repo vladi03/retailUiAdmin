@@ -11,6 +11,7 @@ export const createModel = () => ({
     catalogList: [],
     catalogListFiltered: [],
     catalogListLoading: false,
+    catalogListLoadError: false,
     savingCatalogSort: false,
     catalogListInit: false,
     catalogStatusLoading:false,
@@ -28,8 +29,13 @@ export const createModel = () => ({
     onRemoveCategoryFromCatalog,
     onCategorySelectChange,
     onCatalogOrderChange,
-    onCatalogSearch
+    onCatalogSearch,
+    onClearCatalogError
 });
+
+const onClearCatalogError = ()=>{
+    provider.setState({catalogListLoadError: false});
+};
 
 const onCatalogSearch = (catalogSearchText) => {
     const searchText = catalogSearchText.toLowerCase();
@@ -102,7 +108,8 @@ const onRemoveCategoryFromCatalog = async ({catalog, categoryId}) => {
 
 const onSetCatalogStatus = async (status, id) => {
     provider.setState({"catalogStatusLoading": id, activeCatalogItem: null});
-    const {saveCatalogStatusResult,
+    debugger;
+    const {saveCatalogStatusResult, catalogListLoadError,
         success} = await saveCatalogStatus(status, id);
     if(success && saveCatalogStatusResult.modifiedCount > 0) {
         const catalogList = provider.state.catalogList
@@ -119,10 +126,11 @@ const onSetCatalogStatus = async (status, id) => {
         provider.setState({
             catalogList,
             catalogListFiltered,
-            catalogStatusLoading: false
+            catalogStatusLoading: false,
+            catalogListLoadError
         });
     } else
-        provider.setState({"catalogStatusLoading": false});
+        provider.setState({"catalogStatusLoading": false, catalogListLoadError});
 };
 
 const onDeleteCatalog = async (catalog) => {
@@ -197,6 +205,7 @@ const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) =>
     if(!setActiveItem)
         result.activeCatalogItem = null;
     result.catalogStatusLoading = false;
+    debugger;
     provider.setState(result);
 };
 

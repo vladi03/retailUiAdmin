@@ -8,12 +8,14 @@ import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
+import {PopupError} from "../../utility/components/PopupError";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
        catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
        onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
        onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
-       onCatalogOrderChange, savingCatalogSort}) => {
+       onCatalogOrderChange, savingCatalogSort, catalogListLoadError,
+       onClearCatalogError}) => {
 
     useEffect(()=> {
         if(!catalogListInit)
@@ -22,10 +24,18 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState(null);
+
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
+
     return (
         <Fragment>
+            <PopupError
+                errorMessage={catalogListLoadError && "Error Saving"}
+                onClearErrorMessage={() => onClearCatalogError(false)}
+                status={"error"}
+            />
+
             <div style={{width: 360, marginTop: -10, marginBottom: 10}}>
                 <CategorySelect
                     onChange={(category) => {

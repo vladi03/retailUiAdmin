@@ -17,7 +17,8 @@ export const saveCatalogStatus = async (status, id)=>{
             return {
                 success: true,
                 saveCatalogStatusResult: result,
-                catalogStatusLoading: false
+                catalogStatusLoading: false,
+                catalogListLoadError: false
             }
         }).catch((error) => {
             return {
@@ -138,7 +139,8 @@ export const saveCatalog = async (itemToSave)=>{
             return {
                 saveCatalogResult: result,
                 activeCatalogItem: itemToSave,
-                catalogListLoading: false
+                catalogListLoading: false,
+                catalogListLoadError: false
             }
         }).catch((error) => {
             return {
@@ -165,7 +167,8 @@ export const getNewCatalog = () => {
         .then(handleResponse()).then((result) => {
             return {
                 activeCatalogItem: result,
-                catalogListLoading: false
+                catalogListLoading: false,
+                catalogListLoadError: false
             }
         }).catch((error) => {
             return {
@@ -191,7 +194,8 @@ export const getCatalogList = async () => {
         .then(handleResponse()).then((result) => {
             return {
                 catalogList: result,
-                catalogListLoading: false
+                catalogListLoading: false,
+                catalogListLoadError: false
             }
         }).catch((error) => {
             return {
