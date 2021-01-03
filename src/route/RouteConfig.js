@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter, Route } from 'react-router-dom';
-import {Snackbar, Chip, Avatar} from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import { GlobalProviders} from "../GlobalProviders";
 import {getLoginRoute} from "./history";
@@ -16,17 +15,9 @@ import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
 import {TestPage} from "../desktop/home/TestPage";
 import {LocationMaintenance} from "../desktop/company/LocationMaintenance";
-import {Alert} from "../utility/components/Alert";
 
-const useStyle = makeStyles({
-    alertLabel: {
-        fontSize: 20
-    }
-});
 
 // noinspection JSUnusedLocalSymbols
-
-
 export class RouteComponent extends React.Component {
 
     constructor() {
