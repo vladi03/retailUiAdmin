@@ -5,7 +5,8 @@ module.exports = {
         publicPath: '',
         copy: [
             // Copy directory contents to output
-            {from: './src/retail-shop-flat-icon_small.jpg'},
+            {from: './src/retail-shop-flat-icon_small.png'},
+            {from: './src/retail-shop-flat-icon.jpg'},
             {from: './src/manifest.json'},
             {from: './src/sw.js'}
         ],

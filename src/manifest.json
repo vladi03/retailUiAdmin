@@ -6,13 +6,14 @@
 	"service_worker": "sw.js",
     "icons": [
         {
-            "src": "/retail-shop-flat-icon_small.jpg",
-            "sizes": "192x192",
-            "type": "image/jpg"
+            "src": "/retail-shop-flat-icon_small.png",
+            "sizes": "200x200",
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "/retail-shop-flat-icon.jpg",
-            "sizes": "512x512",
+            "sizes": "736x736",
             "type": "image/jpg"
         }
     ],
