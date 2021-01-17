@@ -21,7 +21,7 @@ export const LogInComponent = ({}) => {
             <Card style={{display: "flex"}}>
                 <div className={classes.outerCard}>
                     <CardContent className={classes.cardContainer}>
-                        <img src={"retail-shop-flat-icon_small.jpg"}
+                        <img src={"retail-shop-flat-icon_small.png"}
                              className={classes.logo}/>
                     </CardContent>
                     <CardActions>

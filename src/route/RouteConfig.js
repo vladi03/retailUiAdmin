@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter, Route } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import { GlobalProviders} from "../GlobalProviders";
 import {getLoginRoute} from "./history";
 import {FullMenuNav} from "../desktop/home/FullMenuNav";
@@ -13,7 +12,6 @@ import {setTokenValue, hasToken} from "../models/accounts/userAuthStore";
 import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
-import {TestPage} from "../desktop/home/TestPage";
 import {LocationMaintenance} from "../desktop/company/LocationMaintenance";
 
 
@@ -137,9 +135,7 @@ export class RouteComponent extends React.Component {
                                           exact path="/category"
                                           component={isMobile ?
                                               CategoryMaintenance : CategoryMaintenance} />
-                            <Route path={"/testPage"}
-                                   component={TestPage}
-                            />
+
                         </div>
                         </MenuNav>
                     </HashRouter>
