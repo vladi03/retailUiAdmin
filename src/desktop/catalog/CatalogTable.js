@@ -9,13 +9,15 @@ import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
 import {PopupError} from "../../utility/components/PopupError";
+import {Accordion,AccordionDetails,AccordionSummary } from '@material-ui/core';
+import {categoryModel} from "../../models/home/categoryModel";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
-       catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
-       onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
-       onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
-       onCatalogOrderChange, savingCatalogSort, catalogListLoadError,
-       onClearCatalogError}) => {
+                                          catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
+                                          onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
+                                          onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
+                                          onCatalogOrderChange, savingCatalogSort, catalogListLoadError,
+                                          onClearCatalogError,categoryList}) => {
 
     useEffect(()=> {
         if(!catalogListInit)
@@ -23,7 +25,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
     });
 
     const isMobile = useIsMobile();
-    const [categorySelected, setCategorySelected] = useState(null);
+    const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -44,84 +46,156 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                     }}
                 />
             </div>
-        <div className={classes.mainContainer}>
-            <div className={classes.scrollContainer}>
-                <div className={classes.container}>
-                    {catalogListFiltered.map((catalog, index)=> {
+            <div className={classes.mainContainer}>
+                <div className={classes.scrollContainer}>
+                    <div className={classes.container}>
 
-                        const prevCatalog = index > 0 ?
-                            catalogListFiltered[index - 1] : null;
+                        {categoryList.map((category, index) => {
+                            {console.log(category, )}
+                            return(
 
-                        const nextCatalog =
-                            catalogListFiltered.length > (index - 2) ?
-                                catalogListFiltered[index + 1] : null;
+                                <Accordion expanded={category._id===categorySelected._id}
+                                           onChange={() => {
 
-                        const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
-                            (cat) => cat._id === categorySelected._id ) || [];
+                                               if(category._id===categorySelected._id){
+                                                   const emptyCat = {_id:null, category: "All"}
+                                                   setCategorySelected(emptyCat);
+                                                   onCategorySelectChange(emptyCat);
 
-                        const nextIsInCategory = filterCategory.length > 0;
 
-                        return (
-                            <CatalogCard
-                                key={`${catalog._id}${catalog.sort}`}
-                                prevCatalog={prevCatalog}
-                                nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                inEdit={inEdit}
-                                catalog={catalog}
-                                category={categorySelected}
-                                disableEdit={activeCatalogItem != null}
-                                onSetStatus={onSetCatalogStatus}
-                                onAddCategory={onAddCategoryToCatalog}
-                                onRemoveCategory={onRemoveCategoryFromCatalog}
-                                isSaving={catalog._id === catalogStatusLoading}
-                                onOrderChange={onCatalogOrderChange}
-                                savingCatalogSort={savingCatalogSort}
-                                onClick={() => {
-                                    if (!isMobile) {
-                                        onSetActiveCatalogItem(catalog);
-                                    }
-                                }}
-                            />
-                        );
+                                               }else {
+                                                   setCategorySelected(category);
+                                                   onCategorySelectChange(category);
+                                               }
+                                               //setTableList(onSelectCategory(category))
+                                           }}
+                                           key={category._id}
+                                           style={{width:'100vw'}}
+
+                                >
+                                    <AccordionSummary>
+                                        {category.category}
+
+                                    </AccordionSummary>
+
+                                    <div style={{display:'flex', flexDirection:'row',overflowX: 'scroll'}}>
+
+
+
+                                        {catalogListFiltered.map((catalog, index)=> {
+                                                console.log(catalog, catalog.status,catalog.status === "active")
+
+                                                const prevCatalog = index > 0 ?
+                                                    catalogListFiltered[index - 1] : null;
+
+                                                const nextCatalog =
+                                                    catalogListFiltered.length > (index - 2) ?
+                                                        catalogListFiltered[index + 1] : null;
+
+                                                const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
+                                                    (cat) => cat._id === categorySelected._id ) || [];
+
+                                                const nextIsInCategory = filterCategory.length > 0;
+
+                                                return (
+                                                    <div>
+
+                                                        {(catalog.status === "active" ?
+                                                            <div >
+                                                                Active
+                                                                <CatalogCard
+                                                                    key={`${catalog._id}${catalog.sort}`}
+                                                                    prevCatalog={prevCatalog}
+                                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
+                                                                    inEdit={inEdit}
+                                                                    catalog={catalog}
+                                                                    category={categorySelected}
+                                                                    disableEdit={activeCatalogItem != null}
+                                                                    onSetStatus={onSetCatalogStatus}
+                                                                    onAddCategory={onAddCategoryToCatalog}
+                                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
+                                                                    isSaving={catalog._id === catalogStatusLoading}
+                                                                    onOrderChange={onCatalogOrderChange}
+                                                                    savingCatalogSort={savingCatalogSort}
+                                                                    onClick={() => {
+                                                                        if (!isMobile) {
+                                                                            onSetActiveCatalogItem(catalog);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            :null)}
+                                                        {(catalog.status === "in-progress" ?
+                                                            <>
+                                                                <CatalogCard
+                                                                    key={`${catalog._id}${catalog.sort}`}
+                                                                    prevCatalog={prevCatalog}
+                                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
+                                                                    inEdit={inEdit}
+                                                                    catalog={catalog}
+                                                                    category={categorySelected}
+                                                                    disableEdit={activeCatalogItem != null}
+                                                                    onSetStatus={onSetCatalogStatus}
+                                                                    onAddCategory={onAddCategoryToCatalog}
+                                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
+                                                                    isSaving={catalog._id === catalogStatusLoading}
+                                                                    onOrderChange={onCatalogOrderChange}
+                                                                    savingCatalogSort={savingCatalogSort}
+                                                                    onClick={() => {
+                                                                        if (!isMobile) {
+                                                                            onSetActiveCatalogItem(catalog);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </>
+                                                            :null)}
+                                                    </div>
+                                                );
+                                            }
+                                        )}
+                                    </div>
+                                </Accordion>
+                            )
+
+                        })
                         }
-                    )}
+                    </div>
                 </div>
-            </div>
-            {inEdit &&
-            <div className={classes.containerEdit}>
-                <div style={{width: "100%"}}>
-                <IconButton
-                    className={classes.editControl}
-                    onClick={()=> {
-                        onSetActiveCatalogItem(null);
-                    }}
-                >
-                    <Close/>
-                </IconButton>
+                {inEdit &&
+                <div className={classes.containerEdit}>
+                    <div style={{width: "100%"}}>
+                        <IconButton
+                            className={classes.editControl}
+                            onClick={()=> {
+                                onSetActiveCatalogItem(null);
+                            }}
+                        >
+                            <Close/>
+                        </IconButton>
+                    </div>
+                    <CatalogItemEdit />
                 </div>
-                <CatalogItemEdit />
-            </div>
-            }
+                }
 
-        </div>
+            </div>
         </Fragment>
     )
 };
 
-export const CatalogTable = connectArray(CatalogTableComponent,[catalogModel]);
+export const CatalogTable = connectArray(CatalogTableComponent,[catalogModel, categoryModel]);
 
 const useStyle = makeStyles({
     scrollContainer: {
         height: "calc( 100vh - 120px)",
         width: props => props.inEdit ? "24vw" : "100%",
-        overflow: "auto"
+        overflow: "auto",
     },
-   container: {
-       display:"flex",
-       flexWrap:"wrap",
-       justifyContent: "space-between",
-       width:  "100%"
-   },
+    container: {
+        display:"flex",
+        flexWrap:"wrap",
+        justifyContent: "space-between",
+        width:  "100vw"
+    },
     containerEdit: {
         display:"flex",
         flexWrap:"wrap",
