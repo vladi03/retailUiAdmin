@@ -1,7 +1,7 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -10,6 +10,7 @@ export const createModel = () => ({
     activeCatalogItem: null,
     catalogList: [],
     catalogListFiltered: [],
+    catalogListOutCategory:[],
     catalogListLoading: false,
     catalogListLoadError: false,
     savingCatalogSort: false,
@@ -66,9 +67,11 @@ const onCatalogOrderChange = async (catalog, category, swapCatalog) => {
 
 //category select drop down
 const onCategorySelectChange = (categorySelected) => {
-    const catalogListFiltered = sortCatalog(provider.state.catalogList,
+    const catalogListSorted = sortCatalog(provider.state.catalogList,
         categorySelected._id);
-    provider.setState({catalogListFiltered, categorySelected});
+       const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id )
+
+    provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected});
 };
 
 const onAddCategoryToCatalog = async ({catalog, category}) => {

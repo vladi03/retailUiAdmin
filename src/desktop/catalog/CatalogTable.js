@@ -3,13 +3,13 @@ import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
 import {CatalogCard} from "./CatalogCard";
 import {makeStyles} from "@material-ui/core/styles";
-import {IconButton} from "@material-ui/core";
+import {IconButton, Paper} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
 import {PopupError} from "../../utility/components/PopupError";
-import {Accordion,AccordionDetails,AccordionSummary } from '@material-ui/core';
+import {Accordion,AccordionDetails,AccordionSummary, GridList,GridListTile } from '@material-ui/core';
 import {categoryModel} from "../../models/home/categoryModel";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
@@ -17,7 +17,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                           onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
                                           onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
                                           onCatalogOrderChange, savingCatalogSort, catalogListLoadError,
-                                          onClearCatalogError,categoryList}) => {
+                                          onClearCatalogError, categoryList, catalogListOutCategory  }) => {
 
     useEffect(()=> {
         if(!catalogListInit)
@@ -29,6 +29,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
+
 
     return (
         <Fragment>
@@ -51,7 +52,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                     <div className={classes.container}>
 
                         {categoryList.map((category, index) => {
-                            {console.log(category, )}
                             return(
 
                                 <Accordion expanded={category._id===categorySelected._id}
@@ -70,20 +70,19 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                                //setTableList(onSelectCategory(category))
                                            }}
                                            key={category._id}
-                                           style={{width:'100vw'}}
+                                           className={classes.accordion}
 
                                 >
                                     <AccordionSummary>
                                         {category.category}
 
                                     </AccordionSummary>
+                                    
 
-                                    <div style={{display:'flex', flexDirection:'row',overflowX: 'scroll'}}>
-
+                                    <GridList className={classes.gridList} cols={5}>
 
 
                                         {catalogListFiltered.map((catalog, index)=> {
-                                                console.log(catalog, catalog.status,catalog.status === "active")
 
                                                 const prevCatalog = index > 0 ?
                                                     catalogListFiltered[index - 1] : null;
@@ -94,72 +93,98 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
 
                                                 const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
                                                     (cat) => cat._id === categorySelected._id ) || [];
+                                                
 
                                                 const nextIsInCategory = filterCategory.length > 0;
-
-                                                return (
-                                                    <div>
-
-                                                        {(catalog.status === "active" ?
-                                                            <div >
-                                                                Active
-                                                                <CatalogCard
-                                                                    key={`${catalog._id}${catalog.sort}`}
-                                                                    prevCatalog={prevCatalog}
-                                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                                                    inEdit={inEdit}
-                                                                    catalog={catalog}
-                                                                    category={categorySelected}
-                                                                    disableEdit={activeCatalogItem != null}
-                                                                    onSetStatus={onSetCatalogStatus}
-                                                                    onAddCategory={onAddCategoryToCatalog}
-                                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
-                                                                    isSaving={catalog._id === catalogStatusLoading}
-                                                                    onOrderChange={onCatalogOrderChange}
-                                                                    savingCatalogSort={savingCatalogSort}
-                                                                    onClick={() => {
-                                                                        if (!isMobile) {
-                                                                            onSetActiveCatalogItem(catalog);
-                                                                        }
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            :null)}
-                                                        {(catalog.status === "in-progress" ?
-                                                            <>
-                                                                <CatalogCard
-                                                                    key={`${catalog._id}${catalog.sort}`}
-                                                                    prevCatalog={prevCatalog}
-                                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                                                    inEdit={inEdit}
-                                                                    catalog={catalog}
-                                                                    category={categorySelected}
-                                                                    disableEdit={activeCatalogItem != null}
-                                                                    onSetStatus={onSetCatalogStatus}
-                                                                    onAddCategory={onAddCategoryToCatalog}
-                                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
-                                                                    isSaving={catalog._id === catalogStatusLoading}
-                                                                    onOrderChange={onCatalogOrderChange}
-                                                                    savingCatalogSort={savingCatalogSort}
-                                                                    onClick={() => {
-                                                                        if (!isMobile) {
-                                                                            onSetActiveCatalogItem(catalog);
-                                                                        }
-                                                                    }}
-                                                                />
-                                                            </>
-                                                            :null)}
-                                                    </div>
-                                                );
+                                            return(
+                                                <CatalogCard
+                                                    key={`${catalog._id}${catalog.sort}`}
+                                                    prevCatalog={prevCatalog}
+                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
+                                                    inEdit={inEdit}
+                                                    catalog={catalog}
+                                                    category={categorySelected}
+                                                    disableEdit={activeCatalogItem != null}
+                                                    onSetStatus={onSetCatalogStatus}
+                                                    onAddCategory={onAddCategoryToCatalog}
+                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
+                                                    isSaving={catalog._id === catalogStatusLoading}
+                                                    onOrderChange={onCatalogOrderChange}
+                                                    savingCatalogSort={savingCatalogSort}
+                                                    onClick={() => {
+                                                        if (!isMobile) {
+                                                            onSetActiveCatalogItem(catalog);
+                                                        }
+                                                    }}
+                                                />
+                                                         );
                                             }
                                         )}
-                                    </div>
+
+                                    </GridList>
+                                        
                                 </Accordion>
+
                             )
 
                         })
                         }
+                   
+
+
                     </div>
+
+                    <div className={classes.gridListContainer} >
+                        <Paper className={classes.gridListBottom}>
+                            
+                        {catalogListOutCategory.map((catalog, index)=> {
+
+                            const prevCatalog = index > 0 ?
+                                catalogListFiltered[index - 1] : null;
+
+                            const nextCatalog =
+                                catalogListFiltered.length > (index - 2) ?
+                                    catalogListFiltered[index + 1] : null;
+
+                            const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
+                                (cat) => cat._id === categorySelected._id ) || [];
+
+
+                            const nextIsInCategory = filterCategory.length > 0;
+                            return(
+                                <GridListTile>
+                            <CatalogCard
+                                key={`${catalog._id}${catalog.sort}`}
+                                prevCatalog={prevCatalog}
+                                nextCatalog={nextIsInCategory ? nextCatalog : null}
+                                inEdit={inEdit}
+                                catalog={catalog}
+                                category={categorySelected}
+                                disableEdit={activeCatalogItem != null}
+                                onSetStatus={onSetCatalogStatus}
+                                onAddCategory={onAddCategoryToCatalog}
+                                onRemoveCategory={onRemoveCategoryFromCatalog}
+                                isSaving={catalog._id === catalogStatusLoading}
+                                onOrderChange={onCatalogOrderChange}
+                                savingCatalogSort={savingCatalogSort}
+                                onClick={() => {
+                                    if (!isMobile) {
+                                        onSetActiveCatalogItem(catalog);
+                                    }
+                                }}
+                            />
+                            </GridListTile>
+                                    );
+                            }
+                            )}
+
+                    
+                                    </Paper>
+                                    
+
+
+
+                    </div>                   
                 </div>
                 {inEdit &&
                 <div className={classes.containerEdit}>
@@ -176,6 +201,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                     <CatalogItemEdit />
                 </div>
                 }
+                
+               
 
             </div>
         </Fragment>
@@ -191,10 +218,11 @@ const useStyle = makeStyles({
         overflow: "auto",
     },
     container: {
-        display:"flex",
+        display:"block",
         flexWrap:"wrap",
         justifyContent: "space-between",
-        width:  "100vw"
+        width:  "100%",
+
     },
     containerEdit: {
         display:"flex",
@@ -212,5 +240,37 @@ const useStyle = makeStyles({
     mainContainer: {
         display:"flex",
         flexWrap:"wrap",
-    }
+    },
+    gridList: {
+        flexWrap: 'wrap',
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        transform: 'translateZ(0)',
+      },
+      gridListBottom: {
+        flexWrap: 'nowrap',
+        bottom:0,
+        position:'absolute',
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        transform: 'translateZ(0)',
+        display:'flex',      
+        width: '100%',
+        overflow: 'scroll'  
+
+      },
+      gridListTile:{
+          
+
+      },
+      accordion:{
+          height:'100%'
+      },
+      gridListContainer: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        justifyContent: 'space-around',
+        width:  "100%",
+        overflow:'hidden'
+        
+
+      },
 });
