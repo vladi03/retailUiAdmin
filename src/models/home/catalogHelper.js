@@ -19,8 +19,30 @@ export const sortCatalog = (catalogList, categoryId)=> {
         else
             return 1;
     });
+    console.log('catalogList sort', calc)
     return calc;
 };
+export const filterCatalog = (catalogListSorted, categoryId)=> {
+    const calc = [...catalogListSorted];
+    const filterCatalogIn =[]
+    const filterCatalogOut=[]
+    calc.map((a) => {
+        
+        const filterA = catalogListSorted ? a.categories.filter((aItem) =>
+            aItem._id === categoryId ) : [];
+        const filterB = catalogListSorted ? a.categories.filter((aItem) =>
+            aItem._id !== categoryId ) : [];
+
+        if (filterA.length > 0)
+        filterCatalogIn.push(a)
+            else
+            filterCatalogOut.push(a)
+
+        
+    });
+    return {filterCatalogIn,filterCatalogOut} ;
+};
+
 
 export const swapOrder = (catalog, category, swapCatalog) => {
     const target = {...catalog};
