@@ -19,26 +19,22 @@ export const sortCatalog = (catalogList, categoryId)=> {
         else
             return 1;
     });
-    console.log('catalogList sort', calc)
+    console.log('catalogList sort', calc);
     return calc;
 };
 export const filterCatalog = (catalogListSorted, categoryId)=> {
     const calc = [...catalogListSorted];
-    const filterCatalogIn =[]
-    const filterCatalogOut=[]
-    calc.map((a) => {
+    const filterCatalogIn =[];
+    const filterCatalogOut=[];
+    calc.forEach((a) => {
         
         const filterA = catalogListSorted ? a.categories.filter((aItem) =>
             aItem._id === categoryId ) : [];
-        const filterB = catalogListSorted ? a.categories.filter((aItem) =>
-            aItem._id !== categoryId ) : [];
 
         if (filterA.length > 0)
-        filterCatalogIn.push(a)
-            else
-            filterCatalogOut.push(a)
-
-        
+            filterCatalogIn.push(a);
+        else
+           filterCatalogOut.push(a);
     });
     return {filterCatalogIn,filterCatalogOut} ;
 };
@@ -58,4 +54,15 @@ export const swapOrder = (catalog, category, swapCatalog) => {
         targetCategory[0].sort = newTarget;
     }
     return {target, swap};
+};
+
+export const getNextSortInCategory = (categoryId, catalogList) => {
+    let maxSort = 0;
+    catalogList.forEach((catalog) => {
+        catalog.categories.forEach((inCategory)=> {
+            if(inCategory._id === categoryId && inCategory.sort > maxSort)
+                maxSort = inCategory.sort;
+        });
+    });
+    return maxSort + 1;
 };

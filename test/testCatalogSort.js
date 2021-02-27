@@ -1,5 +1,5 @@
 import assert from "assert";
-import {sortCatalog, swapOrder} from "../src/models/home/catalogHelper";
+import {sortCatalog, swapOrder, getNextSortInCategory} from "../src/models/home/catalogHelper";
 import {mockCatalogs, mockSwap} from "./mockCatalog";
 
 describe("sort catalog list", ()=> {
@@ -56,5 +56,22 @@ describe("swap catalog order", ()=> {
             ]
         };
         assert.deepStrictEqual(swap, expected);
+    });
+});
+
+describe("get next sort", ()=>{
+    it("next sort 1", ()=> {
+        const nextSort = getNextSortInCategory("5f72aebb35d2b81b6497f4bb", mockCatalogs);
+        assert.strictEqual(nextSort, 2);
+    });
+
+    it("next sort 2", ()=> {
+        const nextSort = getNextSortInCategory("5f72af5735d2b81b6497f4bd", mockCatalogs);
+        assert.strictEqual(nextSort, 3);
+    });
+    //
+    it("next sort 4", ()=> {
+        const nextSort = getNextSortInCategory("5f72af4935d2b81b6497f4bc", mockCatalogs);
+        assert.strictEqual(nextSort, 5);
     });
 });
