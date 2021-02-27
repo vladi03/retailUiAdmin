@@ -15,7 +15,8 @@ const containerHeight = 415;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
-     onUploadImage, onDeleteCatalog, imageUploading, categoryList
+     onUploadImage, onDeleteCatalog, imageUploading, categoryList,
+     onAddCategoryToCatalog, onRemoveCategoryFromCatalog
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -138,9 +139,17 @@ const CatalogItemEditComponent = ({
                                 <Checkbox
                                     checked={itemCategory !== undefined}
                                     onChange={(event)=> {
-                                        const newStatus = event.target.checked ?
-                                            "active" : "disabled";
-
+                                        if(itemCategory === undefined && event.target.checked)
+                                            onAddCategoryToCatalog({
+                                                catalog : itemEdit,
+                                                category: categoryRef
+                                            });
+                                        else {
+                                            onRemoveCategoryFromCatalog({
+                                                catalog: itemEdit,
+                                                categoryId : categoryRef._id
+                                            });
+                                        }
                                     }}
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                 />
