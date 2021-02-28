@@ -11,6 +11,7 @@ import {CategorySelect} from "./CategorySelect";
 import {PopupError} from "../../utility/components/PopupError";
 import {Accordion,AccordionDetails,AccordionSummary, GridList,GridListTile } from '@material-ui/core';
 import {categoryModel} from "../../models/home/categoryModel";
+import {CatalogList} from "./CatalogListComponent";
 
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                           catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
@@ -75,54 +76,11 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                 >
                                     <AccordionSummary>
                                         {category.category}
-
                                     </AccordionSummary>
-                                    
 
-                                    <GridList className={classes.gridList} cols={5}>
+                                    <CatalogList  />
 
 
-                                        {catalogListFiltered.map((catalog, index)=> {
-
-                                                const prevCatalog = index > 0 ?
-                                                    catalogListFiltered[index - 1] : null;
-
-                                                const nextCatalog =
-                                                    catalogListFiltered.length > (index - 2) ?
-                                                        catalogListFiltered[index + 1] : null;
-
-                                                const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
-                                                    (cat) => cat._id === categorySelected._id ) || [];
-                                                
-
-                                                const nextIsInCategory = filterCategory.length > 0;
-                                            return(
-                                                <CatalogCard
-                                                    key={`${catalog._id}${catalog.sort}`}
-                                                    prevCatalog={prevCatalog}
-                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                                    inEdit={inEdit}
-                                                    catalog={catalog}
-                                                    category={categorySelected}
-                                                    disableEdit={activeCatalogItem != null}
-                                                    onSetStatus={onSetCatalogStatus}
-                                                    onAddCategory={onAddCategoryToCatalog}
-                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
-                                                    isSaving={catalog._id === catalogStatusLoading}
-                                                    onOrderChange={onCatalogOrderChange}
-                                                    savingCatalogSort={savingCatalogSort}
-                                                    onClick={() => {
-                                                        if (!isMobile) {
-                                                            onSetActiveCatalogItem(catalog);
-                                                        }
-                                                    }}
-                                                />
-                                                         );
-                                            }
-                                        )}
-
-                                    </GridList>
-                                        
                                 </Accordion>
 
                             )
@@ -264,9 +222,9 @@ const useStyle = makeStyles({
       accordion:{
           height:'100%'
       },
-      gridListContainer: {
+      catalogListComponent: {
         display: 'flex',
-        flexWrap: 'nowrap',
+        flexWrap: 'wrap',
         justifyContent: 'space-around',
         width:  "100%",
         overflow:'hidden'
