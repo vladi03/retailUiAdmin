@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, CardHeader, CardContent,
+import {Card, CardHeader, CardContent, Switch,
     FormControlLabel, Checkbox, IconButton} from "@material-ui/core";
 import {ThreeSixty, ArrowUpward, ArrowDownward} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
@@ -53,14 +53,16 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                     /> :
                     <FormControlLabel
                         control={
-                            <Checkbox
+                            <Switch
                                 checked={catalog.status === "active"}
-                                onChange={(event) => {
+                                onChange={(event)=> {
                                     const newStatus = event.target.checked ?
                                         "active" : "disabled";
                                     onSetStatus(newStatus, catalog._id);
                                 }}
-                                inputProps={{'aria-label': 'primary checkbox'}}
+                                color="primary"
+                                name="checkedB"
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
                             />
                         }
                         label="Show"

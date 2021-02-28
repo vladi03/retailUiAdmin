@@ -1,13 +1,15 @@
-import React, {useState, useEffect, Fragment} from "react";
+import React, {useState, useEffect} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {categoryModel} from "../../models/home/categoryModel";
 import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button, Paper,
-Checkbox, FormControlLabel} from "@material-ui/core";
+Checkbox, FormControlLabel, Switch} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import {Save} from "@material-ui/icons";
 import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {PicRatioFill} from "pic-ratio-fill";
+import {AlertDialog} from "../../utility/components/AlertDialog";
 
 const {catalogApi} = getStore();
 const containerWidth = 532;
@@ -69,23 +71,27 @@ const CatalogItemEditComponent = ({
     return(
         <div className={classes.textBox}>
             <Paper className={classes.paperEntryContainer}>
+
+
                 <FormControlLabel
                     control={
-                        <Checkbox
+                        <Switch
                             checked={itemEdit.status === "active"}
                             onChange={(event)=> {
                                 const newStatus = event.target.checked ?
                                     "active" : "disabled";
                                 onValueChange("status",newStatus);
                             }}
+                            color="primary"
+                            name="checkedB"
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                         />
                     }
-                    label="Active"
+                    label="Show"
                 />
 
                 <TextField
-                    style={{width:"32%"}}
+                    style={{width:"32%", marginLeft: 20}}
                     label="Short Desc"
                     value={itemEdit.shortDesc}
                     onChange={(event) => onValueChange("shortDesc", event.target.value)}
@@ -162,41 +168,51 @@ const CatalogItemEditComponent = ({
                 </div>
 
             {!catalogListLoading && !imageUploading &&
-                <Fragment>
-                    <Button
-                        onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
-                    >
-                        Save
-                    </Button>
-                    <Button
-                        onClick={() => onDeleteCatalog(itemEdit)}
-                    >
-                        Delete
-                    </Button>
-                </Fragment>
+                <div style={{display: "flex", justifyContent: "flex-end"}} >
+                    <div>
+                        <input type="file" name="myFile" id="myFile"
+                               onChange={async (event) => {
+                                   console.log(event.target.files);
+                                   const reader = new FileReader();
+                                   /**
+                                    * @param {{target:object}} e
+                                    */
+                                   reader.onload = function(e) {
+                                       console.log("image read locally");
+                                       setUpLoadImage(e.target.result);
+                                   };
+                                   reader.readAsDataURL(event.target.files[0]);
+                                   const uploadResult = await onUploadImage(event.target.files[0], imageId);
+
+                                   if(uploadResult.uploadImageResult) {
+                                       setUpLoadImageMetadata(uploadResult.uploadImageResult);
+                                   }
+                               }}
+                        />
+                    </div>
+                    <div >
+                        <Button variant="contained"
+                                color="primary"
+                                startIcon={<Save />}
+                                style={{marginRight: 20}}
+                            onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
+                        >
+                            Save
+                        </Button>
+                        <AlertDialog
+                            onClick={() => onDeleteCatalog(itemEdit)}
+                            title={"Are You Sure?"}
+                            message={`Are You Sure you want to delete "${itemEdit.shortDesc}"?`}
+                        >
+                            Delete
+                        </AlertDialog>
+                    </div>
+                </div>
             }
             {catalogListLoading && <span>Saving...</span>}
             {imageUploading && <span>Uploading...</span>}
 
-            <input type="file" name="myFile" id="myFile"
-                   onChange={async (event) => {
-                       console.log(event.target.files);
-                       const reader = new FileReader();
-                       /**
-                        * @param {{target:object}} e
-                        */
-                       reader.onload = function(e) {
-                           console.log("image read locally");
-                           setUpLoadImage(e.target.result);
-                       };
-                       reader.readAsDataURL(event.target.files[0]);
-                       const uploadResult = await onUploadImage(event.target.files[0], imageId);
 
-                       if(uploadResult.uploadImageResult) {
-                           setUpLoadImageMetadata(uploadResult.uploadImageResult);
-                       }
-                   }}
-            />
             </Paper>
             {uploadImage !== null ?
             <PicRatioFill
