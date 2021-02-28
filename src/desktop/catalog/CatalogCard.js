@@ -1,7 +1,7 @@
 import React from "react";
 import {Card, CardHeader, CardContent, Switch,
     FormControlLabel, Checkbox, IconButton} from "@material-ui/core";
-import {ThreeSixty, ArrowUpward, ArrowDownward} from "@material-ui/icons";
+import {ThreeSixty, ArrowForward, ArrowBack} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {useCardSize} from "../../utility/useIsMobile";
 import {getStore} from "../../models/accounts/userAuthStore";
@@ -112,10 +112,10 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             {inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
                 <IconButton aria-label="Up"
                             size="medium"
-                            className={classes.buttonUp}
+                            className={classes.buttonLeft}
                             onClick={()=> onOrderChange(catalog, category, prevCatalog)}
                 >
-                    <ArrowUpward fontSize="large" />
+                    <ArrowBack fontSize="large" />
                 </IconButton>
             }
             <CardContent
@@ -134,10 +134,10 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             </CardContent>
             {inCategoryEdit && !savingCatalogSort && nextCatalog && isInCategory &&
             <IconButton aria-label="Up"
-                        className={classes.buttonDown}
+                        className={classes.buttonRight}
                         onClick={()=> onOrderChange(catalog, category, nextCatalog)}
             >
-                <ArrowDownward fontSize="large"/>
+                <ArrowForward fontSize="large"/>
             </IconButton>
             }
         <CardHeader
@@ -224,6 +224,28 @@ const useStyle = makeStyles({
         backgroundColor: "#1095ec8f",
         left: "calc(50% - 20px)",
         bottom: 75,
+        width: 50,
+        height: 50
+    },
+    buttonLeft : {
+        position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        backgroundColor: "#1095ec8f",
+        left: 5,
+        top: "calc(50% - 20px)",
+        width: 50,
+        height: 50
+    },
+    buttonRight : {
+        position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        backgroundColor: "#1095ec8f",
+        top: "calc(50% - 20px)",
+        right: 5,
         width: 50,
         height: 50
     }
