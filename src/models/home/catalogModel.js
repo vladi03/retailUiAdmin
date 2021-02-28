@@ -69,7 +69,7 @@ const onCatalogOrderChange = async (catalog, category, swapCatalog) => {
 const onCategorySelectChange = (categorySelected) => {
     const catalogListSorted = sortCatalog(provider.state.catalogList,
         categorySelected._id);
-       const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id )
+       const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id );
 
     provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected});
 };
@@ -114,6 +114,7 @@ const onSetCatalogStatus = async (status, id) => {
     debugger;
     const {saveCatalogStatusResult, catalogListLoadError,
         success} = await saveCatalogStatus(status, id);
+    // noinspection JSUnresolvedVariable
     if(success && saveCatalogStatusResult.modifiedCount > 0) {
         const catalogList = provider.state.catalogList
             .map((catalog)=> {
@@ -187,6 +188,7 @@ const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, co
 const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) => {
     const result = await saveCatalog(activeCatalogItem);
 
+    // noinspection JSUnresolvedVariable
     if(result.saveCatalogResult && result.saveCatalogResult.modifiedCount > 0) {
         result.catalogList = provider.state.catalogList.map((ct) => {
             return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
@@ -195,20 +197,22 @@ const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) =>
         result.catalogListFiltered = sortCatalog(result.catalogList,
             provider.state.categorySelected &&
             provider.state.categorySelected._id);
-    } else if(result.saveCatalogResult &&
-        result.saveCatalogResult.upsertedCount > 0) {
-        result.catalogList = [
-            ...provider.state.catalogList, activeCatalogItem
-        ];
+    } else { // noinspection JSUnresolvedVariable
+        if(result.saveCatalogResult &&
+                result.saveCatalogResult.upsertedCount > 0) {
+                result.catalogList = [
+                    ...provider.state.catalogList, activeCatalogItem
+                ];
 
-        result.catalogListFiltered = sortCatalog(result.catalogList,
-            provider.state.categorySelected &&
-            provider.state.categorySelected._id);
+                result.catalogListFiltered = sortCatalog(result.catalogList,
+                    provider.state.categorySelected &&
+                    provider.state.categorySelected._id);
+            }
     }
     if(!setActiveItem)
         result.activeCatalogItem = null;
     result.catalogStatusLoading = false;
-    debugger;
+    //debugger;
     provider.setState(result);
 };
 

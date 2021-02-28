@@ -1,5 +1,6 @@
 import React, {useState, useEffect, Fragment} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
+import {categoryModel} from "../../models/home/categoryModel";
 import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button, Paper,
 Checkbox, FormControlLabel} from "@material-ui/core";
@@ -14,7 +15,8 @@ const containerHeight = 415;
 
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
-     onUploadImage, onDeleteCatalog, imageUploading
+     onUploadImage, onDeleteCatalog, imageUploading, categoryList,
+     onAddCategoryToCatalog, onRemoveCategoryFromCatalog
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -82,31 +84,33 @@ const CatalogItemEditComponent = ({
                     label="Active"
                 />
 
-            <TextField
-                style={{width:"32%"}}
-                label="Short Desc"
-                value={itemEdit.shortDesc}
-                onChange={(event) => onValueChange("shortDesc", event.target.value)}
-            />
-            <TextField
-                style={{width:"42%"}}
-                label="Extra Desc"
-                value={itemEdit.extraDesc}
-                onChange={(event) => onValueChange("extraDesc", event.target.value)}
-            />
-            <TextField
-                style={{width:"20%"}}
-                label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
-                value={unitPrice || ""}
-                InputProps={{
-                    startAdornment:
-                        <InputAdornment position="start">$</InputAdornment>
-                }}
-                onChange={(event) => {
-                    setUnitPrice(event.target.value);
-                    onValueChange("unitPrice", parseFloat(event.target.value));
-                }}
-            />
+                <TextField
+                    style={{width:"32%"}}
+                    label="Short Desc"
+                    value={itemEdit.shortDesc}
+                    onChange={(event) => onValueChange("shortDesc", event.target.value)}
+                />
+
+                <TextField
+                    style={{width:"42%"}}
+                    label="Extra Desc"
+                    value={itemEdit.extraDesc}
+                    onChange={(event) => onValueChange("extraDesc", event.target.value)}
+                />
+
+                <TextField
+                    style={{width:"20%"}}
+                    label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
+                    value={unitPrice || ""}
+                    InputProps={{
+                        startAdornment:
+                            <InputAdornment position="start">$</InputAdornment>
+                    }}
+                    onChange={(event) => {
+                        setUnitPrice(event.target.value);
+                        onValueChange("unitPrice", parseFloat(event.target.value));
+                    }}
+                />
 
                 <TextField
                     style={{width:"32%"}}
@@ -114,14 +118,49 @@ const CatalogItemEditComponent = ({
                     value={itemEdit.modelNumber || ""}
                     onChange={(event) => onValueChange("modelNumber", event.target.value)}
                 />
-            <TextField
-                style={{width:"100%"}}
-                multiline
-                rowsMax={4}
-                label="Description"
-                value={itemEdit.description}
-                onChange={(event) => onValueChange("description", event.target.value)}
-            />
+
+                <TextField
+                    style={{width:"100%"}}
+                    multiline
+                    rowsMax={4}
+                    label="Description"
+                    value={itemEdit.description}
+                    onChange={(event) => onValueChange("description", event.target.value)}
+                />
+
+                <div>
+                {categoryList && categoryList.map((categoryRef)=> {
+                    const itemCategory = itemEdit.categories.find((itemCat)=> itemCat._id === categoryRef._id );
+                    //debugger;
+                    return(
+                        <FormControlLabel
+                            key={categoryRef._id}
+                            control={
+                                <Checkbox
+                                    checked={itemCategory !== undefined}
+                                    onChange={(event)=> {
+                                        if(itemCategory === undefined && event.target.checked)
+                                            onAddCategoryToCatalog({
+                                                catalog : itemEdit,
+                                                category: categoryRef
+                                            });
+                                        else {
+                                            onRemoveCategoryFromCatalog({
+                                                catalog: itemEdit,
+                                                categoryId : categoryRef._id
+                                            });
+                                        }
+                                    }}
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                />
+                            }
+                            label={categoryRef.category}
+                        />
+                    )
+                })}
+
+                </div>
+
             {!catalogListLoading && !imageUploading &&
                 <Fragment>
                     <Button
@@ -180,7 +219,7 @@ const CatalogItemEditComponent = ({
 
 
 export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
-    [catalogModel]);
+    [catalogModel, categoryModel]);
 
 const useStyle = makeStyles({
     textBox: {
