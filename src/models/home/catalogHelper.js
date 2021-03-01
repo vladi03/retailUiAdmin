@@ -40,6 +40,19 @@ export const filterCatalog = (catalogListSorted, categoryId)=> {
 };
 
 
+export const filterCatalogNoCategory = (catalogListSorted)=> {
+    const calc = [...catalogListSorted];
+    const filterNoCatalog =[];
+    calc.forEach((a) => {
+        const filterA = a.categories.length ===0;
+        if (filterA)
+            filterNoCatalog.push(a);
+    });
+
+    return filterNoCatalog;
+};
+
+
 export const swapOrder = (catalog, category, swapCatalog) => {
     const target = {...catalog};
     const swap = {...swapCatalog};

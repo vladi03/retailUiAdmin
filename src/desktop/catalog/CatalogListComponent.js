@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {CatalogCard} from "./CatalogCard";
-import {Accordion} from "@material-ui/core";
+import {Accordion, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {connectArray} from "../../utility/helpers";
 import {catalogModel} from "../../models/home/catalogModel";
@@ -10,7 +10,7 @@ import {useIsMobile} from "../../utility/useIsMobile";
 
 export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,activeCatalogItem ,onSetCatalogStatus, onAddCategoryToCatalog,
                                          onRemoveCategoryFromCatalog ,catalogStatusLoading, onCatalogOrderChange, savingCatalogSort,
-                                         onSetActiveCatalogItem})=> {
+                                         onSetActiveCatalogItem, catalogListNoCategory})=> {
 
     const inEdit = activeCatalogItem !== null;
 
@@ -67,6 +67,50 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
             )}
 
         </div>
+            <Typography>
+                Items not in any Category
+            </Typography>
+            <div className={classes.noCatalogList}>
+
+            {catalogListNoCategory.map((catalog, index)=> {
+
+                    const prevCatalog = index > 0 ?
+                        catalogListFiltered[index - 1] : null;
+
+                    const nextCatalog =
+                        catalogListFiltered.length > (index - 2) ?
+                            catalogListFiltered[index + 1] : null;
+
+                    const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
+                        (cat) => cat._id === categorySelected._id ) || [];
+
+
+                    const nextIsInCategory = filterCategory.length > 0;
+                    return(
+                        <CatalogCard
+                            key={`${catalog._id}${catalog.sort}`}
+                            prevCatalog={prevCatalog}
+                            nextCatalog={nextIsInCategory ? nextCatalog : null}
+                            inEdit={inEdit}
+                            catalog={catalog}
+                            category={categorySelected}
+                            disableEdit={activeCatalogItem != null}
+                            onSetStatus={onSetCatalogStatus}
+                            onAddCategory={onAddCategoryToCatalog}
+                            onRemoveCategory={onRemoveCategoryFromCatalog}
+                            isSaving={catalog._id === catalogStatusLoading}
+                            onOrderChange={onCatalogOrderChange}
+                            savingCatalogSort={savingCatalogSort}
+                            onClick={() => {
+                                if (!isMobile) {
+                                    onSetActiveCatalogItem(catalog);
+                                }
+                            }}
+                        />
+                    );
+                }
+            )}
+            </div>
         </div>
     )
 }
@@ -78,9 +122,6 @@ const useStyle = makeStyles({
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-
-
-
     }, container: {
         display:"block",
         flexWrap:"wrap",
@@ -88,7 +129,11 @@ const useStyle = makeStyles({
         height: "calc( 100vh - 120px)",
         width: props => props.inEdit ? "24vw" : "100%",
         overflow: "auto",
-
+    },noCatalogList: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        justifyContent: 'space-around',
     },
+
 });
 export const CatalogList = connectArray(CatalogListComponent,[catalogModel, categoryModel]);

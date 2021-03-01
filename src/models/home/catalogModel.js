@@ -1,7 +1,7 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder, filterCatalog} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog, filterCatalogNoCategory} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -11,6 +11,8 @@ export const createModel = () => ({
     catalogList: [],
     catalogListFiltered: [],
     catalogListOutCategory:[],
+    catalogListNoCategory:[],
+
     catalogListLoading: false,
     catalogListLoadError: false,
     savingCatalogSort: false,
@@ -70,8 +72,9 @@ const onCategorySelectChange = (categorySelected) => {
     const catalogListSorted = sortCatalog(provider.state.catalogList,
         categorySelected._id);
        const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id );
+       const catalogListNoCategory = filterCatalogNoCategory(catalogListSorted)
 
-    provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected});
+    provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected, catalogListNoCategory});
 };
 
 const onAddCategoryToCatalog = async ({catalog, category}) => {
