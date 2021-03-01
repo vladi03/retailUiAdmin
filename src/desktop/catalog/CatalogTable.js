@@ -2,17 +2,43 @@ import React, {Fragment, useEffect, useState} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
 import {CatalogCard} from "./CatalogCard";
-import {makeStyles} from "@material-ui/core/styles";
-import {IconButton, Paper} from "@material-ui/core";
+import {makeStyles, withStyles} from "@material-ui/core/styles";
+import {Button, IconButton, Paper} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
 import {PopupError} from "../../utility/components/PopupError";
-import {Accordion,AccordionDetails,AccordionSummary, GridList,GridListTile } from '@material-ui/core';
+import {Accordion, GridList,GridListTile } from '@material-ui/core';
 import {categoryModel} from "../../models/home/categoryModel";
 import {CatalogList} from "./CatalogListComponent";
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    }
+}))(MuiAccordionDetails);
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: 'rgba(0, 0, 0, .03)',
+        borderBottom: '1px solid rgba(0, 0, 0, .125)',
+        marginBottom: -1,
+        minHeight: 56,
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '12px 0',
+        },
+        alignItems:'center'
+    },
+    expanded: {},
+})(MuiAccordionSummary);
 export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                           catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
                                           onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
@@ -62,8 +88,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                                    const emptyCat = {_id:null, category: "All"}
                                                    setCategorySelected(emptyCat);
                                                    onCategorySelectChange(emptyCat);
-
-
                                                }else {
                                                    setCategorySelected(category);
                                                    onCategorySelectChange(category);
@@ -74,12 +98,24 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                            className={classes.accordion}
 
                                 >
-                                    <AccordionSummary>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                    >
                                         {category.category}
+                                        {category._id===categorySelected._id?
+                                            <>
+                                            <Button variant="contained"
+                                                    color="primary"
+                                                    className={classes.reorderButton}>
+                                                Reorder Items</Button>
+                                            </>:null}
+
+
                                     </AccordionSummary>
+                                    <AccordionDetails>
 
                                     <CatalogList  />
-
+                                    </AccordionDetails>
 
                                 </Accordion>
 
@@ -92,57 +128,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
 
                     </div>
 
-                    <div className={classes.gridListContainer} >
-                        <Paper className={classes.gridListBottom}>
-                            
-                        {catalogListOutCategory.map((catalog, index)=> {
-
-                            const prevCatalog = index > 0 ?
-                                catalogListFiltered[index - 1] : null;
-
-                            const nextCatalog =
-                                catalogListFiltered.length > (index - 2) ?
-                                    catalogListFiltered[index + 1] : null;
-
-                            const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
-                                (cat) => cat._id === categorySelected._id ) || [];
-
-
-                            const nextIsInCategory = filterCategory.length > 0;
-                            return(
-                                <GridListTile>
-                            <CatalogCard
-                                key={`${catalog._id}${catalog.sort}`}
-                                prevCatalog={prevCatalog}
-                                nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                inEdit={inEdit}
-                                catalog={catalog}
-                                category={categorySelected}
-                                disableEdit={activeCatalogItem != null}
-                                onSetStatus={onSetCatalogStatus}
-                                onAddCategory={onAddCategoryToCatalog}
-                                onRemoveCategory={onRemoveCategoryFromCatalog}
-                                isSaving={catalog._id === catalogStatusLoading}
-                                onOrderChange={onCatalogOrderChange}
-                                savingCatalogSort={savingCatalogSort}
-                                onClick={() => {
-                                    if (!isMobile) {
-                                        onSetActiveCatalogItem(catalog);
-                                    }
-                                }}
-                            />
-                            </GridListTile>
-                                    );
-                            }
-                            )}
-
-                    
-                                    </Paper>
-                                    
-
-
-
-                    </div>                   
                 </div>
                 {inEdit &&
                 <div className={classes.containerEdit}>
@@ -222,13 +207,15 @@ const useStyle = makeStyles({
       accordion:{
           height:'100%'
       },
-      catalogListComponent: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        width:  "100%",
-        overflow:'hidden'
-        
-
+    accordionDetails:{
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+      reorderButton: {
+        margin:0,
+          'text-transform':'none',
+          background:'#64b5f6',
+          marginLeft:'40px'
       },
 });
