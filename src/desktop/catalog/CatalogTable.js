@@ -3,7 +3,7 @@ import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
 import {CatalogCard} from "./CatalogCard";
 import {makeStyles, withStyles} from "@material-ui/core/styles";
-import {Button, IconButton, Paper} from "@material-ui/core";
+import {Button, IconButton, Paper, Typography} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
@@ -39,7 +39,7 @@ const AccordionSummary = withStyles({
     },
     expanded: {},
 })(MuiAccordionSummary);
-export const CatalogTableComponent = ({catalogList,catalogListFiltered,
+export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTotals,onSetCatalogTotals,
                                           catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
                                           onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
                                           onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
@@ -49,6 +49,10 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
+    });
+    useEffect(()=> {
+        if(catalogTotals.length===0)
+            onSetCatalogTotals(categoryList,catalogList);
     });
 
     const isMobile = useIsMobile();
@@ -79,6 +83,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                     <div className={classes.container}>
 
                         {categoryList.map((category, index) => {
+                           const totals= catalogTotals ? catalogTotals.filter((aItem) =>
+                                aItem._id === category._id) : [];
                             return(
 
                                 <Accordion expanded={category._id===categorySelected._id}
@@ -101,7 +107,13 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                     >
+                                        <Typography className={classes.categoryTitle}>
                                         {category.category}
+                                        </Typography>
+                                        {totals.length>0 && <Typography style={{marginRight:'10%', position:'absolute', right:30}}>
+                                            Active: {totals[0].activeTotal}  Disabled: {totals[0].disabledTotal}  Total: {totals[0].disabledTotal+totals[0].activeTotal}
+                                        </Typography>
+                                        }
                                         {category._id===categorySelected._id?
                                             <>
                                             <Button variant="contained"
@@ -218,4 +230,8 @@ const useStyle = makeStyles({
           background:'#64b5f6',
           marginLeft:'40px'
       },
+    categoryTitle:{
+        fontWeight:500,
+        fontSize:'large'
+    }
 });

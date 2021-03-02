@@ -38,6 +38,30 @@ export const filterCatalog = (catalogListSorted, categoryId)=> {
     });
     return {filterCatalogIn,filterCatalogOut} ;
 };
+export const getCatalogTotals = (catalogListSorted, arrayCategory)=> {
+    const calc = [...catalogListSorted];
+    const filterCatalogIn =[];
+    const filterCatalogOut=[];
+    const totalCategory = []
+    arrayCategory.forEach((category)=> {
+        let activeTotal=0;
+        let disabledTotal=0;
+        calc.forEach((a, index) => {
+
+            const filterA = catalogListSorted ? a.categories.filter((aItem) =>
+                aItem._id === category._id) : [];
+
+            if (filterA.length > 0)
+                (a.status==='active'?activeTotal++:disabledTotal++)
+            if(index === catalogListSorted.length-1) {
+                const stats = {activeTotal, disabledTotal, _id:category._id}
+                totalCategory.push(stats)
+            }
+
+        });
+    })
+    return totalCategory;
+};
 
 
 export const filterCatalogNoCategory = (catalogListSorted)=> {

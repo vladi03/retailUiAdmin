@@ -1,7 +1,7 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder, filterCatalog, filterCatalogNoCategory} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog, filterCatalogNoCategory,getCatalogTotals} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -12,6 +12,8 @@ export const createModel = () => ({
     catalogListFiltered: [],
     catalogListOutCategory:[],
     catalogListNoCategory:[],
+    catalogTotals:[],
+
 
     catalogListLoading: false,
     catalogListLoadError: false,
@@ -33,7 +35,8 @@ export const createModel = () => ({
     onCategorySelectChange,
     onCatalogOrderChange,
     onCatalogSearch,
-    onClearCatalogError
+    onClearCatalogError,
+    onSetCatalogTotals
 });
 
 const onClearCatalogError = ()=>{
@@ -230,7 +233,17 @@ const onCatalogListInit = () => {
             provider.setState(newState);
         }
     );
+
 };
+
+const onSetCatalogTotals = (categoryList,catalogList) =>{
+    const catalogTotals=getCatalogTotals(catalogList, categoryList)
+    provider.setState({catalogTotals})
+    console.log(catalogTotals)
+
+
+
+}
 
 export const  getInitialState = (classInstance) => {
     provider = classInstance;
