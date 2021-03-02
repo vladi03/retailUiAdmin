@@ -69,36 +69,15 @@ const CatalogItemEditComponent = ({
     });
 
     return(
-        <div className={classes.textBox}>
+        <div className={classes.rootContainer}>
             <Paper className={classes.paperEntryContainer}>
                 <div className={classes.editContainer}>
                     <div className={classes.textContainer}>
                         <TextField
-                            style={{width:"32%"}}
+                            style={{width:"60%"}}
                             label="Short Desc"
                             value={itemEdit.shortDesc}
                             onChange={(event) => onValueChange("shortDesc", event.target.value)}
-                        />
-
-                        <TextField
-                            style={{width:"42%"}}
-                            label="Extra Desc"
-                            value={itemEdit.extraDesc}
-                            onChange={(event) => onValueChange("extraDesc", event.target.value)}
-                        />
-
-                        <TextField
-                            style={{width:"20%"}}
-                            label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
-                            value={unitPrice || ""}
-                            InputProps={{
-                                startAdornment:
-                                    <InputAdornment position="start">$</InputAdornment>
-                            }}
-                            onChange={(event) => {
-                                setUnitPrice(event.target.value);
-                                onValueChange("unitPrice", parseFloat(event.target.value));
-                            }}
                         />
 
                         <TextField
@@ -109,8 +88,11 @@ const CatalogItemEditComponent = ({
                         />
 
 
+
+
                     </div>
                     <div>
+
                         <FormControlLabel
                             control={
                                 <Switch
@@ -127,8 +109,29 @@ const CatalogItemEditComponent = ({
                             }
                             label="Show"
                         />
+
                     </div>
                 </div>
+                <TextField
+                    style={{width:"30%"}}
+                    label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
+                    value={unitPrice || ""}
+                    InputProps={{
+                        startAdornment:
+                            <InputAdornment position="start">$</InputAdornment>
+                    }}
+                    onChange={(event) => {
+                        setUnitPrice(event.target.value);
+                        onValueChange("unitPrice", parseFloat(event.target.value));
+                    }}
+                />
+                <TextField
+                    style={{width:"62%"}}
+                    label="Extra Desc"
+                    value={itemEdit.extraDesc}
+                    onChange={(event) => onValueChange("extraDesc", event.target.value)}
+                />
+
 
                 <TextField
                     style={{width:"100%"}}
@@ -244,10 +247,8 @@ export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
     [catalogModel, categoryModel]);
 
 const useStyle = makeStyles({
-    textBox: {
-        '& > *': {
-            margin: 7,
-        },
+    rootContainer: {
+        display: "flex"
     },
     picBorderHeight: {
         width: "50%",
