@@ -126,7 +126,6 @@ const useStyle = makeStyles({
         display:"block",
         flexWrap:"wrap",
         justifyContent: "space-between",
-        height: "calc( 100vh - 120px)",
         width: props => props.inEdit ? "24vw" : "100%",
         overflow: "auto",
     },noCatalogList: {

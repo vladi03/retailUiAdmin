@@ -57,6 +57,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
+    const [onCategorySelected, setOnCategorySelected] = useState(false);
+
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -87,49 +89,59 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                 aItem._id === category._id) : [];
                             return(
 
-                                <Accordion expanded={category._id===categorySelected._id}
-                                           onChange={() => {
+                            <Accordion expanded={category._id === categorySelected._id}
+                                       onChange={() => {
 
-                                               if(category._id===categorySelected._id){
-                                                   const emptyCat = {_id:null, category: "All"}
-                                                   setCategorySelected(emptyCat);
-                                                   onCategorySelectChange(emptyCat);
-                                               }else {
-                                                   setCategorySelected(category);
-                                                   onCategorySelectChange(category);
-                                               }
-                                               //setTableList(onSelectCategory(category))
-                                           }}
-                                           key={category._id}
-                                           className={classes.accordion}
+                                           if (category._id === categorySelected._id) {
+                                               const emptyCat = {_id: null, category: "All"}
+                                               setCategorySelected(emptyCat);
+                                               onCategorySelectChange(emptyCat);
+                                           } else {
+                                               setCategorySelected(category);
+                                               onCategorySelectChange(category);
+                                           }
+                                           //setTableList(onSelectCategory(category))
+                                       }}
+                                       onMouseUp={()=>{
+                                           if(category._id === categorySelected._id)
+                                           {setOnCategorySelected(false)}
+                                           if(category._id !== categorySelected._id)
+                                           {setOnCategorySelected(true)}
 
+                                       }}
+                                       key={category._id}
+                                       className={classes.accordion}
+                                       hidden={onCategorySelected && category._id !== categorySelected._id}
+
+                            >
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
                                 >
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                    >
-                                        <Typography className={classes.categoryTitle}>
+                                    <Typography className={classes.categoryTitle}>
                                         {category.category}
-                                        </Typography>
-                                        {totals.length>0 && <Typography style={{marginRight:'10%', position:'absolute', right:30}}>
-                                            Active: {totals[0].activeTotal}  Disabled: {totals[0].disabledTotal}  Total: {totals[0].disabledTotal+totals[0].activeTotal}
-                                        </Typography>
-                                        }
-                                        {category._id===categorySelected._id?
-                                            <>
+                                    </Typography>
+                                    {totals.length > 0 &&
+                                    <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
+                                        Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
+                                    </Typography>
+                                    }
+                                    {category._id === categorySelected._id ?
+                                        <>
                                             <Button variant="contained"
                                                     color="primary"
                                                     className={classes.reorderButton}>
                                                 Reorder Items</Button>
-                                            </>:null}
+                                        </> : null}
 
 
-                                    </AccordionSummary>
-                                    <AccordionDetails>
+                                </AccordionSummary>
+                                <AccordionDetails>
 
-                                    <CatalogList  />
-                                    </AccordionDetails>
+                                    <CatalogList/>
+                                </AccordionDetails>
 
-                                </Accordion>
+                            </Accordion>
+
 
                             )
 
