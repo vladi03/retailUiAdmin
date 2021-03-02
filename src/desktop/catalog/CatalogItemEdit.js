@@ -71,59 +71,64 @@ const CatalogItemEditComponent = ({
     return(
         <div className={classes.textBox}>
             <Paper className={classes.paperEntryContainer}>
-
-
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={itemEdit.status === "active"}
-                            onChange={(event)=> {
-                                const newStatus = event.target.checked ?
-                                    "active" : "disabled";
-                                onValueChange("status",newStatus);
-                            }}
-                            color="primary"
-                            name="checkedB"
-                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                <div className={classes.editContainer}>
+                    <div className={classes.textContainer}>
+                        <TextField
+                            style={{width:"32%"}}
+                            label="Short Desc"
+                            value={itemEdit.shortDesc}
+                            onChange={(event) => onValueChange("shortDesc", event.target.value)}
                         />
-                    }
-                    label="Show"
-                />
 
-                <TextField
-                    style={{width:"32%", marginLeft: 20}}
-                    label="Short Desc"
-                    value={itemEdit.shortDesc}
-                    onChange={(event) => onValueChange("shortDesc", event.target.value)}
-                />
+                        <TextField
+                            style={{width:"42%"}}
+                            label="Extra Desc"
+                            value={itemEdit.extraDesc}
+                            onChange={(event) => onValueChange("extraDesc", event.target.value)}
+                        />
 
-                <TextField
-                    style={{width:"42%"}}
-                    label="Extra Desc"
-                    value={itemEdit.extraDesc}
-                    onChange={(event) => onValueChange("extraDesc", event.target.value)}
-                />
+                        <TextField
+                            style={{width:"20%"}}
+                            label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
+                            value={unitPrice || ""}
+                            InputProps={{
+                                startAdornment:
+                                    <InputAdornment position="start">$</InputAdornment>
+                            }}
+                            onChange={(event) => {
+                                setUnitPrice(event.target.value);
+                                onValueChange("unitPrice", parseFloat(event.target.value));
+                            }}
+                        />
 
-                <TextField
-                    style={{width:"20%"}}
-                    label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
-                    value={unitPrice || ""}
-                    InputProps={{
-                        startAdornment:
-                            <InputAdornment position="start">$</InputAdornment>
-                    }}
-                    onChange={(event) => {
-                        setUnitPrice(event.target.value);
-                        onValueChange("unitPrice", parseFloat(event.target.value));
-                    }}
-                />
+                        <TextField
+                            style={{width:"32%"}}
+                            label="Model #"
+                            value={itemEdit.modelNumber || ""}
+                            onChange={(event) => onValueChange("modelNumber", event.target.value)}
+                        />
 
-                <TextField
-                    style={{width:"32%"}}
-                    label="Model #"
-                    value={itemEdit.modelNumber || ""}
-                    onChange={(event) => onValueChange("modelNumber", event.target.value)}
-                />
+
+                    </div>
+                    <div>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={itemEdit.status === "active"}
+                                    onChange={(event)=> {
+                                        const newStatus = event.target.checked ?
+                                            "active" : "disabled";
+                                        onValueChange("status",newStatus);
+                                    }}
+                                    color="primary"
+                                    name="checkedB"
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                />
+                            }
+                            label="Show"
+                        />
+                    </div>
+                </div>
 
                 <TextField
                     style={{width:"100%"}}
@@ -133,6 +138,7 @@ const CatalogItemEditComponent = ({
                     value={itemEdit.description}
                     onChange={(event) => onValueChange("description", event.target.value)}
                 />
+
 
                 <div>
                 {categoryList && categoryList.map((categoryRef)=> {
@@ -278,6 +284,15 @@ const useStyle = makeStyles({
         position: "absolute",
         transform: "translateY(-50%)",
         zIndex: 2
+    },
+    editContainer: {
+        display: "flex",
+        justifyContent: "space-between"
+    },
+    textContainer: {
+        '& > *': {
+            margin: 7,
+        }
     },
     paperEntryContainer: {
         '& > *': {
