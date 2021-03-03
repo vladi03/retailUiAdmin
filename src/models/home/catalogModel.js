@@ -1,7 +1,8 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder, filterCatalog} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog,
+    getNextSortInCategory} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -31,11 +32,17 @@ export const createModel = () => ({
     onCategorySelectChange,
     onCatalogOrderChange,
     onCatalogSearch,
-    onClearCatalogError
+    onClearCatalogError,
+    getCatalogCategorySort
 });
 
 const onClearCatalogError = ()=>{
     provider.setState({catalogListLoadError: false});
+};
+
+const getCatalogCategorySort = (categoryId) => {
+    const {catalogList} = provider.state;
+    return getNextSortInCategory(categoryId, catalogList);
 };
 
 const onCatalogSearch = (catalogSearchText) => {

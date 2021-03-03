@@ -18,7 +18,8 @@ const containerHeight = 415;
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
      onUploadImage, onDeleteCatalog, imageUploading, categoryList,
-     onAddCategoryToCatalog, onRemoveCategoryFromCatalog
+     onAddCategoryToCatalog, onRemoveCategoryFromCatalog,
+     getCatalogCategorySort
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -67,6 +68,23 @@ const CatalogItemEditComponent = ({
                 activeCatalogItem.images[0].willFitWidth);
         }
     });
+
+    const onAddCategory =({category})=> {
+        const newItem = {...itemEdit};
+        const sort = getCatalogCategorySort(category._id);
+        newItem.categories = [...newItem.categories,
+            {...category, sort}];
+        console.log(sort);
+        setItemEdit(newItem);
+    };
+
+    const onRemoveCategory = ({categoryId}) => {
+        const newItem = {...itemEdit};
+        newItem.categories = newItem.categories.filter(
+            (cate) => cate._id !== categoryId);
+        //debugger;
+        setItemEdit(newItem);
+    };
 
     return(
         <div className={classes.rootContainer}>
@@ -155,12 +173,12 @@ const CatalogItemEditComponent = ({
                                     checked={itemCategory !== undefined}
                                     onChange={(event)=> {
                                         if(itemCategory === undefined && event.target.checked)
-                                            onAddCategoryToCatalog({
+                                            onAddCategory({ //onAddCategoryToCatalog
                                                 catalog : itemEdit,
                                                 category: categoryRef
                                             });
                                         else {
-                                            onRemoveCategoryFromCatalog({
+                                            onRemoveCategory({ //onRemoveCategoryFromCatalog
                                                 catalog: itemEdit,
                                                 categoryId : categoryRef._id
                                             });
