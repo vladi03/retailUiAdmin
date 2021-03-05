@@ -1,7 +1,8 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder, filterCatalog, filterCatalogNoCategory,getCatalogTotals} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog,
+    filterCatalogNoCategory,getCatalogTotals, getNextSortInCategory} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -81,7 +82,7 @@ const onCategorySelectChange = (categorySelected) => {
     const catalogListSorted = sortCatalog(provider.state.catalogList,
         categorySelected._id);
        const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id );
-       const catalogListNoCategory = filterCatalogNoCategory(catalogListSorted)
+       const catalogListNoCategory = filterCatalogNoCategory(catalogListSorted);
 
     provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected, catalogListNoCategory});
 };
@@ -235,6 +236,7 @@ const onSetActiveCatalogItem = (activeCatalogItem) => {
 const onCatalogListInit = () => {
     provider.setState({catalogListInit: true});
     getCatalogList().then((newState) => {
+            // noinspection JSUndefinedPropertyAssignment
             newState.catalogListFiltered = newState.catalogList;
             provider.setState(newState);
         }
@@ -243,13 +245,11 @@ const onCatalogListInit = () => {
 };
 
 const onSetCatalogTotals = (categoryList,catalogList) =>{
-    const catalogTotals=getCatalogTotals(catalogList, categoryList)
-    provider.setState({catalogTotals})
-    console.log(catalogTotals)
+    const catalogTotals=getCatalogTotals(catalogList, categoryList);
+    provider.setState({catalogTotals});
+    console.log(catalogTotals);
 
-
-
-}
+};
 
 export const  getInitialState = (classInstance) => {
     provider = classInstance;
