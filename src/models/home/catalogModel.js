@@ -36,11 +36,17 @@ export const createModel = () => ({
     onCatalogOrderChange,
     onCatalogSearch,
     onClearCatalogError,
-    onSetCatalogTotals
+    onSetCatalogTotals,
+    getCatalogCategorySort
 });
 
 const onClearCatalogError = ()=>{
     provider.setState({catalogListLoadError: false});
+};
+
+const getCatalogCategorySort = (categoryId) => {
+    const {catalogList} = provider.state;
+    return getNextSortInCategory(categoryId, catalogList);
 };
 
 const onCatalogSearch = (catalogSearchText) => {

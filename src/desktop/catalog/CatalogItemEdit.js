@@ -1,13 +1,15 @@
-import React, {useState, useEffect, Fragment} from "react";
+import React, {useState, useEffect} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {categoryModel} from "../../models/home/categoryModel";
 import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button, Paper,
-Checkbox, FormControlLabel} from "@material-ui/core";
+Checkbox, FormControlLabel, Switch} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import {Save} from "@material-ui/icons";
 import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {PicRatioFill} from "pic-ratio-fill";
+import {AlertDialog} from "../../utility/components/AlertDialog";
 
 const {catalogApi} = getStore();
 const containerWidth = 532;
@@ -16,7 +18,8 @@ const containerHeight = 415;
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
      onUploadImage, onDeleteCatalog, imageUploading, categoryList,
-     onAddCategoryToCatalog, onRemoveCategoryFromCatalog
+     onAddCategoryToCatalog, onRemoveCategoryFromCatalog,
+     getCatalogCategorySort
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -66,40 +69,69 @@ const CatalogItemEditComponent = ({
         }
     });
 
+    const onAddCategory =({category})=> {
+        const newItem = {...itemEdit};
+        const sort = getCatalogCategorySort(category._id);
+        newItem.categories = [...newItem.categories,
+            {...category, sort}];
+        console.log(sort);
+        setItemEdit(newItem);
+    };
+
+    const onRemoveCategory = ({categoryId}) => {
+        const newItem = {...itemEdit};
+        newItem.categories = newItem.categories.filter(
+            (cate) => cate._id !== categoryId);
+        //debugger;
+        setItemEdit(newItem);
+    };
+
     return(
-        <div className={classes.textBox}>
+        <div className={classes.rootContainer}>
             <Paper className={classes.paperEntryContainer}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={itemEdit.status === "active"}
-                            onChange={(event)=> {
-                                const newStatus = event.target.checked ?
-                                    "active" : "disabled";
-                                onValueChange("status",newStatus);
-                            }}
-                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                <div className={classes.editContainer}>
+                    <div className={classes.textContainer}>
+                        <TextField
+                            style={{width:"60%"}}
+                            label="Short Desc"
+                            value={itemEdit.shortDesc}
+                            onChange={(event) => onValueChange("shortDesc", event.target.value)}
                         />
-                    }
-                    label="Active"
-                />
 
-                <TextField
-                    style={{width:"32%"}}
-                    label="Short Desc"
-                    value={itemEdit.shortDesc}
-                    onChange={(event) => onValueChange("shortDesc", event.target.value)}
-                />
+                        <TextField
+                            style={{width:"32%"}}
+                            label="Model #"
+                            value={itemEdit.modelNumber || ""}
+                            onChange={(event) => onValueChange("modelNumber", event.target.value)}
+                        />
 
-                <TextField
-                    style={{width:"42%"}}
-                    label="Extra Desc"
-                    value={itemEdit.extraDesc}
-                    onChange={(event) => onValueChange("extraDesc", event.target.value)}
-                />
 
+
+
+                    </div>
+                    <div>
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={itemEdit.status === "active"}
+                                    onChange={(event)=> {
+                                        const newStatus = event.target.checked ?
+                                            "active" : "disabled";
+                                        onValueChange("status",newStatus);
+                                    }}
+                                    color="primary"
+                                    name="checkedB"
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                />
+                            }
+                            label="Show"
+                        />
+
+                    </div>
+                </div>
                 <TextField
-                    style={{width:"20%"}}
+                    style={{width:"30%"}}
                     label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
                     value={unitPrice || ""}
                     InputProps={{
@@ -111,13 +143,13 @@ const CatalogItemEditComponent = ({
                         onValueChange("unitPrice", parseFloat(event.target.value));
                     }}
                 />
-
                 <TextField
-                    style={{width:"32%"}}
-                    label="Model #"
-                    value={itemEdit.modelNumber || ""}
-                    onChange={(event) => onValueChange("modelNumber", event.target.value)}
+                    style={{width:"62%"}}
+                    label="Extra Desc"
+                    value={itemEdit.extraDesc}
+                    onChange={(event) => onValueChange("extraDesc", event.target.value)}
                 />
+
 
                 <TextField
                     style={{width:"100%"}}
@@ -127,6 +159,7 @@ const CatalogItemEditComponent = ({
                     value={itemEdit.description}
                     onChange={(event) => onValueChange("description", event.target.value)}
                 />
+
 
                 <div>
                 {categoryList && categoryList.map((categoryRef)=> {
@@ -140,12 +173,12 @@ const CatalogItemEditComponent = ({
                                     checked={itemCategory !== undefined}
                                     onChange={(event)=> {
                                         if(itemCategory === undefined && event.target.checked)
-                                            onAddCategoryToCatalog({
+                                            onAddCategory({ //onAddCategoryToCatalog
                                                 catalog : itemEdit,
                                                 category: categoryRef
                                             });
                                         else {
-                                            onRemoveCategoryFromCatalog({
+                                            onRemoveCategory({ //onRemoveCategoryFromCatalog
                                                 catalog: itemEdit,
                                                 categoryId : categoryRef._id
                                             });
@@ -162,41 +195,51 @@ const CatalogItemEditComponent = ({
                 </div>
 
             {!catalogListLoading && !imageUploading &&
-                <Fragment>
-                    <Button
-                        onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
-                    >
-                        Save
-                    </Button>
-                    <Button
-                        onClick={() => onDeleteCatalog(itemEdit)}
-                    >
-                        Delete
-                    </Button>
-                </Fragment>
+                <div style={{display: "flex", justifyContent: "flex-end"}} >
+                    <div>
+                        <input type="file" name="myFile" id="myFile"
+                               onChange={async (event) => {
+                                   console.log(event.target.files);
+                                   const reader = new FileReader();
+                                   /**
+                                    * @param {{target:object}} e
+                                    */
+                                   reader.onload = function(e) {
+                                       console.log("image read locally");
+                                       setUpLoadImage(e.target.result);
+                                   };
+                                   reader.readAsDataURL(event.target.files[0]);
+                                   const uploadResult = await onUploadImage(event.target.files[0], imageId);
+
+                                   if(uploadResult.uploadImageResult) {
+                                       setUpLoadImageMetadata(uploadResult.uploadImageResult);
+                                   }
+                               }}
+                        />
+                    </div>
+                    <div >
+                        <Button variant="contained"
+                                color="primary"
+                                startIcon={<Save />}
+                                style={{marginRight: 20}}
+                            onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
+                        >
+                            Save
+                        </Button>
+                        <AlertDialog
+                            onClick={() => onDeleteCatalog(itemEdit)}
+                            title={"Are You Sure?"}
+                            message={`Are You Sure you want to delete "${itemEdit.shortDesc}"?`}
+                        >
+                            Delete
+                        </AlertDialog>
+                    </div>
+                </div>
             }
             {catalogListLoading && <span>Saving...</span>}
             {imageUploading && <span>Uploading...</span>}
 
-            <input type="file" name="myFile" id="myFile"
-                   onChange={async (event) => {
-                       console.log(event.target.files);
-                       const reader = new FileReader();
-                       /**
-                        * @param {{target:object}} e
-                        */
-                       reader.onload = function(e) {
-                           console.log("image read locally");
-                           setUpLoadImage(e.target.result);
-                       };
-                       reader.readAsDataURL(event.target.files[0]);
-                       const uploadResult = await onUploadImage(event.target.files[0], imageId);
 
-                       if(uploadResult.uploadImageResult) {
-                           setUpLoadImageMetadata(uploadResult.uploadImageResult);
-                       }
-                   }}
-            />
             </Paper>
             {uploadImage !== null ?
             <PicRatioFill
@@ -222,10 +265,8 @@ export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
     [catalogModel, categoryModel]);
 
 const useStyle = makeStyles({
-    textBox: {
-        '& > *': {
-            margin: 7,
-        },
+    rootContainer: {
+        display: "flex"
     },
     picBorderHeight: {
         width: "50%",
@@ -262,6 +303,15 @@ const useStyle = makeStyles({
         position: "absolute",
         transform: "translateY(-50%)",
         zIndex: 2
+    },
+    editContainer: {
+        display: "flex",
+        justifyContent: "space-between"
+    },
+    textContainer: {
+        '& > *': {
+            margin: 7,
+        }
     },
     paperEntryContainer: {
         '& > *': {
