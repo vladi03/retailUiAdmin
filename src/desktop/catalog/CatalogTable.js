@@ -2,17 +2,44 @@ import React, {Fragment, useEffect, useState} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
 import {CatalogCard} from "./CatalogCard";
-import {makeStyles} from "@material-ui/core/styles";
-import {IconButton, Paper} from "@material-ui/core";
+import {makeStyles, withStyles} from "@material-ui/core/styles";
+import {Button, IconButton, Paper, Typography} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
 import {PopupError} from "../../utility/components/PopupError";
-import {Accordion,AccordionDetails,AccordionSummary, GridList,GridListTile } from '@material-ui/core';
+import {Accordion, GridList,GridListTile } from '@material-ui/core';
 import {categoryModel} from "../../models/home/categoryModel";
+import {CatalogList} from "./CatalogListComponent";
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-export const CatalogTableComponent = ({catalogList,catalogListFiltered,
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    }
+}))(MuiAccordionDetails);
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: 'rgba(0, 0, 0, .03)',
+        borderBottom: '1px solid rgba(0, 0, 0, .125)',
+        marginBottom: -1,
+        minHeight: 56,
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '12px 0',
+        },
+        alignItems:'center'
+    },
+    expanded: {},
+})(MuiAccordionSummary);
+export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTotals,onSetCatalogTotals,
                                           catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
                                           onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
                                           onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
@@ -23,9 +50,16 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
         if(!catalogListInit)
             onCatalogListInit();
     });
+    useEffect(()=> {
+        if(catalogTotals.length===0)
+            onSetCatalogTotals(categoryList,catalogList);
+    });
+
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
+    const [onCategorySelected, setOnCategorySelected] = useState(false);
+
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -52,78 +86,68 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
                     <div className={classes.container}>
 
                         {categoryList.map((category, index) => {
+                           const totals= catalogTotals ? catalogTotals.filter((aItem) =>
+                                aItem._id === category._id) : [];
                             return(
 
-                                <Accordion expanded={category._id===categorySelected._id}
-                                           onChange={() => {
+                            <Accordion expanded={category._id === categorySelected._id}
+                                       onChange={() => {
 
-                                               if(category._id===categorySelected._id){
-                                                   const emptyCat = {_id:null, category: "All"}
-                                                   setCategorySelected(emptyCat);
-                                                   onCategorySelectChange(emptyCat);
+                                           if (category._id === categorySelected._id) {
+                                               const emptyCat = {_id: null, category: "All"}
+                                               setCategorySelected(emptyCat);
+                                               onCategorySelectChange(emptyCat);
+                                           } else {
+                                               setCategorySelected(category);
+                                               onCategorySelectChange(category);
+                                           }
+                                           //setTableList(onSelectCategory(category))
+                                       }}
+                                       onMouseUp={()=>{
+                                           if(category._id === categorySelected._id)
+                                           {setOnCategorySelected(false)}
+                                           if(category._id !== categorySelected._id)
+                                           {setOnCategorySelected(true)}
 
+                                       }}
+                                       key={category._id}
+                                       className={classes.accordion}
+                                       hidden={onCategorySelected && category._id !== categorySelected._id}
 
-                                               }else {
-                                                   setCategorySelected(category);
-                                                   onCategorySelectChange(category);
-                                               }
-                                               //setTableList(onSelectCategory(category))
-                                           }}
-                                           key={category._id}
-                                           className={classes.accordion}
-
+                            >
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
                                 >
-                                    <AccordionSummary>
+                                    <Typography className={classes.categoryTitle}>
                                         {category.category}
+                                    </Typography>
+                                    {!inEdit&&
+                                        <>
+                                    {
+                                        totals.length > 0 &&
+                                            <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
+                                                Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
+                                            </Typography>
+                                    }
+                                    {category._id === categorySelected._id ?
+                                        <>
+                                        <Button variant="contained"
+                                        color="primary"
+                                        className={classes.reorderButton}>
+                                        Reorder Items</Button>
+                                        </> : null}
+                                        </>
+                                    }
 
-                                    </AccordionSummary>
-                                    
 
-                                    <GridList className={classes.gridList} cols={5}>
+                                </AccordionSummary>
+                                <AccordionDetails>
 
+                                    <CatalogList/>
+                                </AccordionDetails>
 
-                                        {catalogListFiltered.map((catalog, index)=> {
+                            </Accordion>
 
-                                                const prevCatalog = index > 0 ?
-                                                    catalogListFiltered[index - 1] : null;
-
-                                                const nextCatalog =
-                                                    catalogListFiltered.length > (index - 2) ?
-                                                        catalogListFiltered[index + 1] : null;
-
-                                                const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
-                                                    (cat) => cat._id === categorySelected._id ) || [];
-                                                
-
-                                                const nextIsInCategory = filterCategory.length > 0;
-                                            return(
-                                                <CatalogCard
-                                                    key={`${catalog._id}${catalog.sort}`}
-                                                    prevCatalog={prevCatalog}
-                                                    nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                                    inEdit={inEdit}
-                                                    catalog={catalog}
-                                                    category={categorySelected}
-                                                    disableEdit={activeCatalogItem != null}
-                                                    onSetStatus={onSetCatalogStatus}
-                                                    onAddCategory={onAddCategoryToCatalog}
-                                                    onRemoveCategory={onRemoveCategoryFromCatalog}
-                                                    isSaving={catalog._id === catalogStatusLoading}
-                                                    onOrderChange={onCatalogOrderChange}
-                                                    savingCatalogSort={savingCatalogSort}
-                                                    onClick={() => {
-                                                        if (!isMobile) {
-                                                            onSetActiveCatalogItem(catalog);
-                                                        }
-                                                    }}
-                                                />
-                                                         );
-                                            }
-                                        )}
-
-                                    </GridList>
-                                        
-                                </Accordion>
 
                             )
 
@@ -134,57 +158,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,
 
                     </div>
 
-                    <div className={classes.gridListContainer} >
-                        <Paper className={classes.gridListBottom}>
-                            
-                        {catalogListOutCategory.map((catalog, index)=> {
-
-                            const prevCatalog = index > 0 ?
-                                catalogListFiltered[index - 1] : null;
-
-                            const nextCatalog =
-                                catalogListFiltered.length > (index - 2) ?
-                                    catalogListFiltered[index + 1] : null;
-
-                            const filterCategory = categorySelected && nextCatalog && nextCatalog.categories.filter(
-                                (cat) => cat._id === categorySelected._id ) || [];
-
-
-                            const nextIsInCategory = filterCategory.length > 0;
-                            return(
-                                <GridListTile>
-                            <CatalogCard
-                                key={`${catalog._id}${catalog.sort}`}
-                                prevCatalog={prevCatalog}
-                                nextCatalog={nextIsInCategory ? nextCatalog : null}
-                                inEdit={inEdit}
-                                catalog={catalog}
-                                category={categorySelected}
-                                disableEdit={activeCatalogItem != null}
-                                onSetStatus={onSetCatalogStatus}
-                                onAddCategory={onAddCategoryToCatalog}
-                                onRemoveCategory={onRemoveCategoryFromCatalog}
-                                isSaving={catalog._id === catalogStatusLoading}
-                                onOrderChange={onCatalogOrderChange}
-                                savingCatalogSort={savingCatalogSort}
-                                onClick={() => {
-                                    if (!isMobile) {
-                                        onSetActiveCatalogItem(catalog);
-                                    }
-                                }}
-                            />
-                            </GridListTile>
-                                    );
-                            }
-                            )}
-
-                    
-                                    </Paper>
-                                    
-
-
-
-                    </div>                   
                 </div>
                 {inEdit &&
                 <div className={classes.containerEdit}>
@@ -264,13 +237,19 @@ const useStyle = makeStyles({
       accordion:{
           height:'100%'
       },
-      gridListContainer: {
-        display: 'flex',
-        flexWrap: 'nowrap',
-        justifyContent: 'space-around',
-        width:  "100%",
-        overflow:'hidden'
-        
-
+    accordionDetails:{
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+      reorderButton: {
+        margin:0,
+          'text-transform':'none',
+          background:'#64b5f6',
+          marginLeft:'40px'
       },
+    categoryTitle:{
+        fontWeight:500,
+        fontSize:'large'
+    }
 });

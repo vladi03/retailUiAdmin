@@ -1,8 +1,7 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder, filterCatalog,
-    getNextSortInCategory} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog, filterCatalogNoCategory,getCatalogTotals} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -12,6 +11,10 @@ export const createModel = () => ({
     catalogList: [],
     catalogListFiltered: [],
     catalogListOutCategory:[],
+    catalogListNoCategory:[],
+    catalogTotals:[],
+
+
     catalogListLoading: false,
     catalogListLoadError: false,
     savingCatalogSort: false,
@@ -33,6 +36,7 @@ export const createModel = () => ({
     onCatalogOrderChange,
     onCatalogSearch,
     onClearCatalogError,
+    onSetCatalogTotals,
     getCatalogCategorySort
 });
 
@@ -77,8 +81,9 @@ const onCategorySelectChange = (categorySelected) => {
     const catalogListSorted = sortCatalog(provider.state.catalogList,
         categorySelected._id);
        const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id );
+       const catalogListNoCategory = filterCatalogNoCategory(catalogListSorted)
 
-    provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected});
+    provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected, catalogListNoCategory});
 };
 
 const onAddCategoryToCatalog = async ({catalog, category}) => {
@@ -234,7 +239,17 @@ const onCatalogListInit = () => {
             provider.setState(newState);
         }
     );
+
 };
+
+const onSetCatalogTotals = (categoryList,catalogList) =>{
+    const catalogTotals=getCatalogTotals(catalogList, categoryList)
+    provider.setState({catalogTotals})
+    console.log(catalogTotals)
+
+
+
+}
 
 export const  getInitialState = (classInstance) => {
     provider = classInstance;
