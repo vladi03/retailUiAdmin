@@ -70,6 +70,7 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
             <Typography>
                 Items not in any Category
             </Typography>
+            {!inEdit&&
             <div className={classes.noCatalogList}>
 
             {catalogListNoCategory.map((catalog, index)=> {
@@ -110,7 +111,7 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
                     );
                 }
             )}
-            </div>
+            </div>}
         </div>
     )
 }

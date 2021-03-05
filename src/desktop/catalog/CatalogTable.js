@@ -55,6 +55,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
             onSetCatalogTotals(categoryList,catalogList);
     });
 
+
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
     const [onCategorySelected, setOnCategorySelected] = useState(false);
@@ -120,18 +121,23 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                     <Typography className={classes.categoryTitle}>
                                         {category.category}
                                     </Typography>
-                                    {totals.length > 0 &&
-                                    <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
-                                        Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
-                                    </Typography>
+                                    {!inEdit&&
+                                        <>
+                                    {
+                                        totals.length > 0 &&
+                                            <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
+                                                Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
+                                            </Typography>
                                     }
                                     {category._id === categorySelected._id ?
                                         <>
-                                            <Button variant="contained"
-                                                    color="primary"
-                                                    className={classes.reorderButton}>
-                                                Reorder Items</Button>
+                                        <Button variant="contained"
+                                        color="primary"
+                                        className={classes.reorderButton}>
+                                        Reorder Items</Button>
                                         </> : null}
+                                        </>
+                                    }
 
 
                                 </AccordionSummary>
