@@ -148,15 +148,28 @@ const onSetCatalogStatus = async (status, id) => {
                 } else
                     return catalog;
             });
+        //change here
+        const {
+            catalogListFiltered,
+            catalogListOutCategory,
+            categorySelected,
+            catalogListNoCategory} =
+            setCategorySelectedCommon(provider.state.categorySelected,
+                catalogList);
+
+        /*
         const catalogListFiltered = sortCatalog(catalogList,
             provider.state.categorySelected &&
             provider.state.categorySelected._id);
-
+*/
         provider.setState({
             catalogList,
             catalogListFiltered,
+            catalogListOutCategory,
+            categorySelected,
             catalogStatusLoading: false,
-            catalogListLoadError
+            catalogListLoadError,
+            catalogListNoCategory
         });
     } else
         provider.setState({"catalogStatusLoading": false, catalogListLoadError});
