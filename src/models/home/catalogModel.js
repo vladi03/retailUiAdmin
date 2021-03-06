@@ -157,11 +157,6 @@ const onSetCatalogStatus = async (status, id) => {
             setCategorySelectedCommon(provider.state.categorySelected,
                 catalogList);
 
-        /*
-        const catalogListFiltered = sortCatalog(catalogList,
-            provider.state.categorySelected &&
-            provider.state.categorySelected._id);
-*/
         provider.setState({
             catalogList,
             catalogListFiltered,

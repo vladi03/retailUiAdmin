@@ -59,8 +59,6 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
-    const [onCategorySelected, setOnCategorySelected] = useState(false);
-
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -92,7 +90,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                             return(
 
                             <Accordion expanded={category._id === categorySelected._id}
-                                       onChange={() => {
+
+                                       onMouseUp={()=>{
 
                                            if (category._id === categorySelected._id) {
                                                const emptyCat = {_id: null, category: "All"};
@@ -102,18 +101,10 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                                setCategorySelected(category);
                                                onCategorySelectChange(category);
                                            }
-                                           //setTableList(onSelectCategory(category))
-                                       }}
-                                       onMouseUp={()=>{
-                                           if(category._id === categorySelected._id)
-                                           {setOnCategorySelected(false)}
-                                           if(category._id !== categorySelected._id)
-                                           {setOnCategorySelected(true)}
-
                                        }}
                                        key={category._id}
                                        className={classes.accordion}
-                                       hidden={onCategorySelected && category._id !== categorySelected._id}
+                                       hidden={categorySelected && categorySelected._id && category._id !== categorySelected._id}
 
                             >
                                 <AccordionSummary
