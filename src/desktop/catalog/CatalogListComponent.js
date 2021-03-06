@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React from "react";
 import {CatalogCard} from "./CatalogCard";
-import {Accordion, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {connectArray} from "../../utility/helpers";
 import {catalogModel} from "../../models/home/catalogModel";
@@ -114,7 +114,7 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
             </div>}
         </div>
     )
-}
+};
 
 
 const useStyle = makeStyles({
