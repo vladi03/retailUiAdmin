@@ -95,7 +95,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                        onChange={() => {
 
                                            if (category._id === categorySelected._id) {
-                                               const emptyCat = {_id: null, category: "All"}
+                                               const emptyCat = {_id: null, category: "All"};
                                                setCategorySelected(emptyCat);
                                                onCategorySelectChange(emptyCat);
                                            } else {
