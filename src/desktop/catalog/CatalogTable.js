@@ -15,6 +15,7 @@ import {CatalogList} from "./CatalogListComponent";
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {CatalogItemIcon} from "../SiteIcons";
 
 const AccordionDetails = withStyles((theme) => ({
     root: {
@@ -118,8 +119,9 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon/>}
                                 >
+                                    <CatalogItemIcon />
                                     <Typography className={classes.categoryTitle}>
-                                        {category.category}
+                                       {category.category}
                                     </Typography>
                                     {!inEdit&&
                                         <>
@@ -250,6 +252,7 @@ const useStyle = makeStyles({
       },
     categoryTitle:{
         fontWeight:500,
-        fontSize:'large'
+        fontSize:'large',
+        marginLeft: 15
     }
 });
