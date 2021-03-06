@@ -91,7 +91,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
 
                             <Accordion expanded={category._id === categorySelected._id}
 
-                                       onMouseUp={()=>{
+                                       onChange={()=>{
 
                                            if (category._id === categorySelected._id) {
                                                const emptyCat = {_id: null, category: "All"};
