@@ -5,7 +5,7 @@ import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button, Paper,
 Checkbox, FormControlLabel, Switch} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import {Save} from "@material-ui/icons";
+import {Save, Close, Delete} from "@material-ui/icons";
 import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {PicRatioFill} from "pic-ratio-fill";
@@ -19,7 +19,7 @@ const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
      onUploadImage, onDeleteCatalog, imageUploading, categoryList,
      onAddCategoryToCatalog, onRemoveCategoryFromCatalog,
-     getCatalogCategorySort
+     getCatalogCategorySort, onSetActiveCatalogItem
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -198,6 +198,7 @@ const CatalogItemEditComponent = ({
                 <div style={{display: "flex", justifyContent: "flex-end"}} >
                     <div>
                         <input type="file" name="myFile" id="myFile"
+                               style={{width:200}}
                                onChange={async (event) => {
                                    console.log(event.target.files);
                                    const reader = new FileReader();
@@ -217,7 +218,7 @@ const CatalogItemEditComponent = ({
                                }}
                         />
                     </div>
-                    <div >
+                    <div style={{display:"flex"}} >
                         <Button variant="contained"
                                 color="primary"
                                 startIcon={<Save />}
@@ -227,12 +228,21 @@ const CatalogItemEditComponent = ({
                             Save
                         </Button>
                         <AlertDialog
+                            startIcon={<Delete />}
                             onClick={() => onDeleteCatalog(itemEdit)}
                             title={"Are You Sure?"}
                             message={`Are You Sure you want to delete "${itemEdit.shortDesc}"?`}
                         >
                             Delete
                         </AlertDialog>
+
+                        <Button
+                                startIcon={<Close />}
+                                style={{marginRight: 20}}
+                                onClick={() => onSetActiveCatalogItem(null)}
+                        >
+                            Close
+                        </Button>
                     </div>
                 </div>
             }
