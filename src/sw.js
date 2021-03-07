@@ -6,7 +6,7 @@ const matchImageFunction = ({url, request, event}) => {
 };
 workbox.routing.registerRoute(
     matchImageFunction,///(\/#)|(\/$)/,
-    workbox.strategies.CacheFirst({
+    workbox.strategies.cacheFirst({
         cacheName: 'CatalogImages',
         plugins: [
             new workbox.expiration.Plugin({
