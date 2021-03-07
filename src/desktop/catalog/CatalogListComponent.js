@@ -13,11 +13,8 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
                                          onSetActiveCatalogItem, catalogListNoCategory})=> {
 
     const inEdit = activeCatalogItem !== null;
-
     const classes = useStyle({inEdit});
     const isMobile = useIsMobile();
-
-
 
 
     return(

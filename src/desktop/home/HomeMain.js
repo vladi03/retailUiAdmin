@@ -5,6 +5,7 @@ import {OpenWith} from "@material-ui/icons";
 import {CatalogTable} from "../catalog/CatalogTable";
 import {connectArray} from "../../utility/helpers";
 import {catalogModel} from "../../models/home/catalogModel";
+import {CatalogItemIcon} from "../SiteIcons";
 
 export const HomeMainComponent = ({onCreateNewCatalog,
     onCatalogSearch, catalogSearchText }) => {
@@ -14,7 +15,7 @@ export const HomeMainComponent = ({onCreateNewCatalog,
         <Fragment>
             <AppBarTitleAddSearch
                 title="Catalogs"
-                LeftIcon={OpenWith}
+                LeftIcon={CatalogItemIcon}
                 onSearchChange={(value) => {
                     onCatalogSearch(value);
                 }}

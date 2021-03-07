@@ -90,6 +90,7 @@ export const AppBarTitleAddSearchComponent =
     return (
         <AppBar className={isMobile ? classes.rootMobile : classes.root} position="static">
             <Toolbar variant="dense">
+                <LeftIcon style={{marginRight: 10}} />
                 <span className={childHasTextBox ? classes.labelTitleWithTextBox : classes.labelTitle}>
                     {/*  <IconButton className={classes.menuButton}
                                 color="inherit"
@@ -98,6 +99,7 @@ export const AppBarTitleAddSearchComponent =
                     >
                         <LeftIcon />
                     </IconButton>*/}
+
                     <Typography variant="h6" color="inherit" >
                         {title}
                     </Typography>
