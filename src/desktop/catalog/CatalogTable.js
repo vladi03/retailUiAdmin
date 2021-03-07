@@ -59,7 +59,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
-
+    const [showSortArrows, setShowSortArrows] = useState(false);
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
 
@@ -125,9 +125,16 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                     {category._id === categorySelected._id ?
                                         <>
                                         <Button variant="contained"
-                                        color="primary"
-                                        className={classes.reorderButton}>
-                                        Reorder Items</Button>
+                                                color="primary"
+                                                className={classes.reorderButton}
+                                                onClick={(event)=> {
+                                                    event.stopPropagation();
+                                                    setShowSortArrows(!showSortArrows);
+                                                    console.log("test");
+                                                }}
+                                        >
+                                            {showSortArrows ? "Hide" : "Show" } Reorder Arrows
+                                        </Button>
                                         </> : null}
                                         </>
                                     }
@@ -136,7 +143,9 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                 </AccordionSummary>
                                 <AccordionDetails>
 
-                                    <CatalogList/>
+                                    <CatalogList
+                                        showSortArrows={showSortArrows}
+                                    />
                                 </AccordionDetails>
 
                             </Accordion>

@@ -11,7 +11,7 @@ const {catalogApi} = getStore();
 
 export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                             disableEdit, isSaving, category, savingCatalogSort,
-                            onAddCategory, onRemoveCategory,
+                            onAddCategory, onRemoveCategory, showSortArrows,
                             onOrderChange, prevCatalog, nextCatalog}) => {
 
     const {widthCalc, heightPicCalc} = useCardSize();
@@ -109,7 +109,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             }
 
             <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
-            {inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
+            {showSortArrows && inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
                 <IconButton aria-label="Up"
                             size="medium"
                             className={classes.buttonLeft}
@@ -132,7 +132,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                 />
 
             </CardContent>
-            {inCategoryEdit && !savingCatalogSort && nextCatalog && isInCategory &&
+            {showSortArrows && inCategoryEdit && !savingCatalogSort && nextCatalog && isInCategory &&
             <IconButton aria-label="Up"
                         className={classes.buttonRight}
                         onClick={()=> onOrderChange(catalog, category, nextCatalog)}

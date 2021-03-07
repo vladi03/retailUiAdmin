@@ -9,8 +9,8 @@ import {useIsMobile} from "../../utility/useIsMobile";
 
 
 export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,activeCatalogItem ,onSetCatalogStatus, onAddCategoryToCatalog,
-                                         onRemoveCategoryFromCatalog ,catalogStatusLoading, onCatalogOrderChange, savingCatalogSort,
-                                         onSetActiveCatalogItem, catalogListNoCategory})=> {
+         onRemoveCategoryFromCatalog ,catalogStatusLoading, onCatalogOrderChange, savingCatalogSort,
+         onSetActiveCatalogItem, catalogListNoCategory, showSortArrows})=> {
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -40,6 +40,7 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
                     const nextIsInCategory = filterCategory.length > 0;
                     return(
                         <CatalogCard
+                            showSortArrows={showSortArrows}
                             key={`${catalog._id}${catalog.sort}`}
                             prevCatalog={prevCatalog}
                             nextCatalog={nextIsInCategory ? nextCatalog : null}
