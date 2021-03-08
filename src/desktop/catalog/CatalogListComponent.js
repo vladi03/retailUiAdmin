@@ -114,23 +114,30 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
     )
 };
 
-
+//space-between
+//space-around
 const useStyle = makeStyles({
 
     catalogListComponent: {
+        '& :not(:nth-child(6n+1))' : {
+            marginLeft: "calc( (97.6% - (16% * 6)) / 5 )"
+        },
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-start',
     }, container: {
         display:"block",
         flexWrap:"wrap",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         width: props => props.inEdit ? "24vw" : "100%",
         overflow: "auto",
     },noCatalogList: {
+        '& :not(:nth-child(6n+1))' : {
+            marginLeft: "calc( (97.6% - (16% * 6)) / 5 )"
+        },
         display: 'flex',
         flexWrap: 'nowrap',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-start',
     },
 
 });
