@@ -15,6 +15,7 @@ import {CatalogList} from "./CatalogListComponent";
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {CatalogItemIcon} from "../SiteIcons";
 
 const AccordionDetails = withStyles((theme) => ({
     root: {
@@ -58,9 +59,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
-    const [onCategorySelected, setOnCategorySelected] = useState(false);
-
-
+    const [showSortArrows, setShowSortArrows] = useState(false);
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
 
@@ -91,35 +90,29 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                             return(
 
                             <Accordion expanded={category._id === categorySelected._id}
-                                       onChange={() => {
+
+                                       onChange={()=>{
 
                                            if (category._id === categorySelected._id) {
-                                               const emptyCat = {_id: null, category: "All"}
+                                               const emptyCat = {_id: null, category: "All"};
                                                setCategorySelected(emptyCat);
                                                onCategorySelectChange(emptyCat);
                                            } else {
                                                setCategorySelected(category);
                                                onCategorySelectChange(category);
                                            }
-                                           //setTableList(onSelectCategory(category))
-                                       }}
-                                       onMouseUp={()=>{
-                                           if(category._id === categorySelected._id)
-                                           {setOnCategorySelected(false)}
-                                           if(category._id !== categorySelected._id)
-                                           {setOnCategorySelected(true)}
-
                                        }}
                                        key={category._id}
                                        className={classes.accordion}
-                                       hidden={onCategorySelected && category._id !== categorySelected._id}
+                                       hidden={categorySelected && categorySelected._id && category._id !== categorySelected._id}
 
                             >
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon/>}
                                 >
+                                    <CatalogItemIcon />
                                     <Typography className={classes.categoryTitle}>
-                                        {category.category}
+                                       {category.category}
                                     </Typography>
                                     {!inEdit&&
                                         <>
@@ -132,9 +125,16 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                     {category._id === categorySelected._id ?
                                         <>
                                         <Button variant="contained"
-                                        color="primary"
-                                        className={classes.reorderButton}>
-                                        Reorder Items</Button>
+                                                color="primary"
+                                                className={classes.reorderButton}
+                                                onClick={(event)=> {
+                                                    event.stopPropagation();
+                                                    setShowSortArrows(!showSortArrows);
+                                                    console.log("test");
+                                                }}
+                                        >
+                                            {showSortArrows ? "Hide" : "Show" } Reorder Arrows
+                                        </Button>
                                         </> : null}
                                         </>
                                     }
@@ -143,7 +143,9 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                 </AccordionSummary>
                                 <AccordionDetails>
 
-                                    <CatalogList/>
+                                    <CatalogList
+                                        showSortArrows={showSortArrows}
+                                    />
                                 </AccordionDetails>
 
                             </Accordion>
@@ -250,6 +252,7 @@ const useStyle = makeStyles({
       },
     categoryTitle:{
         fontWeight:500,
-        fontSize:'large'
+        fontSize:'large',
+        marginLeft: 15
     }
 });

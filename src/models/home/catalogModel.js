@@ -1,7 +1,8 @@
 import {createContext} from "../../utility/modelContext";
 import {saveCatalog, uploadImage, deleteFile, saveCatalogStatus,
     getNewCatalog, deleteCatalog, getCatalogList} from "./catalogMessage";
-import {sortCatalog, swapOrder, filterCatalog, filterCatalogNoCategory,getCatalogTotals} from "./catalogHelper";
+import {sortCatalog, swapOrder, filterCatalog,
+    filterCatalogNoCategory,getCatalogTotals, getNextSortInCategory} from "./catalogHelper";
 import {showError} from "../../utility/helpers";
 
 let provider = null;
@@ -78,12 +79,24 @@ const onCatalogOrderChange = async (catalog, category, swapCatalog) => {
 
 //category select drop down
 const onCategorySelectChange = (categorySelected) => {
-    const catalogListSorted = sortCatalog(provider.state.catalogList,
-        categorySelected._id);
-       const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id );
-       const catalogListNoCategory = filterCatalogNoCategory(catalogListSorted)
+    const result = setCategorySelectedCommon(categorySelected,
+        provider.state.catalogList);
+    provider.setState(result);
+};
 
-    provider.setState({catalogListFiltered:filterCatalogIn, catalogListOutCategory:filterCatalogOut, categorySelected, catalogListNoCategory});
+const setCategorySelectedCommon = (categorySelected, catalogList) => {
+    const catalogListSorted = sortCatalog(catalogList,
+        categorySelected._id);
+
+    const {filterCatalogIn,filterCatalogOut } = filterCatalog(catalogListSorted,categorySelected._id );
+    const catalogListNoCategory = filterCatalogNoCategory(catalogListSorted);
+
+    return {
+        catalogListFiltered:filterCatalogIn,
+        catalogListOutCategory:filterCatalogOut,
+        categorySelected,
+        catalogListNoCategory
+    };
 };
 
 const onAddCategoryToCatalog = async ({catalog, category}) => {
@@ -123,7 +136,7 @@ const onRemoveCategoryFromCatalog = async ({catalog, categoryId}) => {
 
 const onSetCatalogStatus = async (status, id) => {
     provider.setState({"catalogStatusLoading": id, activeCatalogItem: null});
-    debugger;
+
     const {saveCatalogStatusResult, catalogListLoadError,
         success} = await saveCatalogStatus(status, id);
     // noinspection JSUnresolvedVariable
@@ -135,15 +148,23 @@ const onSetCatalogStatus = async (status, id) => {
                 } else
                     return catalog;
             });
-        const catalogListFiltered = sortCatalog(catalogList,
-            provider.state.categorySelected &&
-            provider.state.categorySelected._id);
+        //change here
+        const {
+            catalogListFiltered,
+            catalogListOutCategory,
+            categorySelected,
+            catalogListNoCategory} =
+            setCategorySelectedCommon(provider.state.categorySelected,
+                catalogList);
 
         provider.setState({
             catalogList,
             catalogListFiltered,
+            catalogListOutCategory,
+            categorySelected,
             catalogStatusLoading: false,
-            catalogListLoadError
+            catalogListLoadError,
+            catalogListNoCategory
         });
     } else
         provider.setState({"catalogStatusLoading": false, catalogListLoadError});
@@ -206,21 +227,33 @@ const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) =>
             return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
         });
 
-        result.catalogListFiltered = sortCatalog(result.catalogList,
-            provider.state.categorySelected &&
-            provider.state.categorySelected._id);
     } else { // noinspection JSUnresolvedVariable
         if(result.saveCatalogResult &&
                 result.saveCatalogResult.upsertedCount > 0) {
                 result.catalogList = [
                     ...provider.state.catalogList, activeCatalogItem
                 ];
-
+/*
                 result.catalogListFiltered = sortCatalog(result.catalogList,
                     provider.state.categorySelected &&
                     provider.state.categorySelected._id);
+                    */
             }
     }
+
+    const {
+        catalogListFiltered,
+        catalogListOutCategory,
+        categorySelected,
+        catalogListNoCategory} =
+        setCategorySelectedCommon(provider.state.categorySelected,
+            result.catalogList);
+
+    result.catalogListFiltered = catalogListFiltered;
+    result.categorySelected = categorySelected;
+    result.catalogListOutCategory = catalogListOutCategory;
+    result.catalogListNoCategory = catalogListNoCategory;
+
     if(!setActiveItem)
         result.activeCatalogItem = null;
     result.catalogStatusLoading = false;
@@ -235,6 +268,7 @@ const onSetActiveCatalogItem = (activeCatalogItem) => {
 const onCatalogListInit = () => {
     provider.setState({catalogListInit: true});
     getCatalogList().then((newState) => {
+            // noinspection JSUndefinedPropertyAssignment
             newState.catalogListFiltered = newState.catalogList;
             provider.setState(newState);
         }
@@ -243,13 +277,11 @@ const onCatalogListInit = () => {
 };
 
 const onSetCatalogTotals = (categoryList,catalogList) =>{
-    const catalogTotals=getCatalogTotals(catalogList, categoryList)
-    provider.setState({catalogTotals})
-    console.log(catalogTotals)
+    const catalogTotals=getCatalogTotals(catalogList, categoryList);
+    provider.setState({catalogTotals});
+    console.log(catalogTotals);
 
-
-
-}
+};
 
 export const  getInitialState = (classInstance) => {
     provider = classInstance;
