@@ -277,6 +277,7 @@ const onCatalogListInit = () => {
 };
 
 const onSetCatalogTotals = (categoryList,catalogList) =>{
+    console.log("onSetCatalogTotals");
     const catalogTotals=getCatalogTotals(catalogList, categoryList);
     provider.setState({catalogTotals});
     console.log(catalogTotals);

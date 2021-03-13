@@ -52,7 +52,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
             onCatalogListInit();
     });
     useEffect(()=> {
-        if(catalogTotals.length===0)
+        if(catalogTotals.length===0 && categoryList.length > 0 &&
+            catalogList.length > 0)
             onSetCatalogTotals(categoryList,catalogList);
     });
 
