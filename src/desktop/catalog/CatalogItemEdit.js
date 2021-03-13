@@ -27,7 +27,7 @@ const CatalogItemEditComponent = ({
         activeCatalogItem.images[0].id : false;
 
     const imageUrl = imageIsConfig ?
-        `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}` :
+        `${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}?1` :
         null
     ;
 
