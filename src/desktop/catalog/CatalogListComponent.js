@@ -65,13 +65,15 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
             )}
 
         </div>
+            {!isMobile && catalogListNoCategory.length > 0 &&
             <Typography>
                 Items not in any Category
             </Typography>
+            }
             {!inEdit&&
             <div className={classes.noCatalogList}>
 
-            {catalogListNoCategory.map((catalog, index)=> {
+            {!isMobile && catalogListNoCategory.map((catalog, index)=> {
 
                     const prevCatalog = index > 0 ?
                         catalogListFiltered[index - 1] : null;
