@@ -21,9 +21,6 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
         <div className={classes.container}>
         <div className={classes.catalogListComponent}>
 
-
-
-
             {  catalogListFiltered.map((catalog, index)=> {
 
                     const prevCatalog = index > 0 ?
@@ -70,8 +67,8 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
                 Items not in any Category
             </Typography>
             }
-            {!inEdit&&
-            <div className={classes.noCatalogList}>
+            {(!inEdit || true ) &&
+            <div className={classes.catalogListComponent}>
 
             {!isMobile && catalogListNoCategory.map((catalog, index)=> {
 
