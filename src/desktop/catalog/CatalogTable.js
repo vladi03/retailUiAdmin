@@ -117,12 +117,12 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                     {!inEdit&&
                                         <>
                                     {
-                                        totals.length > 0 &&
+                                        !isMobile && totals.length > 0 &&
                                             <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
                                                 Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
                                             </Typography>
                                     }
-                                    {category._id === categorySelected._id ?
+                                    {!isMobile && !inEdit&& category._id === categorySelected._id ?
                                         <>
                                         <Button variant="contained"
                                                 color="primary"
@@ -144,7 +144,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                 <AccordionDetails>
 
                                     <CatalogList
-                                        showSortArrows={showSortArrows}
+                                        showSortArrows={!isMobile && showSortArrows}
                                     />
                                 </AccordionDetails>
 
