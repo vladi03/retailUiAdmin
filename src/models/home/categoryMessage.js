@@ -3,28 +3,40 @@ import {handleResponse} from "../../utility/helpers";
 
 export const getCategoryList = async () => {
     const {catalogApi , token, userDomain} = getStore();
-    const url = `${catalogApi}/catalogApi/api/v1/category/domain/${userDomain}`;
-    const payloadGeneric = {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": `Bearer ${token}`
-        }
-    };
-
-    return fetch(url, payloadGeneric)
-        .then(handleResponse()).then((result) => {
-            return {
-                categoryList: result,
-                categoryListLoading: false
+    if(!userDomain) {
+        return {
+            categoryList: [],
+            categoryListLoading: false,
+            categoryListLoadHasError: true,
+            categoryListInit:false,
+            categoryListLoadError: ""
+        };
+    } else {
+        const url = `${catalogApi}/catalogApi/api/v1/category/domain/${userDomain}`;
+        const payloadGeneric = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": `Bearer ${token}`
             }
-        }).catch((error) => {
-            return {
-                categoryList: [],
-                categoryListLoading: false,
-                categoryListLoadError: error.message || error
-            };
-        });
+        };
+
+        return fetch(url, payloadGeneric)
+            .then(handleResponse()).then((result) => {
+                return {
+                    categoryList: result,
+                    categoryListLoading: false,
+                    categoryListLoadHasError: false
+                }
+            }).catch((error) => {
+                return {
+                    categoryList: [],
+                    categoryListLoading: false,
+                    categoryListLoadHasError: true,
+                    categoryListLoadError: error.message || error
+                };
+            });
+    }
 };
 
 export const getNewCategory = () => {

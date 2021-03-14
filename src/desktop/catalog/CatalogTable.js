@@ -1,15 +1,14 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {connectArray} from "../../utility/helpers";
-import {CatalogCard} from "./CatalogCard";
 import {makeStyles, withStyles} from "@material-ui/core/styles";
-import {Button, IconButton, Paper, Typography} from "@material-ui/core";
+import {Button, IconButton, Typography} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
 import {PopupError} from "../../utility/components/PopupError";
-import {Accordion, GridList,GridListTile } from '@material-ui/core';
+import {Accordion } from '@material-ui/core';
 import {categoryModel} from "../../models/home/categoryModel";
 import {CatalogList} from "./CatalogListComponent";
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -45,7 +44,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                           onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
                                           onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
                                           onCatalogOrderChange, savingCatalogSort, catalogListLoadError,
-                                          onClearCatalogError, categoryList, catalogListOutCategory  }) => {
+                                          onClearCatalogError, categoryList  }) => {
 
     useEffect(()=> {
         if(!catalogListInit)
@@ -53,8 +52,10 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
     });
     useEffect(()=> {
         if(catalogTotals.length===0 && categoryList.length > 0 &&
-            catalogList.length > 0)
-            onSetCatalogTotals(categoryList,catalogList);
+            catalogList.length > 0) {
+
+            onSetCatalogTotals(categoryList, catalogList);
+        }
     });
 
 
@@ -85,7 +86,7 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                 <div className={classes.scrollContainer}>
                     <div className={classes.container}>
 
-                        {categoryList.map((category, index) => {
+                        {categoryList.map((category) => {
                            const totals= catalogTotals ? catalogTotals.filter((aItem) =>
                                 aItem._id === category._id) : [];
                             return(

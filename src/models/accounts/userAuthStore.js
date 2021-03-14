@@ -75,8 +75,12 @@ const clearLogOutTimer = () => {
 
 export const isLoggedIn = () => userAuthData.token && userAuthData.token !== null;
 
-export const getStore = () => userAuthData;
+export const getStore = () => {
 
+    return userAuthData;
+};
+
+// noinspection JSUnusedGlobalSymbols
 export const getFullName = () =>
     userAuthData.name;
 
@@ -86,6 +90,7 @@ export const hasFeature = (featureId) => {
     return userAuthData.featurePermissions.indexOf(featureId) > -1 || true;
 };
 
+// noinspection JSUnusedGlobalSymbols
 export const getAuthHeaderValue = () => {
     return userAuthData.token !== null ? `bearer ${userAuthData.token}` : "";
 };
@@ -125,6 +130,7 @@ export const getUserDomain = async (userId) => {
     const {userProfile} = await getUserProfile(userId);
     console.log("userProfile");
     console.log(userProfile);
+    // noinspection JSUnresolvedVariable
     return userProfile && userProfile.app_metadata
         && userProfile.app_metadata.retailDomain;//"darbyfurnitureoutlet.com";
 };
