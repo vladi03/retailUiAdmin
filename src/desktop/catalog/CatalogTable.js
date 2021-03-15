@@ -92,9 +92,9 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                             return(
 
                             <Accordion expanded={category._id === categorySelected._id}
-
+                                       TransitionProps={{timeout:0}}
                                        onChange={()=>{
-
+                                           console.log("click");
                                            if (category._id === categorySelected._id) {
                                                const emptyCat = {_id: null, category: "All"};
                                                setCategorySelected(emptyCat);
