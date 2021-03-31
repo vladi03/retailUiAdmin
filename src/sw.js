@@ -5,8 +5,8 @@ const matchImageFunction = ({url, request, event}) => {
     return url.href.indexOf("catalogApi/api/v1/catalog/file") > -1;
 };
 workbox.routing.registerRoute(
-    matchImageFunction,///(\/#)|(\/$)/,
-    workbox.strategies.networkFirst({
+    matchImageFunction,///(\/#)|(\/$)/,  networkFirst
+    workbox.strategies.cacheFirst({
         cacheName: 'CatalogImages',
         plugins: [
             new workbox.expiration.Plugin({

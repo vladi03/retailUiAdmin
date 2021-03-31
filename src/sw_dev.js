@@ -6,7 +6,7 @@ const matchImageFunction = ({url, request, event}) => {
 };
 workbox.routing.registerRoute(
     matchImageFunction,///(\/#)|(\/$)/,
-    workbox.strategies.networkFirst({
+    workbox.strategies.cacheFirst({
         cacheName: 'CatalogImages',
         plugins: [
             new workbox.expiration.Plugin({
@@ -17,9 +17,7 @@ workbox.routing.registerRoute(
     })
 );
 
-const matchApiFunction = ({url, request, event}) => {
-    return url.href.indexOf("catalogApi/api/v1") > -1;
-};
+
 
 const matchFunction = ({url, request, event}) => {
     return url.pathname === '/';
@@ -29,6 +27,10 @@ workbox.routing.registerRoute(
     matchFunction,
     workbox.strategies.networkFirst(),
 );
+
+const matchApiFunction = ({url, request, event}) => {
+    return url.href.indexOf("catalogApi/api/v1") > -1;
+};
 //NetworkFirst
 workbox.routing.registerRoute(
     matchApiFunction,
