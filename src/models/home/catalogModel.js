@@ -257,7 +257,7 @@ const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) =>
     if(!setActiveItem)
         result.activeCatalogItem = null;
     result.catalogStatusLoading = false;
-    //debugger;
+
     provider.setState(result);
 };
 
@@ -267,16 +267,26 @@ const onSetActiveCatalogItem = (activeCatalogItem) => {
 
 const onCatalogListInit = () => {
     provider.setState({catalogListInit: true});
+
     getCatalogList().then((newState) => {
-            // noinspection JSUndefinedPropertyAssignment
-            newState.catalogListFiltered = newState.catalogList;
+        // noinspection JSUndefinedPropertyAssignment
+        newState.catalogListFiltered = newState.catalogList;
+        if(newState.catalogListLoadHasError) {
+            newState.catalogListInit = false;
+            setTimeout(()=> {
+                provider.setState(newState);
+            }, 100);
+        } else {
             provider.setState(newState);
         }
-    );
+    }).catch(()=> { //ex
+        debugger;
+    });
 
 };
 
 const onSetCatalogTotals = (categoryList,catalogList) =>{
+    console.log("onSetCatalogTotals");
     const catalogTotals=getCatalogTotals(catalogList, categoryList);
     provider.setState({catalogTotals});
     console.log(catalogTotals);

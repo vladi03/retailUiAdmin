@@ -1,6 +1,6 @@
 import React from "react";
 import {CatalogCard} from "./CatalogCard";
-import {Typography} from "@material-ui/core";
+import {Typography, Divider} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {connectArray} from "../../utility/helpers";
 import {catalogModel} from "../../models/home/catalogModel";
@@ -20,9 +20,6 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
     return(
         <div className={classes.container}>
         <div className={classes.catalogListComponent}>
-
-
-
 
             {  catalogListFiltered.map((catalog, index)=> {
 
@@ -65,13 +62,16 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
             )}
 
         </div>
-            <Typography>
+            <Divider variant="middle" />
+            {!isMobile && catalogListNoCategory.length > 0 &&
+            <Typography gutterBottom variant="h5">
                 Items not in any Category
             </Typography>
-            {!inEdit&&
-            <div className={classes.noCatalogList}>
+            }
 
-            {catalogListNoCategory.map((catalog, index)=> {
+            <div className={classes.catalogListComponent}>
+
+            {!isMobile && catalogListNoCategory.map((catalog, index)=> {
 
                     const prevCatalog = index > 0 ?
                         catalogListFiltered[index - 1] : null;
@@ -109,7 +109,7 @@ export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,act
                     );
                 }
             )}
-            </div>}
+            </div>
         </div>
     )
 };

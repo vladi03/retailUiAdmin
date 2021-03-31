@@ -16,13 +16,15 @@ export const getUserProfile = async (userId) => {
         .then(handleResponse()).then((result) => {
             return {
                 userProfile: result,
-                userProfileLoading: false
+                userProfileLoading: false,
+                userProfileLoadHasError: false
             }
         }).catch((error) => {
             return {
                 userProfile: null,
                 userProfileLoading: false,
-                userProfileLoadError: error.message || error
+                userProfileLoadError: error.message || error,
+                userProfileLoadHasError: true
             };
         });
 };
