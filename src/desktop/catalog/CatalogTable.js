@@ -85,77 +85,77 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                     <div className={classes.container}>
 
                         {categoryList.map((category, index) => {
-                           const totals= catalogTotals ? catalogTotals.filter((aItem) =>
+                            const totals= catalogTotals ? catalogTotals.filter((aItem) =>
                                 aItem._id === category._id) : [];
                             return(
 
-                            <Accordion expanded={category._id === categorySelected._id}
+                                <Accordion expanded={category._id === categorySelected._id}
 
-                                       onChange={()=>{
+                                           onChange={()=>{
 
-                                           if (category._id === categorySelected._id) {
-                                               const emptyCat = {_id: null, category: "All"};
-                                               setCategorySelected(emptyCat);
-                                               onCategorySelectChange(emptyCat);
-                                           } else {
-                                               setCategorySelected(category);
-                                               onCategorySelectChange(category);
-                                           }
-                                       }}
-                                       key={category._id}
-                                       className={classes.accordion}
-                                       hidden={categorySelected && categorySelected._id && category._id !== categorySelected._id}
+                                               if (category._id === categorySelected._id) {
+                                                   const emptyCat = {_id: null, category: "All"};
+                                                   setCategorySelected(emptyCat);
+                                                   onCategorySelectChange(emptyCat);
+                                               } else {
+                                                   setCategorySelected(category);
+                                                   onCategorySelectChange(category);
+                                               }
+                                           }}
+                                           key={category._id}
+                                           className={classes.accordion}
+                                           hidden={categorySelected && categorySelected._id && category._id !== categorySelected._id}
 
-                            >
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon/>}
                                 >
-                                    <CatalogItemIcon />
-                                    <Typography className={classes.categoryTitle}>
-                                       {category.category}
-                                    </Typography>
-                                    {!inEdit&&
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon/>}
+                                    >
+                                        <CatalogItemIcon />
+                                        <Typography className={classes.categoryTitle}>
+                                            {category.category}
+                                        </Typography>
+                                        {!inEdit&&
                                         <>
-                                    {
-                                        totals.length > 0 &&
-                                            <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
-                                                Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
-                                            </Typography>
-                                    }
-                                    {category._id === categorySelected._id ?
-                                        <>
-                                        <Button variant="contained"
-                                                color="primary"
-                                                className={classes.reorderButton}
-                                                onClick={(event)=> {
-                                                    event.stopPropagation();
-                                                    setShowSortArrows(!showSortArrows);
-                                                    console.log("test");
-                                                }}
-                                        >
-                                            {showSortArrows ? "Hide" : "Show" } Reorder Arrows
-                                        </Button>
-                                        </> : null}
+                                            {
+                                                totals.length > 0 &&
+                                                <Typography style={{marginRight: '10%', position: 'absolute', right: 30}}>
+                                                    Active: {totals[0].activeTotal} Disabled: {totals[0].disabledTotal} Total: {totals[0].disabledTotal + totals[0].activeTotal}
+                                                </Typography>
+                                            }
+                                            {category._id === categorySelected._id ?
+                                                <>
+                                                    <Button variant="contained"
+                                                            color="primary"
+                                                            className={classes.reorderButton}
+                                                            onClick={(event)=> {
+                                                                event.stopPropagation();
+                                                                setShowSortArrows(!showSortArrows);
+                                                                console.log("test");
+                                                            }}
+                                                    >
+                                                        {showSortArrows ? "Hide" : "Show" } Reorder Arrows
+                                                    </Button>
+                                                </> : null}
                                         </>
-                                    }
+                                        }
 
 
-                                </AccordionSummary>
-                                <AccordionDetails>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
 
-                                    <CatalogList
-                                        showSortArrows={showSortArrows}
-                                    />
-                                </AccordionDetails>
+                                        <CatalogList
+                                            showSortArrows={showSortArrows}
+                                        />
+                                    </AccordionDetails>
 
-                            </Accordion>
+                                </Accordion>
 
 
                             )
 
                         })
                         }
-                   
+
 
 
                     </div>
@@ -176,8 +176,8 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                     <CatalogItemEdit />
                 </div>
                 }
-                
-               
+
+
 
             </div>
         </Fragment>
@@ -220,36 +220,36 @@ const useStyle = makeStyles({
         flexWrap: 'wrap',
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
-      },
-      gridListBottom: {
+    },
+    gridListBottom: {
         flexWrap: 'nowrap',
         bottom:0,
         position:'absolute',
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
-        display:'flex',      
+        display:'flex',
         width: '100%',
-        overflow: 'scroll'  
+        overflow: 'scroll'
 
-      },
-      gridListTile:{
-          
+    },
+    gridListTile:{
 
-      },
-      accordion:{
-          height:'100%'
-      },
+
+    },
+    accordion:{
+        height:'100%'
+    },
     accordionDetails:{
         '&$expanded': {
             minHeight: 56,
         },
     },
-      reorderButton: {
+    reorderButton: {
         margin:0,
-          'text-transform':'none',
-          background:'#64b5f6',
-          marginLeft:'40px'
-      },
+        'text-transform':'none',
+        background:'#64b5f6',
+        marginLeft:'40px'
+    },
     categoryTitle:{
         fontWeight:500,
         fontSize:'large',
