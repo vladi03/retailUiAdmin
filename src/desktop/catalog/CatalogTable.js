@@ -68,7 +68,7 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
     return (
         <Fragment>
             <PopupError
-                errorMessage={catalogListLoadError && "Error Saving"}
+                errorMessage={catalogListLoadError && "Error Saving" || ""}
                 onClearErrorMessage={() => onClearCatalogError(false)}
                 status={"error"}
             />
