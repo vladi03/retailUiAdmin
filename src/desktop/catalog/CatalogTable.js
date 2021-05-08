@@ -39,11 +39,10 @@ const AccordionSummary = withStyles({
     },
     expanded: {},
 })(MuiAccordionSummary);
-export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTotals,onSetCatalogTotals,
-                                          catalogListInit, onCatalogListInit, onAddCategoryToCatalog,
-                                          onRemoveCategoryFromCatalog, onSetActiveCatalogItem, activeCatalogItem,
-                                          onSetCatalogStatus, catalogStatusLoading, onCategorySelectChange,
-                                          onCatalogOrderChange, savingCatalogSort, catalogListLoadError,
+export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTotals,
+                                          catalogListInit, onCatalogListInit,
+                                          onSetActiveCatalogItem, activeCatalogItem,
+                                          onCategorySelectChange, catalogListLoadError,
                                           onClearCatalogError, categoryList  }) => {
 
     useEffect(()=> {
@@ -89,9 +88,10 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                         {categoryList.map((category) => {
                            const totals= catalogTotals ? catalogTotals.filter((aItem) =>
                                 aItem._id === category._id) : [];
+                           const expandCategory = category._id === categorySelected._id;
                             return(
 
-                            <Accordion expanded={category._id === categorySelected._id}
+                            <Accordion expanded={expandCategory}
                                        TransitionProps={{timeout:0}}
                                        onChange={()=>{
                                            console.log("click");
@@ -145,9 +145,10 @@ export const CatalogTableComponent = ({catalogList,catalogListFiltered,catalogTo
                                 </AccordionSummary>
                                 <AccordionDetails>
 
-                                    <CatalogList
+                                    {expandCategory && <CatalogList
                                         showSortArrows={!isMobile && showSortArrows}
                                     />
+                                    }
                                 </AccordionDetails>
 
                             </Accordion>
