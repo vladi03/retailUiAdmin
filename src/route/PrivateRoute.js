@@ -11,7 +11,7 @@ export const PrivateRoute = ({ history, permission, component: Component, ...res
 
     return (
         <Route {...rest} render={(props) => {
-            //hasFeature(permission) ||
+            //hasFeature(permission) ||//test push 2
             return (
                 <Fragment>
                     {calcHasAuth && <Component {...props} />}
