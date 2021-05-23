@@ -4,6 +4,7 @@ import { GlobalProviders} from "../GlobalProviders";
 import {getLoginRoute} from "./history";
 import {FullMenuNav} from "../desktop/home/FullMenuNav";
 import { LoggedOut } from "../desktop/accounts/LoggedOut";
+import {LogIn} from "../desktop/accounts/LoginStart";
 import {initAuthStore} from "../models/accounts/userAuthStore";
 import {HomeMain} from "../desktop/home/HomeMain";
 import {PrivateRoute} from "./PrivateRoute";
@@ -97,7 +98,7 @@ export class RouteComponent extends React.Component {
                 // noinspection JSIgnoredPromiseFromCall
                 getToken();
         }
-        const LoginRoute = getLoginRoute();
+        const LogoutRoute = getLoginRoute();
 
         // noinspection JSUnusedLocalSymbols
         const MenuNav = FullMenuNav; //isMobile ? MobileNav :
@@ -114,10 +115,10 @@ export class RouteComponent extends React.Component {
                     <HashRouter>
                         <MenuNav>
                         <div>
-                            <LoginRoute/>
-                            <Route exact path="/logOut"
-                                   component={LoggedOut} />
-
+                            <LogoutRoute />
+                            <Route exact path="/login"
+                                   component={LogIn} />
+                            <Route exact path="/logOut" component={LoggedOut} />
                             <Route exact path="/logcomplete"
                                    component={LoggedOut} />
 
