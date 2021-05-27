@@ -105,8 +105,22 @@ export const showError = (errorMessage) => {
     routeComponent.setState({errorMessage});
 };
 
+class CustomError extends Error {
+    constructor(messageResponse, ...params) {
+        // Pass remaining arguments (including vendor specific ones) to parent constructor
+        super(...params)
+
+        // Maintains proper stack trace for where our error was thrown (only available on V8)
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, CustomError)
+        }
+        // Custom debugging information
+        this.messageResponse = messageResponse;
+    }
+}
+
 export const handleResponse = () => {
-    return function(response) {
+    return async function(response) {
         if(response.ok) {
             return response.json();
         }
@@ -116,7 +130,8 @@ export const handleResponse = () => {
                 handleUnauthorized();
         }
 
-        throw new Error(response.status);
+        const messageResponse = await response.json();
+        throw new CustomError(messageResponse, response.status);
     };
 };
 

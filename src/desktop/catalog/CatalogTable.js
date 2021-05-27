@@ -64,11 +64,16 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
 
-
+    const errorMessage = catalogListLoadError &&
+        Array.isArray(catalogListLoadError) &&
+        catalogListLoadError.length > 0 &&
+        `${catalogListLoadError[0].dataPath} ${catalogListLoadError[0].message}`
+        || "Error Saving";
+    console.log(errorMessage);
     return (
         <Fragment>
             <PopupError
-                errorMessage={catalogListLoadError && "Error Saving" || ""}
+                errorMessage={catalogListLoadError && errorMessage || ""}
                 onClearErrorMessage={() => onClearCatalogError(false)}
                 status={"error"}
             />

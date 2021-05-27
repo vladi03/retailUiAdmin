@@ -17,7 +17,7 @@ export const PopupError = ({errorMessage, onClearErrorMessage, status}) => {
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal : "center" }}
             open={showPopup}
-            autoHideDuration={6000}
+            autoHideDuration={10000}
             onClose={onClearErrorMessage}>
             <Paper style={{
                 padding: 10,

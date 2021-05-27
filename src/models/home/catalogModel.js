@@ -221,44 +221,49 @@ const onSaveCatalogItem = async (itemEdit, uploadImageMetadata, willFitWidth, co
 const commonSaveCatalogItem = async (activeCatalogItem, setActiveItem = true) => {
     const result = await saveCatalog(activeCatalogItem);
 
-    // noinspection JSUnresolvedVariable
-    if(result.saveCatalogResult && result.saveCatalogResult.modifiedCount > 0) {
-        result.catalogList = provider.state.catalogList.map((ct) => {
-            return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
-        });
+    if(result.catalogListLoadError === false) {
+        // noinspection JSUnresolvedVariable
+        if (result.saveCatalogResult && result.saveCatalogResult.modifiedCount > 0) {
+            result.catalogList = provider.state.catalogList.map((ct) => {
+                return ct._id === activeCatalogItem._id ? activeCatalogItem : ct;
+            });
 
-    } else { // noinspection JSUnresolvedVariable
-        if(result.saveCatalogResult &&
+        } else { // noinspection JSUnresolvedVariable
+            if (result.saveCatalogResult &&
                 result.saveCatalogResult.upsertedCount > 0) {
                 result.catalogList = [
                     ...provider.state.catalogList, activeCatalogItem
                 ];
-/*
-                result.catalogListFiltered = sortCatalog(result.catalogList,
-                    provider.state.categorySelected &&
-                    provider.state.categorySelected._id);
-                    */
+                /*
+                                result.catalogListFiltered = sortCatalog(result.catalogList,
+                                    provider.state.categorySelected &&
+                                    provider.state.categorySelected._id);
+                                    */
             }
+        }
+
+        const {
+            catalogListFiltered,
+            catalogListOutCategory,
+            categorySelected,
+            catalogListNoCategory
+        } =
+            setCategorySelectedCommon(provider.state.categorySelected,
+                result.catalogList);
+
+        result.catalogListFiltered = catalogListFiltered;
+        result.categorySelected = categorySelected;
+        result.catalogListOutCategory = catalogListOutCategory;
+        result.catalogListNoCategory = catalogListNoCategory;
+
+        if (!setActiveItem)
+            result.activeCatalogItem = null;
+        result.catalogStatusLoading = false;
+
+        provider.setState(result);
+    } else {
+        provider.setState(result);
     }
-
-    const {
-        catalogListFiltered,
-        catalogListOutCategory,
-        categorySelected,
-        catalogListNoCategory} =
-        setCategorySelectedCommon(provider.state.categorySelected,
-            result.catalogList);
-
-    result.catalogListFiltered = catalogListFiltered;
-    result.categorySelected = categorySelected;
-    result.catalogListOutCategory = catalogListOutCategory;
-    result.catalogListNoCategory = catalogListNoCategory;
-
-    if(!setActiveItem)
-        result.activeCatalogItem = null;
-    result.catalogStatusLoading = false;
-
-    provider.setState(result);
 };
 
 const onSetActiveCatalogItem = (activeCatalogItem) => {
