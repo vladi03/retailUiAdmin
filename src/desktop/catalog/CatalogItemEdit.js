@@ -18,7 +18,6 @@ const containerHeight = 415;
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
      onUploadImage, onDeleteCatalog, imageUploading, categoryList,
-     onAddCategoryToCatalog, onRemoveCategoryFromCatalog,
      getCatalogCategorySort, onSetActiveCatalogItem
 }) => {
     const imageIsConfig = activeCatalogItem.images
@@ -97,20 +96,12 @@ const CatalogItemEditComponent = ({
                             value={itemEdit.shortDesc}
                             onChange={(event) => onValueChange("shortDesc", event.target.value)}
                         />
+                    </div>
 
-                        <TextField
-                            style={{width:"32%"}}
-                            label="Model #"
-                            value={itemEdit.modelNumber || ""}
-                            onChange={(event) => onValueChange("modelNumber", event.target.value)}
-                        />
-
-
-
+                    <div  className={classes.textContainer}>
 
                     </div>
                     <div>
-
                         <FormControlLabel
                             control={
                                 <Switch
@@ -132,6 +123,20 @@ const CatalogItemEditComponent = ({
                 </div>
                 <TextField
                     style={{width:"30%"}}
+                    label="Model #"
+                    value={itemEdit.modelNumber || ""}
+                    onChange={(event) => onValueChange("modelNumber", event.target.value)}
+                />
+
+                <TextField
+                    style={{width:"60%"}}
+                    label="Mfr Name"
+                    value={itemEdit.mfrName || ""}
+                    onChange={(event) => onValueChange("mfrName", event.target.value)}
+                />
+
+                <TextField
+                    style={{width:"30%"}}
                     label={`Unit Price:$ ${toCurrency(itemEdit.unitPrice)}`}
                     value={unitPrice || ""}
                     InputProps={{
@@ -143,6 +148,7 @@ const CatalogItemEditComponent = ({
                         onValueChange("unitPrice", parseFloat(event.target.value));
                     }}
                 />
+
                 <TextField
                     style={{width:"62%"}}
                     label="Extra Desc"
@@ -263,7 +269,7 @@ const CatalogItemEditComponent = ({
                     //debugger;
                 }}
             />
-            : <img width={containerWidth}
+            : <img width={containerWidth} alt="Template"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAOiSURBVHhe7do7SyNRGMbx/RyCYOv24n4GLSxdCxVRFLyiiZdEk3hL1gtYaGnh5QvYxjLp1aS0kU0hbAolsFgI6ruc4ytGk0myojOch+cHh3lnIkzxJ8PMxG9C0BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBuds4NnZWYlGoxVraWnp09fc3JxkMhk9s1ucDLy/vy+3t7e6549QKKSTW5wMfHR0JMU/Rd3zh7k6uMjNwMevgVtaWiSZTEosFrMrEU98ykolU9L6vdWewzCXahc5HzgcDtvtV9je3tZJZHFxUSe3OB94cnLSbr/C+vq6TgzsK6/A9/f3MjQ0ZG+IstmsHv04Bg6IV+CRkRGdREZHR3Wq7vr6WsbGxmR8fFxKpZIefYuBA+IVuHxOJBI6Vcrn8zI1NaV7Ij09PVL4XdC9VwwcEK/AZ2dnMjw8LJFIRPb29vToWxcXFxIKVz7T9vf3V0Rm4IB89CYrn8vbN2Be3kdm4IDUC/z09KTTK3NZNq8cjcfHR7utpq+vTwqF58gMHJD//Qbncrma39z3TOSbmxs+BwelXmBzN21egExPT8vV1ZXMz8/rJ40zd+GDg4O6x8C+qhW4q6tLp2dNTU12W+2yXU/7j3adGNhXXoE7Ozt1esvreD27u7s6MbCvygPPzMzYba2IDw8P0tHRoXveisWipNNp2dnZsc/RbW1t+gkD+6o88MTEhH1R0Yjun906iQ358k8C8XhcFhYW5PDw0D5Lm1eextbWlt0aDOyj8sDNzc12W89p+tReznt7eyWVSsn5+bl+4o2PSQEpD1zrd9qTkxOJRCOysrIil5eXerRxq6urOjGwr8oDm3jmMmsCvF9ra2uyubkpG782ZHl5uerf1Fsv+IO/jw4ODuTu753u+YOBfWR+6x0YGLB3uuZb9vLvOl+1zHnM+VzkZGBqHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYmsg/zgu6X0Ra40gAAAAASUVORK5CYII=" />
 }
         </div>
