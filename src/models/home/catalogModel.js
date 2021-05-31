@@ -271,7 +271,7 @@ const onSetActiveCatalogItem = (activeCatalogItem) => {
 };
 
 const onCatalogListInit = () => {
-    provider.setState({catalogListInit: true});
+    provider.setState({catalogListInit: true, catalogListLoading: true});
 
     getCatalogList().then((newState) => {
         // noinspection JSUndefinedPropertyAssignment

@@ -25,6 +25,7 @@ describe("swap catalog order", ()=> {
             "_id": "5f1666f3b1f2db166ca6bc00",
             "shortDesc": "Magenta Sofa & Loveseat ",
             "modelNumber": "LR00051",
+            "mfrName": "Solo",
             "categories": [{
                 "_id": "5f72aebb35d2b81b6497f4bb",
                 "category": "Sofa & Loveseat",
@@ -40,6 +41,7 @@ describe("swap catalog order", ()=> {
             "_id": "5f18e71e78db931374886cab",
             "shortDesc": "Cherry Bedroom Group",
             "modelNumber": "BR00007",
+            "mfrName": "Trident",
             "categories": [{
                 "_id": "5f72af5735d2b81b6497f4bd",
                 "category": "Bedroom Suites",

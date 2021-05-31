@@ -13,7 +13,7 @@ import {CategoryMaintenance} from "../desktop/home/CategoryMaintenance";
 import {setRouteComponent} from "../utility/helpers";
 import {PopupError} from "../utility/components/PopupError";
 import {LocationMaintenance} from "../desktop/company/LocationMaintenance";
-
+import {CatalogSearchMain} from "../desktop/catalogSearch/CatalogSearchMain";
 
 // noinspection JSUnusedLocalSymbols
 export class RouteComponent extends React.Component {
@@ -130,6 +130,10 @@ export class RouteComponent extends React.Component {
                                           component={isMobile ?
                                               LocationMaintenance : LocationMaintenance} />
 
+                            <PrivateRoute permission={1}
+                                          exact path="/catalogSearch"
+                                          component={isMobile ?
+                                              CatalogSearchMain : CatalogSearchMain} />
 
                             <PrivateRoute permission={1}
                                           exact path="/category"
