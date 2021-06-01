@@ -75,14 +75,17 @@ const CatalogSearchMainComponent = ({catalogList, catalogListInit,
                 {filterOptions.fieldList.map((fieldRef)=> {
 
                     return (
-                        <Paper className={classes.filterContainer}>
-                        <div key={fieldRef.fieldName} style={{display: "flex"}}>
-                            {fieldRef.columnLabel} :
+                        <Paper key={fieldRef.fieldName} className={classes.filterContainer}>
+                            <label className={classes.optionLabel} >
+                                {fieldRef.columnLabel}
+                            </label>
+                        <div className={classes.filterItemContainer}>
+
                             {filterOptions[fieldRef.fieldName].map(
                                 (optionRef) => {
 
                                     return (
-                                        <div key={optionRef.option}>
+                                        <div key={optionRef.option}  className={classes.optionContainer}>
                                             <FormControlLabel
                                                 control={
                                                     <Switch
@@ -95,7 +98,7 @@ const CatalogSearchMainComponent = ({catalogList, catalogListInit,
                                                         inputProps={{ 'aria-label': 'primary checkbox' }}
                                                     />
                                                 }
-                                                label={optionRef.option}
+                                                label={optionRef.option && optionRef.option.length > 0 ? optionRef.option : "None"}
                                                 style={{marginLeft: 3, marginRight: 0}}
                                             />
                                         </div>
@@ -114,7 +117,7 @@ const CatalogSearchMainComponent = ({catalogList, catalogListInit,
             />
             <Button
                 startIcon={<TableChart />}
-                style={{marginRight: 20, marginTop: 20}}
+                style={{marginRight: 20, marginTop: 20, marginBottom:30}}
                 variant="contained"
                 color="primary"
                 onClick={() => {
@@ -139,7 +142,18 @@ export const CatalogSearchMain = connectArray(CatalogSearchMainComponent,
 const useStyle = makeStyles({
     filterContainer : {
         margin: 10,
-        padding: 10
+        padding: 10,
+        border: "black solid 2px"
+    },
+    filterItemContainer:{
+        display: "flex",
+        flexFlow: "row wrap",
+    },
+    optionLabel: {
+        width: 110
+    },
+    optionContainer: {
+        width: 220
     }
 })
 

@@ -23,6 +23,6 @@ export const catalogTableConfig = {
 }
 
 export const catalogSelectOptions = [
-    { fieldName: "mfrName", columnLabel: "Mfr" },
+    { fieldName: "mfrName", columnLabel: "Manufacturer" },
     { fieldName: "status", columnLabel: "Status" }
 ];
