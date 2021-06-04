@@ -73,7 +73,7 @@ const clearLogOutTimer = () => {
     }
 };
 
-export const isLoggedIn = () => userAuthData.token && userAuthData.token !== null;
+export const isLoggedIn = () => userAuthData.token && true;
 
 export const getStore = () => {
 
@@ -123,6 +123,7 @@ export const clearToken = () => {
     //localStorage.removeItem('name');
     //localStorage.removeItem('email');
     localStorage.removeItem('featurePermissions');
+    localStorage.removeItem('userDomain');
     //localStorage.removeItem('picUrl');
 };
 

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import XLSX, {utils} from  "xlsx";
 import {catalogModel} from "../../models/home/catalogModel";
-import {connectArray} from "../../utility/helpers";
-import {Button, FormControlLabel, Switch, Paper} from "@material-ui/core";
+import {connectArray, convertToSheetArray} from "../../utility/helpers";
+import {FormControlLabel, Switch, Paper, Button} from "@material-ui/core";
 import {TableChart} from "@material-ui/icons";
 import {catalogExportFields, catalogTableConfig} from "../../models/home/catalogXlExport";
-import {convertToSheetArray, createFilterOptions} from "../../utility/helpers";
+import {createFilterOptions} from "../../utility/helpers";
 import {SpinnerDownloading} from "../../utility/components";
 import {TablePaging} from "table-page-search";
 import {catalogSelectOptions} from "../../models/home/catalogXlExport";
@@ -98,13 +98,16 @@ const CatalogSearchMainComponent = ({catalogList, catalogListInit,
                                                         inputProps={{ 'aria-label': 'primary checkbox' }}
                                                     />
                                                 }
-                                                label={optionRef.option && optionRef.option.length > 0 ? optionRef.option : "None"}
+                                                label={
+                                                    <span>
+                                                        {optionRef.option && optionRef.option.length > 0 ? optionRef.option : "None"}
+                                                    </span>
+                                                }
                                                 style={{marginLeft: 3, marginRight: 0}}
                                             />
                                         </div>
                                     );
-                                }
-                            )}
+                                })}
                         </div>
                         </Paper>
                     );
@@ -133,8 +136,7 @@ const CatalogSearchMainComponent = ({catalogList, catalogListInit,
                 Export
             </Button>
         </div>
-    );
-};
+    );};
 
 export const CatalogSearchMain = connectArray(CatalogSearchMainComponent,
     [catalogModel]);
