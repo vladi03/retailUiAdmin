@@ -19,7 +19,7 @@ export const sortCatalog = (catalogList, categoryId)=> {
         else
             return 1;
     });
-    console.log('catalogList sort', calc);
+    //console.log('catalogList sort', calc);
     return calc;
 };
 export const filterCatalog = (catalogListSorted, categoryId)=> {
@@ -40,8 +40,7 @@ export const filterCatalog = (catalogListSorted, categoryId)=> {
 };
 export const getCatalogTotals = (catalogListSorted, arrayCategory)=> {
     const calc = [...catalogListSorted];
-    const filterCatalogIn =[];
-    const filterCatalogOut=[];
+
     const totalCategory = []
     arrayCategory.forEach((category)=> {
         let activeTotal=0;
