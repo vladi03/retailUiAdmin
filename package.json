@@ -1,6 +1,6 @@
 {
-  "name": "retailUiAdmin",
-  "version": "0.1.0",
+  "name": "retailuiadmin",
+  "version": "1.0.6",
   "description": "",
   "main": "./lib/index.js",
   "files": [
@@ -55,7 +55,9 @@
     "@auth0/auth0-react": "^1.0.0",
     "colorthief": "^2.3.2",
     "fast-average-color": "^6.0.2",
-    "pic-ratio-fill": "^0.3.17"
+    "pic-ratio-fill": "^0.3.17",
+    "recharts": "^2.0.9",
+    "xlsx": "^0.17.0"
   },
   "peerDependencies": {}
 }

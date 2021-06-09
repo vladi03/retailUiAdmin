@@ -2,6 +2,56 @@ import {withStyles} from "@material-ui/styles";
 let routeComponent = null;
 let handleUnauthorized = null;
 
+export const createFilterOptions = (fieldList, dataList)=> {
+    //<summary>Search through the dataList to get a list of values that are used
+    // in the array.  Life if there is a field manufacturer, it would return
+    // the list of manufactures that are in the list</summary>
+    //fieldList is an array of configs like so :{ fieldName: "mfrName", columnLabel: "MFR" }
+    //dataList is an array of object to extract value from as defined by the field list
+    const filterOption = { fieldList, items: {} };
+    const keyRef = {};
+    if(Array.isArray(fieldList) && Array.isArray(dataList)) {
+        dataList.forEach((dataItem) => {
+            fieldList.forEach((fieldConfig)=> {
+                const fieldName = fieldConfig.fieldName;
+                if(keyRef[fieldName] === undefined)
+                    keyRef[fieldName] = [];
+                if(filterOption[fieldName] === undefined)
+                    filterOption[fieldName] = [];
+
+                const targetValue = getItemPropertyValue(dataItem, fieldName);
+                if(keyRef[fieldName].indexOf(targetValue) === -1) {
+                    keyRef[fieldName].push(targetValue);
+                    filterOption[fieldName].push({option: targetValue, selected: false});
+                }
+                filterOption[fieldName].sort((a,b)=> a.option < b.option ? -1 : 1);
+            });
+        })
+    }
+
+    return filterOption;
+}
+
+export const convertToSheetArray = (targetObject, columnFields) => {
+    const result = [];
+    try {
+        if (Array.isArray(targetObject)) {
+            result.push(columnFields);
+            targetObject.forEach((targetItem) => {
+                const oneRow = [];
+                columnFields.forEach((targetField)=> {
+                    const cellValue = getItemPropertyValue(targetItem, targetField);
+                    oneRow.push(cellValue);
+                });
+                result.push(oneRow);
+            })
+        }
+    } catch (ex) {
+
+    }
+    return result;
+};
+
 export const setUnauthorizedHandler = (handler) => {
     if(typeof(handler) === "function") {
         handleUnauthorized = handler;
@@ -105,8 +155,22 @@ export const showError = (errorMessage) => {
     routeComponent.setState({errorMessage});
 };
 
+class CustomError extends Error {
+    constructor(messageResponse, ...params) {
+        // Pass remaining arguments (including vendor specific ones) to parent constructor
+        super(...params)
+
+        // Maintains proper stack trace for where our error was thrown (only available on V8)
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, CustomError)
+        }
+        // Custom debugging information
+        this.messageResponse = messageResponse;
+    }
+}
+
 export const handleResponse = () => {
-    return function(response) {
+    return async function(response) {
         if(response.ok) {
             return response.json();
         }
@@ -116,7 +180,8 @@ export const handleResponse = () => {
                 handleUnauthorized();
         }
 
-        throw new Error(response.status);
+        const messageResponse = await response.json();
+        throw new CustomError(messageResponse, response.status);
     };
 };
 

@@ -28,7 +28,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
 
     const willFitWidth = imageIsConfig && catalog.images[0].willFitWidth;
     const colorRgb = imageIsConfig && catalog.images[0].colorRgb;
-    const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
+    //const colorRgbOther = imageIsConfig && catalog.images[0].colorRgbOther;
 
     const filterCategory = category && catalog.categories.filter(
         (cat) => cat._id === category._id ) || [];
@@ -127,7 +127,7 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                     width={widthValue}
                     height={heightPicCalc}
                     colorRgb={colorRgb}
-                    colorRgbOpposite={colorRgbOther}
+                    colorRgbOpposite={colorRgb}
                     willFitWidth={willFitWidth}
                 />
 
@@ -141,8 +141,8 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             </IconButton>
             }
         <CardHeader
-            title={catalog.shortDesc}
-            subheader={catalog.extraDesc || "_"}
+            title={catalog.shortDesc || ""}
+            subheader={catalog.modelNumber && catalog.mfrName && `${catalog.mfrName} : ${catalog.modelNumber}` || "_"}
             classes={{
                 title:classes.cardTitle,
                 subheader: classes.cardSubheader,

@@ -1,4 +1,6 @@
-import React from "react";
+// noinspection DuplicatedCode
+
+import React, {useState, useEffect} from "react";
 import {CatalogCard} from "./CatalogCard";
 import {Typography, Divider} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -8,20 +10,30 @@ import {categoryModel} from "../../models/home/categoryModel";
 import {useIsMobile} from "../../utility/useIsMobile";
 
 
-export const CatalogListComponent = ({catalogListFiltered ,categorySelected ,activeCatalogItem ,onSetCatalogStatus, onAddCategoryToCatalog,
+export const CatalogListComponent = ({catalogListFiltered , categorySelected,
+         activeCatalogItem ,onSetCatalogStatus, onAddCategoryToCatalog,
          onRemoveCategoryFromCatalog ,catalogStatusLoading, onCatalogOrderChange, savingCatalogSort,
          onSetActiveCatalogItem, catalogListNoCategory, showSortArrows})=> {
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
     const isMobile = useIsMobile();
-
-
+    const [itemsToLoad, setItemsToLoad] = useState(4);
+    useEffect(()=> {
+        console.log(itemsToLoad);
+        let tmrRef = null;
+        if(itemsToLoad < catalogListFiltered.length) {
+            tmrRef = setTimeout(()=> setItemsToLoad(itemsToLoad + 5), 200);
+        }
+        return () => {
+            if(tmrRef) clearTimeout(tmrRef);
+        }
+    })
     return(
         <div className={classes.container}>
         <div className={classes.catalogListComponent}>
 
-            {  catalogListFiltered.map((catalog, index)=> {
+            {  catalogListFiltered.slice(0, itemsToLoad).map((catalog, index)=> {
 
                     const prevCatalog = index > 0 ?
                         catalogListFiltered[index - 1] : null;

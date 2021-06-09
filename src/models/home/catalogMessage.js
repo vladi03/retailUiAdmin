@@ -142,11 +142,14 @@ export const saveCatalog = async (itemToSave)=>{
                 catalogListLoading: false,
                 catalogListLoadError: false
             }
-        }).catch((error) => {
+        }).catch((errorResult) => {
+
             return {
-                success: false,
                 catalogListLoading: false,
-                catalogListLoadError: error.message || error
+                catalogListLoadError:
+                    errorResult.messageResponse ||
+                    (errorResult.status && errorResult.status.message)
+                    || errorResult
             };
         });
 };
