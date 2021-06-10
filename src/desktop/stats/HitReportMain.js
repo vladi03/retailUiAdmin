@@ -11,10 +11,10 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
-    LabelList,
+    LabelList
 } from 'recharts';
 
-const HitReportMainComponent = ({hitChartData, hitReportInitDone, onHitReportInit})=> {
+const HitReportMainComponent = ({hitChartData, hitReportInitDone, onHitReportInit,weekEndDate,weekStartDate,setWeekDays})=> {
     useEffect(()=> {
 
         if(!hitReportInitDone)
@@ -24,29 +24,31 @@ const HitReportMainComponent = ({hitChartData, hitReportInitDone, onHitReportIni
     return (
         <div>
             <AppBarTitleAddSearch
-                title="Hits"
+                title={`Weekly Hits ${weekStartDate} - ${weekEndDate}`}
                 LeftIcon={Timeline}
             />
+
 
                 <BarChart
                     width={800}
                     height={300}
                     data={hitChartData}
                     margin={{
-                        top: 5,
+                        top: 20,
                         right: 30,
                         left: 20,
-                        bottom: 5,
+                        bottom: 50,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
+                    <XAxis   dy={25} dx={-5} dataKey="name" angle={-90} label={{ angle:-90,value: 'Month-Day', position: 'insideBottomRight', offset: 28 }} />
+
+                    <YAxis  />
                     <Tooltip  />
-                    <Legend wrapperStyle={{position: "initial"}} />
+                    <Legend  wrapperStyle={{position: "initial"}} />
 
                     <Bar dataKey="hits" fill="#82ca9d" minPointSize={10} >
-                        <LabelList dataKey="hits"  />
+                        <LabelList  angle={-90} dataKey="hits"  />
                     </Bar>
 
                 </BarChart>
