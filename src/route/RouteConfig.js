@@ -15,6 +15,7 @@ import {PopupError} from "../utility/components/PopupError";
 import {LocationMaintenance} from "../desktop/company/LocationMaintenance";
 import {CatalogSearchMain} from "../desktop/catalogSearch/CatalogSearchMain";
 import {HitReportMain} from "../desktop/stats/HitReportMain";
+import {SalesByNameMain} from "../desktop/sales/SalesByNameMain";
 
 // noinspection JSUnusedLocalSymbols
 export class RouteComponent extends React.Component {
@@ -145,6 +146,11 @@ export class RouteComponent extends React.Component {
                                           exact path="/hits"
                                           component={isMobile ?
                                               HitReportMain : HitReportMain} />
+
+                            <PrivateRoute permission={1}
+                                          exact path="/salesByName"
+                                          component={isMobile ?
+                                              SalesByNameMain : SalesByNameMain} />
                         </div>
                         </MenuNav>
                     </HashRouter>
