@@ -3,7 +3,7 @@ import {AppBarTitleAddSearch} from "../../utility/components/AppBarTitle";
 import {connectArray} from "../../utility/helpers";
 import {salesSearchModel} from "../../models/sales/salesSearchModel";
 import {Money, Search} from "@material-ui/icons";
-import {IconButton, InputBase, Paper} from "@material-ui/core";
+import {IconButton, InputBase, Paper, Divider, InputLabel} from "@material-ui/core";
 import {SpinnerDownloading} from "../../utility/components";
 import {makeStyles} from "@material-ui/core/styles";
 import {TablePaging} from "table-page-search";
@@ -14,15 +14,12 @@ const headerConfig = {
     defaultSort: "1",
     sortDescending: true,
     columns: [
-        { fieldForSort: "0", columnLabel: "Day",
-            display: (row)=> `${row[0].substr(5)}`
+        { fieldForSort: "day", columnLabel: "Day"
         },
-        { fieldForSort: "1", columnLabel: "Month",
-            display: (row)=>
-                `${row[1].substr(10).replace(/%20/g," ").replace(".xlsx","")}`
+        { fieldForSort: "month", columnLabel: "Month"
         },
-        { fieldForSort: "4", columnLabel: "Name" },
-        { fieldForSort: "5", columnLabel: "Price" }
+        { fieldForSort: "name", columnLabel: "Name" },
+        { fieldForSort: "price", columnLabel: "Price" }
     ]
 };
 
@@ -32,13 +29,16 @@ const SalesByNameMainComponent = ({onGetSalesByName, salesSearch, salesSearchLoa
         `${salesSearch.rowCountFound} Found`
         : "Enter Name and Click Search";
     const classes = useStyles();
+    const dataLoaded = salesSearch.items.length > 0;
     const [searchText, setSearchText] = useState("");
+    const [filterTable, setFilterTable] = useState("");
     return (
         <div>
             <AppBarTitleAddSearch
                 title={`Sales Search By Name (${titleCount})`}
                 LeftIcon={Money}
             />
+            <div style={{display:"flex"}}>
             <Paper className={classes.searchButtonRoot}>
                 <SpinnerDownloading loading={salesSearchLoading}
                                     spinnerSize={30}
@@ -49,7 +49,7 @@ const SalesByNameMainComponent = ({onGetSalesByName, salesSearch, salesSearchLoa
                         inputProps={{ 'aria-label': 'search google maps' }}
                         value={searchText}
                         onChange={
-                            (event)=> setSearchText((event.target.value))}
+                            (event)=> setSearchText(event.target.value)}
                         onKeyUp={(event) => {
                             if (event.keyCode === 13) {
                                 onGetSalesByName(searchText)
@@ -63,13 +63,30 @@ const SalesByNameMainComponent = ({onGetSalesByName, salesSearch, salesSearchLoa
                     </IconButton>
                 </SpinnerDownloading>
             </Paper>
+            {dataLoaded &&
+            <Paper className={classes.filterRoot}>
+                <InputLabel className={classes.searchLabel}>Filter Table Results</InputLabel>
+                <Divider className={classes.divider} orientation="vertical" />
+                <InputBase
+                    placeholder="Filter By Month/Year/Name"
+                    inputProps={{'aria-label': 'search google maps'}}
+                    value={filterTable}
+                    onChange={
+                        (event) => setFilterTable(event.target.value)
+                    }
+
+                />
+            </Paper>
+            }
+            </div>
             <TablePaging  loading={salesSearchLoading}
-                          dataList={salesSearch.rows}
+                          dataList={salesSearch.items}
                           headerConfig={headerConfig}
+                          filterText={filterTable}
             />
         </div>
     )
-}
+};
 
 export const SalesByNameMain = connectArray(SalesByNameMainComponent, [salesSearchModel]);
 
@@ -77,10 +94,27 @@ const useStyles = makeStyles({
     searchButtonRoot : {
         paddingLeft: 15,
         paddingRight: 0,
-        width: 250
+        width: 265,
+        marginRight: 20
+    },
+    filterRoot : {
+        paddingLeft: 15,
+        paddingRight: 0,
+        width: 450,
+        display: "flex"
     },
     spinnerWrapper : {
         marginTop: 10,
         marginBottom: 10
+    },
+    divider: {
+        height: 28,
+        margin: 4,
+        paddingTop: 15,
+        marginLeft : 10,
+        marginRight: 10
+    },
+    searchLabel: {
+        paddingTop: 15
     }
 })

@@ -16,8 +16,8 @@ describe("stat convert good", ()=> {
 
     it("return object match", ()=> {
         const expected = [
-            { name:"2021-05-24T04:00:00.000Z", "hits" : 705 },
-            { name:"2021-05-31T04:00:00.000Z", "hits" : 672 }
+            { name:"05-24", "hits" : 705 },
+            { name:"05-31", "hits" : 672 }
         ];
         assert.deepStrictEqual(result, expected);
     })
