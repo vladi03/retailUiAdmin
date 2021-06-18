@@ -14,6 +14,7 @@ const headerConfig = {
     defaultSort: "1",
     sortDescending: true,
     columns: [
+        {fieldForSort: "ticketNum", columnLabel: "TIX NO"},
         { fieldForSort: "day", columnLabel: "Day"
         },
         { fieldForSort: "month", columnLabel: "Month"
