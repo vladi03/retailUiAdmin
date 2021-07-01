@@ -5,6 +5,7 @@ import RouteConfig from  "./route/RouteConfig";
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { grey, yellow } from '@material-ui/core/colors';
 import { Auth0Provider } from "@auth0/auth0-react";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const muiTheme = createMuiTheme({
     typography: {
@@ -32,4 +33,30 @@ render(
         <MuiThemeProvider theme={muiTheme}><RouteConfig /></MuiThemeProvider>
     </Auth0Provider>,
     document.querySelector('#app'));
+
+function BootstrapLogIn() {
+    const {
+        isLoading,
+        isAuthenticated,
+        error,
+        user,
+        loginWithRedirect,
+        logout,
+    } = useAuth0();
+
+    if (isLoading) {
+        return <div>Loading Auth...</div>;
+    }
+    if (error) {
+        return <div>Oops... {error.message}</div>;
+    }
+
+    if (isAuthenticated) {
+        return (
+            <MuiThemeProvider theme={muiTheme}><RouteConfig /></MuiThemeProvider>
+        );
+    } else {
+        return <button onClick={loginWithRedirect}>Log in</button>;
+    }
+}
 

@@ -5,6 +5,7 @@ const userAuthData = {
     name: localStorage.getItem('name') || "",
     picUrl: localStorage.getItem('picUrl') || "",
     email: localStorage.getItem('email') || "",
+    expiresOn: localStorage.getItem('expiresOn') || "",
     featurePermissions: [1],
     userDomain: localStorage.getItem('userDomain') || "",
     catalogApi: process.env.CATALOG_API
@@ -46,6 +47,9 @@ try {
 
     if(userAuthData.token) {
         const tokenData = readToken(userAuthData.token);
+        localStorage.setItem('expiresOn', tokenData.exp);
+        userAuthData.expiresOn = tokenData.exp;
+        debugger;
         setLogOutTimer(tokenData.exp);
         console.log("token from local storage");
     }
@@ -57,11 +61,12 @@ export const setTokenValue = (token) => {
     localStorage.setItem('token', token);
     userAuthData.token = token;
     const tokenData = readToken(token);
+
     setLogOutTimer(tokenData.exp);
 };
 
 export const initAuthStore = ()=> {
-    //setLogOutTimer(userAuthData.expiresOn);
+    setLogOutTimer(userAuthData.expiresOn);
 };
 
 
@@ -124,6 +129,7 @@ export const clearToken = () => {
     //localStorage.removeItem('email');
     localStorage.removeItem('featurePermissions');
     localStorage.removeItem('userDomain');
+    localStorage.removeItem("expiresOn");
     //localStorage.removeItem('picUrl');
 };
 

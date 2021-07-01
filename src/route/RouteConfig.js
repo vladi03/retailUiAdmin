@@ -48,7 +48,6 @@ export class RouteComponent extends React.Component {
     }
 
     render() {
-
         const getToken = async () =>{
             const { getAccessTokenSilently } = this.props.auth0;
             try {
@@ -86,8 +85,8 @@ export class RouteComponent extends React.Component {
             }
         };
 
-        // noinspection JSUnusedLocalSymbols
         const { user, isLoading } = this.props.auth0;
+
         const {isMobile, errorMessage, alertStatus,
             tokenLoading, tokenLoaded} = this.state;
 

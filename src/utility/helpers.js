@@ -58,7 +58,7 @@ export const setUnauthorizedHandler = (handler) => {
     }
 };
 
-export const setRouteComponent = (compoent) => routeComponent = compoent;
+export const setRouteComponent = (component) => routeComponent = component;
 
 export const connectArray = (component, arrayOfModels, styles = null) => {
     const intermediateComponents = [];
