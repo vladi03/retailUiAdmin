@@ -89,18 +89,15 @@ const CatalogItemEditComponent = ({
         <div className={classes.rootContainer}>
             <Paper className={classes.paperEntryContainer}>
                 <div className={classes.editContainer}>
-                    <div className={classes.textContainer}>
+
                         <TextField
-                            style={{width:"60%"}}
+                            style={{width:"100%"}}
                             label="Short Desc"
                             value={itemEdit.shortDesc}
                             onChange={(event) => onValueChange("shortDesc", event.target.value)}
                         />
-                    </div>
 
-                    <div  className={classes.textContainer}>
 
-                    </div>
                     <div>
                         <FormControlLabel
                             control={
