@@ -1,9 +1,10 @@
 
 
 export const salesXlMap = (xlSheet) => {
+    debugger;
     return Array.isArray(xlSheet) ?
-     xlSheet.map(salesXlMapItem) :
-     []
+        xlSheet : //xlSheet.map(salesXlMapItem) :
+     [];
 }
 
 export const salesXlMapItem = (cells) => {

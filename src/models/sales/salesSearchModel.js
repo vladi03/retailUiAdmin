@@ -14,6 +14,7 @@ let provider = null;
 const onGetSalesByName = async (name) => {
     provider.setState({salesSearchLoading: true});
     const result = await salesSearchByName(name);
+
     provider.setState(result);
 }
 

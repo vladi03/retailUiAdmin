@@ -1,6 +1,6 @@
 import {getStore} from "../accounts/userAuthStore";
 import {handleResponse} from "../../utility/helpers";
-import {salesXlMap} from "./salesXlMap";
+//import {salesXlMap} from "./salesXlMap";
 
 export const salesSearchByName = (name) => {
     const {catalogApi , token} = getStore(); //userDomain
@@ -15,13 +15,18 @@ export const salesSearchByName = (name) => {
 
     return fetch(url, payloadGeneric)
         .then(handleResponse()).then((result) => {
-            const success = result.err === null;
+            const success = Array.isArray(result);// result.err === null;
 
-            if(success) {
-                result.data.items = salesXlMap(result.data.rows);
-            }
+            //if(success) {
+            //    result.data.items = result; //salesXlMap(result); //result.da
+            //}
             return {
-                salesSearch: success ? result.data : {rowCountFound: 0, rows: [], items: []},
+                salesSearch: success ? {
+                    rowCountFound: result.length,
+                        rows: [],
+                        items: result
+                }
+                    : {rowCountFound: 0, rows: [], items: []},
                 salesSearchLoading: false,
                 salesSearchLoadError: success ? false : result.err
             }
