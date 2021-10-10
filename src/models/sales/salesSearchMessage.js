@@ -2,9 +2,9 @@ import {getStore} from "../accounts/userAuthStore";
 import {handleResponse} from "../../utility/helpers";
 //import {salesXlMap} from "./salesXlMap";
 
-export const salesSearchByName = (name) => {
+export const salesSearchByName = (name, location) => {
     const {catalogApi , token} = getStore(); //userDomain
-    const url = `${catalogApi}/catalogApi/api/v1/sales/${name}`;
+    const url = `${catalogApi}/catalogApi/api/v1/sales/${name}/${location}`;
     const payloadGeneric = {
         method: "GET",
         headers: {

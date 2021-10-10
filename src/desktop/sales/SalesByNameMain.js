@@ -3,7 +3,8 @@ import {AppBarTitleAddSearch} from "../../utility/components/AppBarTitle";
 import {connectArray} from "../../utility/helpers";
 import {salesSearchModel} from "../../models/sales/salesSearchModel";
 import {Money, Search} from "@material-ui/icons";
-import {IconButton, InputBase, Paper, Divider, InputLabel} from "@material-ui/core";
+import {IconButton, InputBase, Paper, Divider, InputLabel,
+    Button, ButtonGroup} from "@material-ui/core";
 import {SpinnerDownloading} from "../../utility/components";
 import {makeStyles} from "@material-ui/core/styles";
 import {TablePaging} from "table-page-search";
@@ -33,6 +34,8 @@ const SalesByNameMainComponent = ({onGetSalesByName, salesSearch, salesSearchLoa
     const dataLoaded = salesSearch.items.length > 0;
     const [searchText, setSearchText] = useState("");
     const [filterTable, setFilterTable] = useState("");
+    const [location, setLocation] = useState(localStorage.getItem('salesLocation') || "JO");
+
     return (
         <div>
             <AppBarTitleAddSearch
@@ -53,17 +56,38 @@ const SalesByNameMainComponent = ({onGetSalesByName, salesSearch, salesSearchLoa
                             (event)=> setSearchText(event.target.value)}
                         onKeyUp={(event) => {
                             if (event.keyCode === 13) {
-                                onGetSalesByName(searchText)
+                                onGetSalesByName(searchText, location)
                             }
                         }}
                     />
-                    <IconButton onClick={()=> onGetSalesByName(searchText)}
+                    <IconButton onClick={()=> onGetSalesByName(searchText, location)}
 
                     >
                         <Search />
                     </IconButton>
                 </SpinnerDownloading>
             </Paper>
+                <ButtonGroup size="small" color="secondary" aria-label="small outlined button group"
+                style={{marginRight: 20}}>
+                    <Button
+                        style={{background: location === "JO" ? "aliceblue" : ""}}
+                        onClick={() => {
+                            localStorage.setItem("salesLocation", 'JO');
+                            setLocation("JO");
+                        }}
+                    >
+                        Jonesboro
+                    </Button>
+                    <Button
+                        style={{background: location === "GR" ? "aliceblue" : ""}}
+                        onClick={() => {
+                            localStorage.setItem("salesLocation", 'GR');
+                            setLocation("GR");
+                        }}
+                    >
+                        Griffin
+                    </Button>
+                </ButtonGroup>
             {dataLoaded &&
             <Paper className={classes.filterRoot}>
                 <InputLabel className={classes.searchLabel}>Filter Table Results</InputLabel>

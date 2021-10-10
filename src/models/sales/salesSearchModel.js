@@ -11,9 +11,9 @@ export const createModel = () => ({
 
 let provider = null;
 
-const onGetSalesByName = async (name) => {
+const onGetSalesByName = async (name, location) => {
     provider.setState({salesSearchLoading: true});
-    const result = await salesSearchByName(name);
+    const result = await salesSearchByName(name, location);
 
     provider.setState(result);
 }

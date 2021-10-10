@@ -49,7 +49,7 @@ try {
         const tokenData = readToken(userAuthData.token);
         localStorage.setItem('expiresOn', tokenData.exp);
         userAuthData.expiresOn = tokenData.exp;
-        debugger;
+
         setLogOutTimer(tokenData.exp);
         console.log("token from local storage");
     }
