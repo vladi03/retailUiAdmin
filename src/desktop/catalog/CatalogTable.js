@@ -163,8 +163,6 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
 
                         })
                         }
-                   
-
 
                     </div>
 
@@ -197,7 +195,7 @@ export const CatalogTable = connectArray(CatalogTableComponent,[catalogModel, ca
 const useStyle = makeStyles({
     scrollContainer: {
         height: "calc( 100vh - 120px)",
-        width: props => props.inEdit ? "24vw" : "100%",
+        width: props => props.inEdit ? "0vw" : "100%",
         overflow: "auto",
     },
     container: {

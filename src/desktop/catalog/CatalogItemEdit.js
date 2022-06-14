@@ -10,6 +10,7 @@ import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {PicRatioFill} from "pic-ratio-fill";
 import {AlertDialog} from "../../utility/components/AlertDialog";
+import { HuePicker } from 'react-color'
 
 const {catalogApi} = getStore();
 const containerWidth = 532;
@@ -52,6 +53,17 @@ const CatalogItemEditComponent = ({
     const [unitPrice, setUnitPrice] = useState(itemEdit.unitPrice);
 
     const onValueChange = (fieldName, value) => setItemEdit({...itemEdit, [fieldName]: value});
+
+    const onValueChangeSale = (fieldName, value) => {
+        const newItem = {...itemEdit};
+        if(itemEdit.sale === undefined)
+            newItem.sale = {...{enabled: true, price: "0.00", color: [0,0,0]}, [fieldName]: value};
+        else
+            newItem.sale = {...newItem.sale, [fieldName]: value};
+
+        setItemEdit(newItem);
+    };
+
     const classes = useStyle();
     useEffect(()=>{
         if(activeCatalogItem._id !== itemEdit._id) {
@@ -85,11 +97,40 @@ const CatalogItemEditComponent = ({
         setItemEdit(newItem);
     };
 
+    const colorRgbValue = itemEdit.sale && itemEdit.sale.color.length > 2 ?
+        `rgb(${itemEdit.sale.color[0]},${itemEdit.sale.color[1]}, ${itemEdit.sale.color[2]})`:
+        "rgb(255,255,255)";
+
     return(
         <div className={classes.rootContainer}>
             <Paper className={classes.paperEntryContainer}>
-                <div className={classes.editContainer}>
+                <div style={{display:"flex"}} >
+                    <Button variant="contained"
+                            color="primary"
+                            startIcon={<Save />}
+                            style={{marginRight: 20}}
+                            onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
+                    >
+                        Save
+                    </Button>
+                    <AlertDialog
+                        startIcon={<Delete />}
+                        onClick={() => onDeleteCatalog(itemEdit)}
+                        title={"Are You Sure?"}
+                        message={`Are You Sure you want to delete "${itemEdit.shortDesc}"?`}
+                    >
+                        Delete
+                    </AlertDialog>
 
+                    <Button
+                        startIcon={<Close />}
+                        style={{marginRight: 20}}
+                        onClick={() => onSetActiveCatalogItem(null)}
+                    >
+                        Close
+                    </Button>
+                </div>
+                <div className={classes.editContainer}>
                         <TextField
                             style={{width:"100%"}}
                             label="Short Desc"
@@ -163,7 +204,48 @@ const CatalogItemEditComponent = ({
                     onChange={(event) => onValueChange("description", event.target.value)}
                 />
 
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={itemEdit.sale && itemEdit.sale.enabled}
+                            onChange={(event)=> {
+                                const enabled = (itemEdit.sale && itemEdit.sale.enabled) || false;
+                                onValueChangeSale("enabled", !enabled);
+                            }}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
+                    }
+                    label="Sale Enabled"
+                />
+                {itemEdit.sale && itemEdit.sale.enabled &&
+                    <div style={{display: "flex",
+                        border: `${colorRgbValue} solid 10px`,
+                        padding: "7px"
+                    }}
+                    >
+                    <TextField
+                        style={{width:"30%", marginBottom: 10}}
+                        label={`Sale Price:$ ${toCurrency(itemEdit.sale.price)}`}
+                        value={itemEdit.sale.price || ""}
+                        InputProps={{
+                            startAdornment:
+                                <InputAdornment position="start">$</InputAdornment>
+                        }}
+                        onChange={(event) => {
+                            //setUnitPrice(event.target.value);
+                            onValueChangeSale("price", parseFloat(event.target.value));
+                        }}
+                    />
+                    <HuePicker
+                        color={{r: itemEdit.sale.color[0], g: itemEdit.sale.color[1], b: itemEdit.sale.color[2]}}
+                        onChangeComplete={(color) => {
+                            onValueChangeSale("color",[color.rgb.r, color.rgb.g, color.rgb.b]);
+                        }}
+                    />
 
+                    </div>
+                }
+                <hr />
                 <div>
                 {categoryList && categoryList.map((categoryRef)=> {
                     const itemCategory = itemEdit.categories.find((itemCat)=> itemCat._id === categoryRef._id );
@@ -198,7 +280,7 @@ const CatalogItemEditComponent = ({
                 </div>
 
             {!catalogListLoading && !imageUploading &&
-                <div style={{display: "flex", justifyContent: "flex-end"}} >
+                <div>
                     <div>
                         <input type="file" name="myFile" id="myFile"
                                style={{width:200}}
@@ -221,32 +303,7 @@ const CatalogItemEditComponent = ({
                                }}
                         />
                     </div>
-                    <div style={{display:"flex"}} >
-                        <Button variant="contained"
-                                color="primary"
-                                startIcon={<Save />}
-                                style={{marginRight: 20}}
-                            onClick={() => onSaveCatalogItem(itemEdit, uploadImageMetadata, willFitWidth, colorRgb, colorRgbOther)}
-                        >
-                            Save
-                        </Button>
-                        <AlertDialog
-                            startIcon={<Delete />}
-                            onClick={() => onDeleteCatalog(itemEdit)}
-                            title={"Are You Sure?"}
-                            message={`Are You Sure you want to delete "${itemEdit.shortDesc}"?`}
-                        >
-                            Delete
-                        </AlertDialog>
 
-                        <Button
-                                startIcon={<Close />}
-                                style={{marginRight: 20}}
-                                onClick={() => onSetActiveCatalogItem(null)}
-                        >
-                            Close
-                        </Button>
-                    </div>
                 </div>
             }
             {catalogListLoading && <span>Saving...</span>}
@@ -254,6 +311,7 @@ const CatalogItemEditComponent = ({
 
 
             </Paper>
+            <Paper>
             {uploadImage !== null ?
             <PicRatioFill
                 width={containerWidth}
@@ -268,7 +326,8 @@ const CatalogItemEditComponent = ({
             />
             : <img width={containerWidth} alt="Template"
                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAOiSURBVHhe7do7SyNRGMbx/RyCYOv24n4GLSxdCxVRFLyiiZdEk3hL1gtYaGnh5QvYxjLp1aS0kU0hbAolsFgI6ruc4ytGk0myojOch+cHh3lnIkzxJ8PMxG9C0BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBuds4NnZWYlGoxVraWnp09fc3JxkMhk9s1ucDLy/vy+3t7e6549QKKSTW5wMfHR0JMU/Rd3zh7k6uMjNwMevgVtaWiSZTEosFrMrEU98ykolU9L6vdWewzCXahc5HzgcDtvtV9je3tZJZHFxUSe3OB94cnLSbr/C+vq6TgzsK6/A9/f3MjQ0ZG+IstmsHv04Bg6IV+CRkRGdREZHR3Wq7vr6WsbGxmR8fFxKpZIefYuBA+IVuHxOJBI6Vcrn8zI1NaV7Ij09PVL4XdC9VwwcEK/AZ2dnMjw8LJFIRPb29vToWxcXFxIKVz7T9vf3V0Rm4IB89CYrn8vbN2Be3kdm4IDUC/z09KTTK3NZNq8cjcfHR7utpq+vTwqF58gMHJD//Qbncrma39z3TOSbmxs+BwelXmBzN21egExPT8vV1ZXMz8/rJ40zd+GDg4O6x8C+qhW4q6tLp2dNTU12W+2yXU/7j3adGNhXXoE7Ozt1esvreD27u7s6MbCvygPPzMzYba2IDw8P0tHRoXveisWipNNp2dnZsc/RbW1t+gkD+6o88MTEhH1R0Yjun906iQ358k8C8XhcFhYW5PDw0D5Lm1eextbWlt0aDOyj8sDNzc12W89p+tReznt7eyWVSsn5+bl+4o2PSQEpD1zrd9qTkxOJRCOysrIil5eXerRxq6urOjGwr8oDm3jmMmsCvF9ra2uyubkpG782ZHl5uerf1Fsv+IO/jw4ODuTu753u+YOBfWR+6x0YGLB3uuZb9vLvOl+1zHnM+VzkZGBqHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYHAODY2BwDAyOgcExMDgGBsfA4BgYmsg/zgu6X0Ra40gAAAAASUVORK5CYII=" />
-}
+            }
+            </Paper>
         </div>
     )
 };
@@ -279,7 +338,7 @@ export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
 
 const useStyle = makeStyles({
     rootContainer: {
-        display: "flex"
+        display: "block"
     },
     picBorderHeight: {
         width: "50%",

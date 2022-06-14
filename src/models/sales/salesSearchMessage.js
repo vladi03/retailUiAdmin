@@ -15,11 +15,8 @@ export const salesSearchByName = (name, location) => {
 
     return fetch(url, payloadGeneric)
         .then(handleResponse()).then((result) => {
-            const success = Array.isArray(result);// result.err === null;
+            const success = Array.isArray(result);
 
-            //if(success) {
-            //    result.data.items = result; //salesXlMap(result); //result.da
-            //}
             return {
                 salesSearch: success ? {
                     rowCountFound: result.length,
@@ -34,6 +31,39 @@ export const salesSearchByName = (name, location) => {
             return {
                 salesSearchLoading: false,
                 salesSearchLoadError: error.message || error
+            };
+        });
+};
+
+export const salesHist = () => {
+    const {catalogApi , token} = getStore();
+    const url = `${catalogApi}/catalogApi/api/v1/sales/hist`;
+    const payloadGeneric = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${token}`
+        }
+    };
+
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            const success = Array.isArray(result);
+
+            return {
+                salesHist: success ? {
+                        rowCountFound: result.length,
+                        rows: [],
+                        items: result
+                    }
+                    : {rowCountFound: 0, rows: [], items: []},
+                salesHistLoading: false,
+                salesHistLoadError: success ? false : result.err
+            }
+        }).catch((error) => {
+            return {
+                salesHistLoading: false,
+                salesHistLoadError: error.message || error
             };
         });
 };
