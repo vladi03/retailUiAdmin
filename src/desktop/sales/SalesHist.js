@@ -1,9 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {TablePaging} from "table-page-search";
 import {AppBarTitleAddSearch} from "../../utility/components/AppBarTitle";
 import {BorderAll} from "@material-ui/icons";
 import {salesHistModel} from "../../models/sales/salesHistModel";
 import {connectArray} from "../../utility/helpers";
+
 
 const headerConfig = {
     key: "0",
@@ -26,15 +27,19 @@ const SalesHistMainComponent = ({salesHist, onGetSalesHist, salesHistLoading, sa
             onSalesHistInit();
     });
 
+    const [searchText, setSearchText] = useState("");
+
     return (
         <div>
             <AppBarTitleAddSearch
                 title={`Sales Hist`}
                 LeftIcon={BorderAll}
+                onSearchChange={setSearchText}
             />
             <TablePaging  loading={salesHistLoading}
                           dataList={salesHist.items}
                           headerConfig={headerConfig}
+                          filterText={searchText}
             />
         </div>
     )
