@@ -107,8 +107,10 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                     )
             )
             }
-
-            <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
+            {
+                catalog.sale && !catalog.sale.enabled &&
+                <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
+            }
             {showSortArrows && inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
                 <IconButton aria-label="Up"
                             size="medium"
@@ -122,6 +124,9 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                 onClick={() => {if(onClick) onClick();}}
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
+                { catalog.sale && catalog.sale.enabled &&
+                    <div className={classes.catSale}>${catalog.sale?.price}</div>
+                }
                 <PicRatioView
                     src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
                     width={widthValue}
@@ -155,6 +160,20 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
 };
 //props => props.widthCalc
 const useStyle = makeStyles({
+    catSale: {
+        position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        backgroundColor: "red",
+        //font: "800 16px Arial",
+        "border-bottom-right-radius": 10,
+        "border-bottom-left-radius": 10,
+        "border-top-left-radius": 10,
+        color: "white",
+        right:0,
+        transform: "rotate(30deg)"
+    },
     catPrice: {
         position: "absolute",
         //transform: "translate(10%, 15%)",
