@@ -108,8 +108,11 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
             )
             }
             {
-                catalog.sale && !catalog.sale.enabled &&
-                <div className={classes.catPrice}>${toCurrency(catalog.unitPrice)}</div>
+                (catalog.sale === undefined || !catalog.sale.enabled) &&
+                <div
+                    className={classes.catPrice}
+
+                >${toCurrency(catalog.unitPrice)}</div>
             }
             {showSortArrows && inCategoryEdit && !savingCatalogSort && prevCatalog && isInCategory &&
                 <IconButton aria-label="Up"
@@ -125,7 +128,12 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                 className={willFitWidth ? classes.imageBoxWidth : classes.imageBoxHeight}
             >
                 { catalog.sale && catalog.sale.enabled &&
-                    <div className={classes.catSale}>${catalog.sale?.price}</div>
+                    <div
+                        className={classes.catSale}
+                        style={{
+                            "backgroundColor": `rgb(${catalog.sale.color[0]},${catalog.sale.color[1]}, ${catalog.sale.color[2]})`
+                        }}
+                    >${catalog.sale?.price}</div>
                 }
                 <PicRatioView
                     src={`${catalogApi}/catalogApi/api/v1/catalog/file/${imageId}`}
@@ -165,7 +173,6 @@ const useStyle = makeStyles({
         //transform: "translate(10%, 15%)",
         zIndex: 9,
         padding: 15,
-        backgroundColor: "red",
         //font: "800 16px Arial",
         "border-bottom-right-radius": 10,
         "border-bottom-left-radius": 10,
