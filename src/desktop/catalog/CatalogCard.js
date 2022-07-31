@@ -12,7 +12,8 @@ const {catalogApi} = getStore();
 export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                             disableEdit, isSaving, category, savingCatalogSort,
                             onAddCategory, onRemoveCategory, showSortArrows,
-                            onOrderChange, prevCatalog, nextCatalog}) => {
+                            onOrderChange, prevCatalog, nextCatalog,
+                                salesBackgroundColor, salesFontColor}) => {
 
     const {widthCalc, heightPicCalc} = useCardSize();
     const widthValue= inEdit ? "100%" : widthCalc;
@@ -131,7 +132,8 @@ export const CatalogCard = ({catalog, onClick, inEdit, onSetStatus,
                     <div
                         className={classes.catSale}
                         style={{
-                            "backgroundColor": `rgb(${catalog.sale.color[0]},${catalog.sale.color[1]}, ${catalog.sale.color[2]})`
+                            "color" : `rgb(${salesFontColor[0]},${salesFontColor[1]}, ${salesFontColor[2]})`,
+                            "backgroundColor": `rgb(${salesBackgroundColor[0]},${salesBackgroundColor[1]}, ${salesBackgroundColor[2]})`
                         }}
                     >${catalog.sale?.price}</div>
                 }

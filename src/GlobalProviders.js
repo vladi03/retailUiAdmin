@@ -6,6 +6,7 @@ import {companyLocationModel} from "./models/company/companyLocationsModel";
 import {statsModel} from "./models/stats/statsModel";
 import {salesSearchModel} from "./models/sales/salesSearchModel";
 import {salesHistModel} from "./models/sales/salesHistModel";
+import {siteModel} from "./models/company/siteModel";
 
 export const GlobalProviders = ({children}) => {
 
@@ -17,7 +18,9 @@ export const GlobalProviders = ({children}) => {
                         <statsModel.ModelProvider>
                             <salesSearchModel.ModelProvider>
                                 <salesHistModel.ModelProvider>
+                                    <siteModel.ModelProvider>
                         {children}
+                                    </siteModel.ModelProvider>
                                 </salesHistModel.ModelProvider>
                             </salesSearchModel.ModelProvider>
                         </statsModel.ModelProvider>

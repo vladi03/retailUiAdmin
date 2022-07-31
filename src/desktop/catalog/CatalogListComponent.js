@@ -7,13 +7,14 @@ import {makeStyles} from "@material-ui/core/styles";
 import {connectArray} from "../../utility/helpers";
 import {catalogModel} from "../../models/home/catalogModel";
 import {categoryModel} from "../../models/home/categoryModel";
+import {siteModel} from "../../models/company/siteModel";
 import {useIsMobile} from "../../utility/useIsMobile";
 
 
 export const CatalogListComponent = ({catalogListFiltered , categorySelected,
          activeCatalogItem ,onSetCatalogStatus, onAddCategoryToCatalog,
          onRemoveCategoryFromCatalog ,catalogStatusLoading, onCatalogOrderChange, savingCatalogSort,
-         onSetActiveCatalogItem, catalogListNoCategory, showSortArrows})=> {
+         onSetActiveCatalogItem, catalogListNoCategory, showSortArrows, site})=> {
 
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -63,6 +64,8 @@ export const CatalogListComponent = ({catalogListFiltered , categorySelected,
                             isSaving={catalog._id === catalogStatusLoading}
                             onOrderChange={onCatalogOrderChange}
                             savingCatalogSort={savingCatalogSort}
+                            salesBackgroundColor={site.salesBackgroundColor}
+                            salesFontColor={site.salesFontColor}
                             onClick={() => {
                                 if (!isMobile) {
                                     onSetActiveCatalogItem(catalog);
@@ -153,4 +156,4 @@ const useStyle = makeStyles({
     },
 
 });
-export const CatalogList = connectArray(CatalogListComponent,[catalogModel, categoryModel]);
+export const CatalogList = connectArray(CatalogListComponent,[catalogModel, categoryModel, siteModel]);

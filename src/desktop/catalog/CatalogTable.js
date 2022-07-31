@@ -1,9 +1,10 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
+import {siteModel} from "../../models/company/siteModel";
 import {connectArray} from "../../utility/helpers";
 import {makeStyles, withStyles} from "@material-ui/core/styles";
 import {Button, IconButton, Typography} from "@material-ui/core";
-import {Close} from "@material-ui/icons";
+import {Close, Edit, Save} from "@material-ui/icons";
 import {CatalogItemEdit} from "./CatalogItemEdit";
 import {useIsMobile} from "../../utility/useIsMobile";
 import {CategorySelect} from "./CategorySelect";
@@ -15,6 +16,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {CatalogItemIcon} from "../SiteIcons";
+import {HuePicker, CompactPicker} from "react-color";
 
 const AccordionDetails = withStyles((theme) => ({
     root: {
@@ -43,11 +45,16 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
                                           catalogListInit, onCatalogListInit,
                                           onSetActiveCatalogItem, activeCatalogItem,
                                           onCategorySelectChange, catalogListLoadError,
-                                          onClearCatalogError, categoryList  }) => {
+                                          onClearCatalogError, categoryList,
+                                        onSaveSiteColor, siteDataInitialized, onLoadSite,
+                                          site, setSalesBackgroundColor, setSalesFontColor
+                                      }) => {
 
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
+        if(!siteDataInitialized)
+            onLoadSite();
     });
     useEffect(()=> {
         if(catalogTotals.length===0 && categoryList.length > 0 &&
@@ -60,6 +67,15 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
 
     const isMobile = useIsMobile();
     const [categorySelected, setCategorySelected] = useState({_id:null, category: "All"});
+    const [editSalesTextStyle, setEditSalesTextStyle] =
+        useState(false);
+
+    console.log("site");
+    console.log(site);
+    const salesBackgroundColor = site.salesBackgroundColor ?? [0,255,255];
+    const salesFontColor = site.salesFontColor ?? [0,0,0];
+    console.log(salesBackgroundColor);
+
     const [showSortArrows, setShowSortArrows] = useState(false);
     const inEdit = activeCatalogItem !== null;
     const classes = useStyle({inEdit});
@@ -70,6 +86,17 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
         `${catalogListLoadError[0].dataPath} ${catalogListLoadError[0].message}`
         || "Error Saving";
     console.log(errorMessage);
+
+
+    const salesBackgroundRgbValue = salesBackgroundColor?.length > 2 ?
+        `rgb(${salesBackgroundColor[0]},${salesBackgroundColor[1]}, ${salesBackgroundColor[2]})`:
+        "rgb(255,255,255)";
+
+    //salesFontColor
+    const salesFontRgbValue = salesFontColor.length > 2 ?
+        `rgb(${salesFontColor[0]},${salesFontColor[1]}, ${salesFontColor[2]})`:
+        "rgb(255,255,255)";
+
     return (
         <Fragment>
             <PopupError
@@ -77,6 +104,92 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
                 onClearErrorMessage={() => onClearCatalogError(false)}
                 status={"error"}
             />
+            <Accordion
+                expanded={editSalesTextStyle}
+                className={classes.accordion}
+                onChange={()=> {
+                    setEditSalesTextStyle(!editSalesTextStyle);
+                }}
+            >
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon/>}
+                >
+                    <Edit />
+                    <Typography className={classes.categoryTitle}>
+                        Sales Text Styling
+                    </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <div style={{display:"flex"}}>
+                        <div>
+                            <div style={{display:"flex"}}>
+                                <Typography className={classes.categoryTitle}
+                                            style={{padding: 10, width: 250}}
+                                >
+                                    Sales Background Color
+                                </Typography>
+                                <div style={{display: "flex",
+
+                                    padding: "7px"
+                                }}
+                                >
+                                    <HuePicker
+                                        color={{r: salesBackgroundColor[0], g: salesBackgroundColor[1], b: salesBackgroundColor[2]}}
+                                        onChangeComplete={(color) => {
+                                            setSalesBackgroundColor([color.rgb.r, color.rgb.g, color.rgb.b]);
+                                        }}
+                                    />
+
+                                </div>
+                            </div>
+                            <div style={{display:"flex"}}>
+                                <Typography className={classes.categoryTitle}
+                                            style={{padding: 10, width: 250}}
+                                >
+                                    Sales Font Color
+                                </Typography>
+                                <div style={{display: "flex",
+
+                                    padding: "7px",
+                                    marginTop: 10
+                                }}
+                                >
+                                    <CompactPicker
+                                        color={{r: salesFontColor[0], g: salesFontColor[1], b: salesFontColor[2]}}
+                                        onChangeComplete={(color) => {
+                                            setSalesFontColor([color.rgb.r, color.rgb.g, color.rgb.b]);
+                                        }}
+                                    />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{paddingLeft: 20, display: "flex"}}>
+                            <div
+                                className={classes.catSale}
+                                style={{
+                                    "backgroundColor": `${salesBackgroundRgbValue}`,
+                                    "color": `${salesFontRgbValue}`,
+                                    "width": 35,
+                                    "height": 20
+                                }}
+                            >$999</div>
+
+                            <div style={{margin: 20}}>
+                                <Button variant="contained"
+                                        color="primary"
+                                        startIcon={<Save />}
+                                        style={{marginRight: 20}}
+                                        onClick={() => onSaveSiteColor({salesBackgroundColor,salesFontColor})}
+                                >
+                                    Save Style
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </AccordionDetails>
+
+            </Accordion>
 
             <div style={{width: 360, marginTop: -10, marginBottom: 10}}>
                 <CategorySelect
@@ -182,17 +295,31 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
                     <CatalogItemEdit />
                 </div>
                 }
-                
-               
+
+
 
             </div>
         </Fragment>
     )
 };
 
-export const CatalogTable = connectArray(CatalogTableComponent,[catalogModel, categoryModel]);
+export const CatalogTable = connectArray(CatalogTableComponent,
+    [catalogModel, categoryModel, siteModel]);
 
 const useStyle = makeStyles({
+    catSale: {
+        //position: "absolute",
+        //transform: "translate(10%, 15%)",
+        zIndex: 9,
+        padding: 15,
+        //font: "800 16px Arial",
+        "border-bottom-right-radius": 10,
+        "border-bottom-left-radius": 10,
+        "border-top-left-radius": 10,
+        color: "white",
+        right:0,
+        transform: "rotate(0deg)"
+    },
     scrollContainer: {
         height: "calc( 100vh - 120px)",
         width: props => props.inEdit ? "0vw" : "100%",
@@ -233,13 +360,13 @@ const useStyle = makeStyles({
         position:'absolute',
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
-        display:'flex',      
+        display:'flex',
         width: '100%',
-        overflow: 'scroll'  
+        overflow: 'scroll'
 
       },
       gridListTile:{
-          
+
 
       },
       accordion:{

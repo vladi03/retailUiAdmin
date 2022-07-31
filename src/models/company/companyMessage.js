@@ -103,7 +103,7 @@ export const saveLocation = async (itemToSave)=>{
                 saveLocationResult: result,
                 activeLocationItem: itemToSave,
                 locationListLoading: false
-            }
+            };
         }).catch((error) => {
             return {
                 success: false,

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {catalogModel} from "../../models/home/catalogModel";
 import {categoryModel} from "../../models/home/categoryModel";
+import {siteModel} from "../../models/company/siteModel";
 import {connectArray} from "../../utility/helpers";
 import {TextField, InputAdornment, Button, Paper,
 Checkbox, FormControlLabel, Switch} from "@material-ui/core";
@@ -10,7 +11,6 @@ import {toCurrency} from "../../utility/helpers";
 import {getStore} from "../../models/accounts/userAuthStore";
 import {PicRatioFill} from "pic-ratio-fill";
 import {AlertDialog} from "../../utility/components/AlertDialog";
-import { HuePicker } from 'react-color'
 
 const {catalogApi} = getStore();
 const containerWidth = 532;
@@ -19,7 +19,7 @@ const containerHeight = 415;
 const CatalogItemEditComponent = ({
      activeCatalogItem, onSaveCatalogItem, catalogListLoading,
      onUploadImage, onDeleteCatalog, imageUploading, categoryList,
-     getCatalogCategorySort, onSetActiveCatalogItem
+     getCatalogCategorySort, onSetActiveCatalogItem, site
 }) => {
     const imageIsConfig = activeCatalogItem.images
         && activeCatalogItem.images.length > 0;
@@ -97,8 +97,8 @@ const CatalogItemEditComponent = ({
         setItemEdit(newItem);
     };
 
-    const colorRgbValue = itemEdit.sale && itemEdit.sale.color.length > 2 ?
-        `rgb(${itemEdit.sale.color[0]},${itemEdit.sale.color[1]}, ${itemEdit.sale.color[2]})`:
+    const colorRgbValue = site?.salesBackgroundColor && site.salesBackgroundColor.length > 2 ?
+        `rgb(${site.salesBackgroundColor[0]},${site.salesBackgroundColor[1]}, ${site.salesBackgroundColor[2]})`:
         "rgb(255,255,255)";
 
     return(
@@ -198,7 +198,7 @@ const CatalogItemEditComponent = ({
                 <TextField
                     style={{width:"100%"}}
                     multiline
-                    rowsMax={4}
+                    maxRows={4}
                     label="Description"
                     value={itemEdit.description}
                     onChange={(event) => onValueChange("description", event.target.value)}
@@ -208,7 +208,7 @@ const CatalogItemEditComponent = ({
                     control={
                         <Checkbox
                             checked={itemEdit.sale && itemEdit.sale.enabled}
-                            onChange={(event)=> {
+                            onChange={()=> {
                                 const enabled = (itemEdit.sale && itemEdit.sale.enabled) || false;
                                 onValueChangeSale("enabled", !enabled);
                             }}
@@ -234,12 +234,6 @@ const CatalogItemEditComponent = ({
                         onChange={(event) => {
                             //setUnitPrice(event.target.value);
                             onValueChangeSale("price", parseFloat(event.target.value));
-                        }}
-                    />
-                    <HuePicker
-                        color={{r: itemEdit.sale.color[0], g: itemEdit.sale.color[1], b: itemEdit.sale.color[2]}}
-                        onChangeComplete={(color) => {
-                            onValueChangeSale("color",[color.rgb.r, color.rgb.g, color.rgb.b]);
                         }}
                     />
 
@@ -334,7 +328,7 @@ const CatalogItemEditComponent = ({
 
 
 export const CatalogItemEdit = connectArray(CatalogItemEditComponent,
-    [catalogModel, categoryModel]);
+    [catalogModel, categoryModel, siteModel]);
 
 const useStyle = makeStyles({
     rootContainer: {
