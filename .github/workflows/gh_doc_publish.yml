@@ -25,9 +25,10 @@ jobs:
           AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
           AUTH_AUDIENCE: ${{ secrets.AUTH_AUDIENCE }}
       - name: deploy docs
-        uses: Cecilapp/GitHub-Pages-deploy@2.0.1
+        uses: Cecilapp/GitHub-Pages-deploy@v3
         env:
-          EMAIL: vladi03@hotmail.com
-          GH_TOKEN: ${{ secrets.USER_TOKEN }}
-          BUILD_DIR: dist
-          CNAME: retail.netware.us
+          GITHUB_TOKEN: ${{ secrets.USER_TOKEN }}
+        with:
+          email: vladi03@hotmail.com
+          build_dir: dist
+          cname: retail.netware.us
