@@ -64,8 +64,8 @@ export const CatalogListComponent = ({catalogListFiltered , categorySelected,
                             isSaving={catalog._id === catalogStatusLoading}
                             onOrderChange={onCatalogOrderChange}
                             savingCatalogSort={savingCatalogSort}
-                            salesBackgroundColor={site.salesBackgroundColor}
-                            salesFontColor={site.salesFontColor}
+                            salesBackgroundColor={site.salesBackgroundColor || [0, 255, 255]}
+                            salesFontColor={site.salesFontColor || [0, 0, 0]}
                             onClick={() => {
                                 if (!isMobile) {
                                     onSetActiveCatalogItem(catalog);
