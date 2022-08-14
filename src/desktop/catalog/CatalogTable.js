@@ -53,7 +53,7 @@ export const CatalogTableComponent = ({catalogList,catalogTotals,onSetCatalogTot
     useEffect(()=> {
         if(!catalogListInit)
             onCatalogListInit();
-        if(!siteDataInitialized)
+        if(!siteDataInitialized && catalogList.length > 0)
             onLoadSite();
     });
     useEffect(()=> {

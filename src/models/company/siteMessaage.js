@@ -17,13 +17,17 @@ export const getSiteParams = async () => {
         .then(handleResponse()).then((result) => {
             return {
                 site: result && result.length > 0 ? result[0] : { },
-                siteLoading: false
+                siteLoading: false,
+                siteHasError: false
             };
         }).catch((error) => {
             return {
-                site: {},
+                site: {
+                    salesBackgroundColor: [0, 255, 255],
+                    salesFontColor: [0,0,0]},
                 siteLoading: false,
-                siteLoadError: error.message || error
+                siteLoadError: error.message || error,
+                siteHasError: true
             };
         });
 };

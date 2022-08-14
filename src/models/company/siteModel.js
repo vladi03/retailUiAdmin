@@ -24,7 +24,6 @@ export const createModel = () => ({
 
 export const  getInitialState = (classInstance) => {
     provider = classInstance;
-    onLoadSite();
     return  createModel();
 };
 
