@@ -135,7 +135,18 @@ export const LocationItemEdit = ({location, saveLocation,
                     value={itemEdit.mapLink}
                     onChange={(event) => onValueChange("mapLink", event.target.value)}
                 />
+
             </ListItem>
+
+            <ListItem>
+                <TextField
+                    style={{width:"100%"}}
+                    label="Email"
+                    value={itemEdit.email}
+                    onChange={(event) => onValueChange("email", event.target.value)}
+                />
+            </ListItem>
+
             <ListItem>
                 <LocationHours
                     hoursFull={itemEdit.hours}
