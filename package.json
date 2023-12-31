@@ -57,7 +57,6 @@
     "fast-average-color": "^6.0.2",
     "pic-ratio-fill": "^0.3.17",
     "react-color": "^2.19.3",
-    "recharts": "^2.0.9",
-    "xlsx": "^0.17.0"
+    "recharts": "^2.0.9"
   }
 }

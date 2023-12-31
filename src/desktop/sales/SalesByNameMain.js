@@ -87,6 +87,15 @@ const SalesByNameMainComponent = ({onGetSalesByName, salesSearch, salesSearchLoa
                     >
                         Griffin
                     </Button>
+                    <Button
+                        style={{background: location === "ME" ? "aliceblue" : ""}}
+                        onClick={() => {
+                            localStorage.setItem("salesLocation", 'GR');
+                            setLocation("ME");
+                        }}
+                    >
+                        Merge
+                    </Button>
                 </ButtonGroup>
             {dataLoaded &&
             <Paper className={classes.filterRoot}>
